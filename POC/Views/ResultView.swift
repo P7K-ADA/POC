@@ -5,12 +5,12 @@
 //  Created by Harley Ganisson on 13/10/26.
 //
 
-
 import SwiftUI
 import UIKit
 
 struct ResultView: View {
     let image: UIImage
+    let result: SegmentationResult
 
     private let mint = Color(
         red: 0.66, green: 0.91, blue: 0.83
@@ -22,42 +22,55 @@ struct ResultView: View {
                 Text("Screening result")
                     .font(.largeTitle.bold())
 
-                Text("DEMO — AI NOT CONNECTED")
+                Text("MODEL OUTPUT")
                     .font(.caption.bold())
-                    .tracking(1.2)
+                    .tracking(1.5)
                     .foregroundStyle(mint)
 
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFit()
                     .frame(maxWidth: .infinity)
-                    .frame(maxHeight: 300)
                     .clipShape(RoundedRectangle(cornerRadius: 18))
 
                 VStack(alignment: .leading, spacing: 14) {
-                    Label("Image received", systemImage: "checkmark.circle")
-                        .foregroundStyle(mint)
-
-                    Divider()
-
-                    Text("Segmentation")
-                        .font(.headline)
-                    Text("Not run — AI integration pending")
-                        .foregroundStyle(.secondary)
-
-                    Divider()
-
                     Text("Vertical cup-to-disc ratio")
                         .font(.headline)
-                    Text("Unavailable")
-                        .foregroundStyle(.secondary)
+
+                    if let ratio = result.verticalCDR {
+                        Text(ratio, format: .number.precision(
+                            .fractionLength(3)
+                        ))
+                        .font(.system(size: 42, weight: .bold))
+                        .foregroundStyle(mint)
+
+                        Text("Calculated from predicted mask heights")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Unavailable")
+                            .font(.title2)
+                    }
 
                     Divider()
 
-                    Text("Screening interpretation")
+                    Text("Segmentation summary")
                         .font(.headline)
-                    Text("No screening result has been generated.")
-                        .foregroundStyle(.secondary)
+
+                    metricRow(
+                        title: "Predicted disc region",
+                        value: "\(result.discPixelCount) pixels"
+                    )
+
+                    metricRow(
+                        title: "Predicted cup region",
+                        value: "\(result.cupPixelCount) pixels"
+                    )
+
+                    metricRow(
+                        title: "Mask resolution",
+                        value: "\(result.width) × \(result.height)"
+                    )
                 }
                 .padding(18)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -65,8 +78,10 @@ struct ResultView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 18))
 
                 Text(
-                    "Research prototype only. This app does not "
-                    + "diagnose or rule out glaucoma."
+                    "Research POC only. The segmentation classes, "
+                    + "preprocessing, and measurements must be "
+                    + "validated before clinical interpretation. "
+                    + "This output does not diagnose or rule out glaucoma."
                 )
                 .font(.footnote)
                 .foregroundStyle(.secondary)
@@ -79,5 +94,20 @@ struct ResultView: View {
         )
         .navigationTitle("Results")
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private func metricRow(
+        title: String,
+        value: String
+    ) -> some View {
+        HStack {
+            Text(title)
+                .foregroundStyle(.secondary)
+
+            Spacer()
+
+            Text(value)
+                .fontWeight(.medium)
+        }
     }
 }

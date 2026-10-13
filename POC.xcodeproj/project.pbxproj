@@ -38,6 +38,11 @@
 			path = Service;
 			sourceTree = "<group>";
 		};
+		80871F40307E26D90061924D /* APIs */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = APIs;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +67,7 @@
 				3D30892D279ECEA29BC64492 /* Photos.framework */,
 				A0F48E788B7D74C2B4285C74 /* PhotosUI.framework */,
 				FB46093372FE1EA813E899B8 /* Vision.framework */,
+				80871F40307E26D90061924D /* APIs */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -113,6 +119,7 @@
 			fileSystemSynchronizedGroups = (
 				80871F28307E13A30061924D /* Views */,
 				80871F37307E16B20061924D /* Service */,
+				80871F40307E26D90061924D /* APIs */,
 			);
 			name = POC;
 			packageProductDependencies = (
