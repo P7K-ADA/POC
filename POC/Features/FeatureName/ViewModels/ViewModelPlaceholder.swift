@@ -1,5 +1,5 @@
 //
-//  FeaturesPlaceholder.swift
+//  ViewModelPlaceholder.swift
 //  POC
 //
 //  Created by Carolyn Santana on 13/10/26.
