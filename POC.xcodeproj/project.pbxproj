@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		31B7E1DDFE865DC4BC46C654 /* POC.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = POC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		31B7E1DDFE865DC4BC46C654 /* POC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = POC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		31D2F70DBAD19FED4EE083A6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3D30892D279ECEA29BC64492 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
 		6717170381F38A66B50836C0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -26,6 +26,19 @@
 		A0F48E788B7D74C2B4285C74 /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
 		FB46093372FE1EA813E899B8 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		80871F28307E13A30061924D /* Views */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Views;
+			sourceTree = "<group>";
+		};
+		80871F37307E16B20061924D /* Service */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Service;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		6DF35C50B2E36DB80A8A8467 /* Frameworks */ = {
@@ -64,6 +77,8 @@
 		C800C25C92EC3B797B8A2B3B /* POC */ = {
 			isa = PBXGroup;
 			children = (
+				80871F37307E16B20061924D /* Service */,
+				80871F28307E13A30061924D /* Views */,
 				31D2F70DBAD19FED4EE083A6 /* Assets.xcassets */,
 				83A0E218A0FD5D0ED938E20B /* ContentView.swift */,
 				8846D5DF6542DDD7E440B125 /* POCApp.swift */,
@@ -95,6 +110,10 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				80871F28307E13A30061924D /* Views */,
+				80871F37307E16B20061924D /* Service */,
+			);
 			name = POC;
 			packageProductDependencies = (
 			);
@@ -110,8 +129,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 2CD8FCDD5E48F8E350372D3E /* Build configuration list for PBXProject "POC" */;
 			developmentRegion = en;
@@ -161,6 +178,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3ZX29GXNUH;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = POC;
 				INFOPLIST_KEY_CFBundleShortVersionString = 1.0;
@@ -186,6 +204,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEVELOPMENT_TEAM = 3ZX29GXNUH;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = POC;
 				INFOPLIST_KEY_CFBundleShortVersionString = 1.0;
