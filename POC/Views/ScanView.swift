@@ -5,7 +5,6 @@
 //  Created by Harley Ganisson on 13/10/26.
 //
 
-
 import SwiftUI
 import PhotosUI
 import UIKit
@@ -15,349 +14,250 @@ struct ScanView: View {
 
     @State private var selectedImage: UIImage?
     @State private var selectedItem: PhotosPickerItem?
-    @State private var loadError: String?
 
+    @State private var isReviewing = false
     @State private var isAnalyzing = false
-    @State private var inferenceError: String?
-    @State private var inferenceResult: SegmentationResult?
     @State private var showResult = false
 
-    private let ink = Color(
-        red: 0.055,
-        green: 0.085,
-        blue: 0.105
-    )
+    @State private var inferenceResult: SegmentationResult?
+    @State private var errorMessage: String?
 
+    private let ink = Color(
+        red: 0.055, green: 0.085, blue: 0.105
+    )
     private let mint = Color(
-        red: 0.66,
-        green: 0.91,
-        blue: 0.83
+        red: 0.66, green: 0.91, blue: 0.83
     )
 
     var body: some View {
-        VStack(spacing: 16) {
+        NavigationStack {
+            ZStack {
+                ink.ignoresSafeArea()
 
-            // MARK: Header
-
-            HStack {
-                Image(systemName: "eye.circle.fill")
-                    .font(.title)
-                    .foregroundStyle(mint)
-
-                Spacer()
-
-                VStack(spacing: 3) {
-                    Text("GLAUCOSCAN")
-                        .font(.caption.bold())
-                        .tracking(2)
-
-                    Text("STRUCTURAL SCREENING POC")
-                        .font(.system(size: 9))
-                        .foregroundStyle(.white.opacity(0.5))
+                if isReviewing, let image = selectedImage {
+                    ImageReviewView(
+                        image: image,
+                        selectedItem: $selectedItem,
+                        onUseImage: { editedImage in
+                            selectedImage = editedImage
+                            isReviewing = true
+                        },
+                        onRetake: {
+                            selectedImage = nil
+                            selectedItem = nil
+                            isReviewing = false
+                            camera.start()
+                        },
+                        onChooseAnother: {
+                            selectedItem = nil
+                        },
+                        onAnalyze: {
+                            analyze(image: selectedImage ?? image)
+                        },
+                        isAnalyzing: isAnalyzing,
+                        mint: mint
+                    )
+                } else {
+                    cameraScreen
                 }
-
-                Spacer()
-
-                Image(systemName: "info.circle")
-                    .font(.title3)
-                    .foregroundStyle(mint)
             }
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(isPresented: $showResult) {
+                if let image = selectedImage,
+                   let result = inferenceResult {
+                    ResultView(image: image, result: result)
+                }
+            }
+            .task {
+                if !isReviewing {
+                    camera.start()
+                }
+            }
+            .onDisappear {
+                camera.stop()
+            }
+            .onChange(of: camera.capturedImage) { _, image in
+                guard let image else { return }
 
-            // MARK: Instructions
+                selectedImage = image
+                isReviewing = true
+                camera.stop()
+            }
+            .onChange(of: selectedItem) { _, item in
+                guard let item else { return }
 
-            VStack(spacing: 5) {
-                Text(
-                    selectedImage == nil
-                    ? "Position the optic disc"
-                    : "Image ready to analyze"
+                Task {
+                    await loadGalleryImage(item)
+                }
+            }
+            .alert(
+                "Unable to continue",
+                isPresented: Binding(
+                    get: { errorMessage != nil },
+                    set: { if !$0 { errorMessage = nil } }
                 )
-                .font(.title2.bold())
+            ) {
+                Button("OK", role: .cancel) {
+                    errorMessage = nil
+                }
+            } message: {
+                Text(errorMessage ?? "Please try again.")
+            }
+        }
+        .preferredColorScheme(.dark)
+    }
 
-                Text(
-                    selectedImage == nil
-                    ? "Keep the image centered and in focus."
-                    : "Review your image before continuing."
-                )
+    private var cameraScreen: some View {
+        VStack(spacing: 22) {
+            header
+
+            Text("Position the optic disc inside the frame")
                 .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.65))
+                .foregroundStyle(.white.opacity(0.7))
                 .multilineTextAlignment(.center)
-            }
-
-            // MARK: Camera / Image Preview
 
             ZStack {
-                Color.black
+                RoundedRectangle(cornerRadius: 24)
+                    .fill(Color.black)
 
-                if let selectedImage {
-                    Image(uiImage: selectedImage)
-                        .resizable()
-                        .scaledToFit()
-                        .padding(10)
-                } else {
-                    CameraPreview(session: camera.session)
+                CameraPreview(session: camera.session)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
 
-                    ScannerCorners()
-                        .stroke(
-                            mint,
-                            style: StrokeStyle(
-                                lineWidth: 3,
-                                lineCap: .round
-                            )
-                        )
-                        .padding(18)
+                ScannerCorners()
+                    .stroke(mint, lineWidth: 3)
+                    .padding(28)
 
-                    if !camera.isReady {
-                        VStack(spacing: 10) {
-                            ProgressView()
-                                .tint(mint)
-
-                            Text(camera.status)
-                                .font(.subheadline)
-                                .multilineTextAlignment(.center)
-                        }
-                        .padding()
-                        .background(.black.opacity(0.7))
-                        .clipShape(
-                            RoundedRectangle(cornerRadius: 12)
-                        )
-                    }
+                VStack {
+                    Spacer()
+                    Text("CENTER THE OPTIC DISC")
+                        .font(.caption2.weight(.bold))
+                        .tracking(1.4)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(.black.opacity(0.55))
+                        .clipShape(Capsule())
+                        .padding(.bottom, 20)
                 }
             }
-            .frame(maxWidth: .infinity)
-            .frame(maxHeight: .infinity)
+            .aspectRatio(3 / 4, contentMode: .fit)
             .clipShape(RoundedRectangle(cornerRadius: 24))
 
-            // MARK: Errors
+            if !camera.status.isEmpty {
+                Text(camera.status)
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.65))
+            }
 
-            if let message = loadError
-                ?? inferenceError
-                ?? camera.errorMessage {
-                Text(message)
+            if let cameraError = camera.errorMessage,
+               !cameraError.isEmpty {
+                Text(cameraError)
                     .font(.footnote)
                     .foregroundStyle(.red)
                     .multilineTextAlignment(.center)
-                    .fixedSize(
-                        horizontal: false,
-                        vertical: true
-                    )
             }
 
-            // MARK: Upload and Shutter Controls
-
-            HStack(alignment: .center) {
+            HStack(spacing: 24) {
                 PhotosPicker(
                     selection: $selectedItem,
-                    matching: .images
+                    matching: .images,
+                    photoLibrary: .shared()
                 ) {
                     VStack(spacing: 6) {
                         Image(systemName: "photo.on.rectangle")
-                            .font(.system(size: 27))
-                            .foregroundStyle(mint)
-                            .frame(width: 62, height: 62)
-                            .background(.white.opacity(0.08))
-                            .clipShape(Circle())
-
-                        Text("Upload image")
+                            .font(.title2)
+                        Text("Gallery")
                             .font(.caption)
-                            .foregroundStyle(.white.opacity(0.8))
                     }
-                    .frame(width: 100)
+                    .foregroundStyle(mint)
+                    .frame(width: 76)
                 }
-                .accessibilityLabel("Upload fundus image")
-
-                Spacer()
 
                 Button {
-                    if selectedImage != nil {
-                        // Return to the camera for another image.
-                        selectedImage = nil
-                        inferenceResult = nil
-                        inferenceError = nil
-                        loadError = nil
-                        camera.start()
-                    } else {
-                        camera.capturePhoto()
-                    }
+                    camera.capturePhoto()
                 } label: {
-                    ZStack {
-                        Circle()
-                            .stroke(.white, lineWidth: 3)
-                            .frame(width: 76, height: 76)
-
-                        Circle()
-                            .fill(.white)
-                            .frame(width: 64, height: 64)
-                    }
+                    Circle()
+                        .fill(mint)
+                        .frame(width: 76, height: 76)
+                        .overlay {
+                            Circle()
+                                .stroke(.white, lineWidth: 4)
+                                .padding(6)
+                        }
                 }
-                .disabled(
-                    selectedImage == nil && !camera.isReady
-                )
-                .accessibilityLabel(
-                    selectedImage == nil
-                    ? "Capture photo"
-                    : "Retake photo"
-                )
+                .buttonStyle(.plain)
+                .accessibilityLabel("Capture photo")
 
                 Spacer()
-
-                // Balance the shutter button.
-                Color.clear
-                    .frame(width: 100, height: 62)
+                    .frame(width: 76)
             }
+            .padding(.top, 4)
 
-            // MARK: One Analyze Button
-
-            Button {
-                guard let image = selectedImage,
-                      !isAnalyzing else {
-                    return
-                }
-
-                isAnalyzing = true
-                inferenceError = nil
-                inferenceResult = nil
-
-                Task {
-                    do {
-                        let result = try await Task.detached(
-                            priority: .userInitiated
-                        ) {
-                            let service = try ImageInferenceService()
-                            return try service.predict(image: image)
-                        }.value
-
-                        await MainActor.run {
-                            inferenceResult = result
-                            isAnalyzing = false
-                            showResult = true
-                        }
-                    } catch {
-                        await MainActor.run {
-                            inferenceError =
-                                error.localizedDescription
-                            isAnalyzing = false
-                        }
-                    }
-                }
-            } label: {
-                HStack {
-                    if isAnalyzing {
-                        ProgressView()
-                            .tint(ink)
-                    }
-
-                    Text(
-                        isAnalyzing
-                        ? "Analyzing..."
-                        : "Analyze image"
-                    )
-
-                    Spacer()
-
-                    Image(systemName: "arrow.right")
-                }
-                .font(.headline)
-                .foregroundStyle(ink)
-                .padding(17)
-                .frame(maxWidth: .infinity)
-                .background(
-                    selectedImage == nil
-                    ? mint.opacity(0.4)
-                    : mint
-                )
-                .clipShape(
-                    RoundedRectangle(cornerRadius: 15)
-                )
-            }
-            .disabled(
-                selectedImage == nil || isAnalyzing
-            )
-
-            Text(
-                "Research prototype · AI-generated measurements "
-                + "require validation"
-            )
-            .font(.caption2)
-            .foregroundStyle(.white.opacity(0.4))
-            .multilineTextAlignment(.center)
+            Spacer(minLength: 8)
         }
         .padding(20)
-        .background(ink.ignoresSafeArea())
-        .toolbar(.hidden, for: .navigationBar)
+    }
 
-        // MARK: Results Navigation
+    private var header: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 5) {
+                Text("GlaucoScan")
+                    .font(.title2.bold())
+                    .foregroundStyle(.white)
 
-        .navigationDestination(isPresented: $showResult) {
-            if let image = selectedImage,
-               let result = inferenceResult {
-                ResultView(
-                    image: image,
-                    result: result
-                )
+                Text("Optic disc screening prototype")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.6))
             }
-        }
 
-        // MARK: Camera Lifecycle
+            Spacer()
 
-        .task {
-            camera.start()
-        }
-        .onDisappear {
-            camera.stop()
-        }
-
-        // MARK: Captured Image
-
-        .onChange(of: camera.capturedImage) { _, image in
-            if let image {
-                selectedImage = image
-                loadError = nil
-                inferenceError = nil
-                inferenceResult = nil
-                camera.stop()
-            }
-        }
-
-        // MARK: Uploaded Image
-
-        .onChange(of: selectedItem) { _, item in
-            Task {
-                await loadImage(from: item)
-            }
+            Image(systemName: "viewfinder")
+                .font(.title2)
+                .foregroundStyle(mint)
         }
     }
 
-    // MARK: Load Selected Image
-
     @MainActor
-    private func loadImage(
-        from item: PhotosPickerItem?
-    ) async {
-        guard let item else { return }
-
-        loadError = nil
-        inferenceError = nil
-
+    private func loadGalleryImage(_ item: PhotosPickerItem) async {
         do {
-            guard let data = try await item.loadTransferable(
-                type: Data.self
-            ) else {
-                loadError = "Could not read the selected image."
+            guard let data = try await item.loadTransferable(type: Data.self),
+                  let image = UIImage(data: data) else {
+                errorMessage = "Couldn't load that image. Please choose another."
                 return
             }
 
-            guard let image = UIImage(data: data) else {
-                loadError = "Unsupported image format."
-                return
-            }
-
-            selectedImage = image
-            inferenceResult = nil
             camera.stop()
-
+            selectedImage = image
+            isReviewing = true
         } catch {
-            loadError =
-                "Image import failed. Please try again."
+            errorMessage = "Couldn't load the selected image: \(error.localizedDescription)"
+        }
+    }
+
+    private func analyze(image: UIImage) {
+        guard !isAnalyzing else { return }
+
+        isAnalyzing = true
+        inferenceResult = nil
+
+        Task {
+            do {
+                let result = try await Task.detached(priority: .userInitiated) {
+                    try ImageInferenceService().predict(image: image)
+                }.value
+
+                await MainActor.run {
+                    inferenceResult = result
+                    isAnalyzing = false
+                    showResult = true
+                }
+            } catch {
+                await MainActor.run {
+                    isAnalyzing = false
+                    errorMessage = "Analysis failed: \(error.localizedDescription)"
+                }
+            }
         }
     }
 }
