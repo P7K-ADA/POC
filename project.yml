@@ -17,6 +17,10 @@ targets:
         excludes:
           - "**/.DS_Store"
 
+      - path: APIs
+        excludes:
+          - "**/.DS_Store"
+
     dependencies:
       - sdk: AVFoundation.framework
       - sdk: Photos.framework

@@ -7,43 +7,43 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0BB0C499738095AADBFBA766 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E561F2A24BDC25CB17470F3E /* ResultView.swift */; };
+		0C04793BF9676D3FC94CC4D8 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4581AFF4DBDD92C1B096BF /* ScanView.swift */; };
 		1287F9D03385BCF640DE6998 /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB46093372FE1EA813E899B8 /* Vision.framework */; };
-		2320B5293CDE7DE56FC0BCB3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 31D2F70DBAD19FED4EE083A6 /* Assets.xcassets */; };
+		27DF7767D414820797761072 /* GlaucomaSegmentation.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 5BFB47739A8A38AE06EE7D50 /* GlaucomaSegmentation.mlpackage */; };
 		39597D0C2EE4DA7F49089FD8 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717170381F38A66B50836C0 /* AVFoundation.framework */; };
-		58B2824671AF37C0F6AA3F2B /* POCApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8846D5DF6542DDD7E440B125 /* POCApp.swift */; };
-		90EC3D340036D05C4BB78D68 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83A0E218A0FD5D0ED938E20B /* ContentView.swift */; };
+		517A97BC621561BE768AB3A4 /* ImageInferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139CBBF61E2473F224BB8351 /* ImageInferenceService.swift */; };
+		65661AD431B4ED20AC75279A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC7A1154B64C5C75BA5AD3D0 /* Assets.xcassets */; };
+		74F77F5B9BFAC8205D00047A /* ScannerCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC02D5D5F5CA7BC200B0324B /* ScannerCorners.swift */; };
+		875373E1A57512D067DB29C0 /* SegmentationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7311A7BD0EFCA6B3291212C1 /* SegmentationOverlay.swift */; };
+		8868294CB76A2856D7444A2D /* ImageReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA184E192C9431DA4ADB22ED /* ImageReviewView.swift */; };
+		A06004C2C16CFDB1AC498BE9 /* ModelPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC676AE33BEF441442BEBDA /* ModelPlaceholder.swift */; };
+		A37EA349D63404F578976176 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26143884B6F7F9F36CB67A1 /* ContentView.swift */; };
+		CC9BEC1067145627E4DAD5B7 /* POCApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123B63EB1560F6F48DF1C7C9 /* POCApp.swift */; };
+		EADDF54F866636C33099AAD3 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14D5879E3A8E5A8D2D2321B /* CameraService.swift */; };
 		F608051076216842EA4FAD07 /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0F48E788B7D74C2B4285C74 /* PhotosUI.framework */; };
 		F6A33CE28CA4D4036CD1B873 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D30892D279ECEA29BC64492 /* Photos.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		123B63EB1560F6F48DF1C7C9 /* POCApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POCApp.swift; sourceTree = "<group>"; };
+		139CBBF61E2473F224BB8351 /* ImageInferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageInferenceService.swift; sourceTree = "<group>"; };
 		31B7E1DDFE865DC4BC46C654 /* POC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = POC.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		31D2F70DBAD19FED4EE083A6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3D30892D279ECEA29BC64492 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		5BFB47739A8A38AE06EE7D50 /* GlaucomaSegmentation.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = GlaucomaSegmentation.mlpackage; sourceTree = "<group>"; };
+		5FC676AE33BEF441442BEBDA /* ModelPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPlaceholder.swift; sourceTree = "<group>"; };
 		6717170381F38A66B50836C0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
-		83A0E218A0FD5D0ED938E20B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		8846D5DF6542DDD7E440B125 /* POCApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POCApp.swift; sourceTree = "<group>"; };
+		7311A7BD0EFCA6B3291212C1 /* SegmentationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationOverlay.swift; sourceTree = "<group>"; };
 		A0F48E788B7D74C2B4285C74 /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
+		A26143884B6F7F9F36CB67A1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		AC4581AFF4DBDD92C1B096BF /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		DA184E192C9431DA4ADB22ED /* ImageReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageReviewView.swift; sourceTree = "<group>"; };
+		E14D5879E3A8E5A8D2D2321B /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		E561F2A24BDC25CB17470F3E /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
 		FB46093372FE1EA813E899B8 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
+		FC02D5D5F5CA7BC200B0324B /* ScannerCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerCorners.swift; sourceTree = "<group>"; };
+		FC7A1154B64C5C75BA5AD3D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		80871F28307E13A30061924D /* Views */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Views;
-			sourceTree = "<group>";
-		};
-		80871F37307E16B20061924D /* Service */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Service;
-			sourceTree = "<group>";
-		};
-		80871F40307E26D90061924D /* APIs */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = APIs;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		6DF35C50B2E36DB80A8A8467 /* Frameworks */ = {
@@ -60,6 +60,56 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		08FFD2BBFCA45CFE60B5C79D /* Result */ = {
+			isa = PBXGroup;
+			children = (
+				D3EF30CF4A04EAD3FB80555E /* View */,
+			);
+			path = Result;
+			sourceTree = "<group>";
+		};
+		133E484F647475A47EB8AA40 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				A26143884B6F7F9F36CB67A1 /* ContentView.swift */,
+				123B63EB1560F6F48DF1C7C9 /* POCApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		1AA1F7A0F5EEE2D91923E84F /* PhotoReview */ = {
+			isa = PBXGroup;
+			children = (
+				8EC4FE2ED3622F0652D5F6C4 /* View */,
+			);
+			path = PhotoReview;
+			sourceTree = "<group>";
+		};
+		54E3D113E044A64B38C32C74 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5FC676AE33BEF441442BEBDA /* ModelPlaceholder.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		54F3B75B44691392A30A1F47 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				E14D5879E3A8E5A8D2D2321B /* CameraService.swift */,
+				139CBBF61E2473F224BB8351 /* ImageInferenceService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		65FE627270556ADE9EBBD54D /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				FF71EA51467DD70E23EFD176 /* View */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
 		7EF850CAF061D286AA9CE80D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -67,9 +117,24 @@
 				3D30892D279ECEA29BC64492 /* Photos.framework */,
 				A0F48E788B7D74C2B4285C74 /* PhotosUI.framework */,
 				FB46093372FE1EA813E899B8 /* Vision.framework */,
-				80871F40307E26D90061924D /* APIs */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8EC4FE2ED3622F0652D5F6C4 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DA184E192C9431DA4ADB22ED /* ImageReviewView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		8ED63D5FA139838197C94447 /* APIs */ = {
+			isa = PBXGroup;
+			children = (
+				5BFB47739A8A38AE06EE7D50 /* GlaucomaSegmentation.mlpackage */,
+			);
+			path = APIs;
 			sourceTree = "<group>";
 		};
 		AAF411BD9B9A58FE113D43B4 /* Products */ = {
@@ -80,14 +145,32 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		BB733EC284F49EBD4A4E92EF /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				54F3B75B44691392A30A1F47 /* Services */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		C0CAC862421C716533417B37 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				65FE627270556ADE9EBBD54D /* Camera */,
+				1AA1F7A0F5EEE2D91923E84F /* PhotoReview */,
+				08FFD2BBFCA45CFE60B5C79D /* Result */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
 		C800C25C92EC3B797B8A2B3B /* POC */ = {
 			isa = PBXGroup;
 			children = (
-				80871F37307E16B20061924D /* Service */,
-				80871F28307E13A30061924D /* Views */,
-				31D2F70DBAD19FED4EE083A6 /* Assets.xcassets */,
-				83A0E218A0FD5D0ED938E20B /* ContentView.swift */,
-				8846D5DF6542DDD7E440B125 /* POCApp.swift */,
+				133E484F647475A47EB8AA40 /* App */,
+				FEF2562279E96F38E1F3DD3D /* Assets */,
+				BB733EC284F49EBD4A4E92EF /* Core */,
+				C0CAC862421C716533417B37 /* Features */,
+				54E3D113E044A64B38C32C74 /* Models */,
 			);
 			path = POC;
 			sourceTree = "<group>";
@@ -95,10 +178,37 @@
 		CF594CBCC489232A8646AE64 = {
 			isa = PBXGroup;
 			children = (
+				8ED63D5FA139838197C94447 /* APIs */,
 				C800C25C92EC3B797B8A2B3B /* POC */,
 				7EF850CAF061D286AA9CE80D /* Frameworks */,
 				AAF411BD9B9A58FE113D43B4 /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		D3EF30CF4A04EAD3FB80555E /* View */ = {
+			isa = PBXGroup;
+			children = (
+				E561F2A24BDC25CB17470F3E /* ResultView.swift */,
+				7311A7BD0EFCA6B3291212C1 /* SegmentationOverlay.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		FEF2562279E96F38E1F3DD3D /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				FC7A1154B64C5C75BA5AD3D0 /* Assets.xcassets */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		FF71EA51467DD70E23EFD176 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FC02D5D5F5CA7BC200B0324B /* ScannerCorners.swift */,
+				AC4581AFF4DBDD92C1B096BF /* ScanView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -115,11 +225,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				80871F28307E13A30061924D /* Views */,
-				80871F37307E16B20061924D /* Service */,
-				80871F40307E26D90061924D /* APIs */,
 			);
 			name = POC;
 			packageProductDependencies = (
@@ -172,13 +277,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EADDF54F866636C33099AAD3 /* CameraService.swift in Sources */,
 				A37EA349D63404F578976176 /* ContentView.swift in Sources */,
-				136627A4D077A186C133526C /* CorePlaceholder.swift in Sources */,
+				27DF7767D414820797761072 /* GlaucomaSegmentation.mlpackage in Sources */,
+				517A97BC621561BE768AB3A4 /* ImageInferenceService.swift in Sources */,
+				8868294CB76A2856D7444A2D /* ImageReviewView.swift in Sources */,
 				A06004C2C16CFDB1AC498BE9 /* ModelPlaceholder.swift in Sources */,
 				CC9BEC1067145627E4DAD5B7 /* POCApp.swift in Sources */,
-				F951806F271DC8564842C1C7 /* TestView.swift in Sources */,
-				3C3D59BEA930463FC40E10FD /* ViewModelPlaceholder.swift in Sources */,
-				68549428405DA77AACD26036 /* ViewPlaceholder.swift in Sources */,
+				0BB0C499738095AADBFBA766 /* ResultView.swift in Sources */,
+				0C04793BF9676D3FC94CC4D8 /* ScanView.swift in Sources */,
+				74F77F5B9BFAC8205D00047A /* ScannerCorners.swift in Sources */,
+				875373E1A57512D067DB29C0 /* SegmentationOverlay.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -190,7 +299,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3ZX29GXNUH;
+				DEVELOPMENT_TEAM = 3R47563279;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = POC;
 				INFOPLIST_KEY_CFBundleShortVersionString = 1.0;
@@ -216,7 +325,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3ZX29GXNUH;
+				DEVELOPMENT_TEAM = 3R47563279;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = POC;
 				INFOPLIST_KEY_CFBundleShortVersionString = 1.0;
