@@ -5,33 +5,43 @@
 //  Created by Harley Ganisson on 13/10/26.
 //
 
+
 import SwiftUI
 import UIKit
 
 struct ResultView: View {
     let image: UIImage
     let result: SegmentationResult
+    let onSave: () -> Void
 
     @Environment(\.dismiss) private var dismiss
 
     private let mint = Color(
-        red: 0.66, green: 0.91, blue: 0.83
+        red: 0.66,
+        green: 0.91,
+        blue: 0.83
     )
 
     var body: some View {
         ZStack {
             Color(
-                red: 0.055, green: 0.085, blue: 0.105
+                red: 0.055,
+                green: 0.085,
+                blue: 0.105
             )
             .ignoresSafeArea()
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 22) {
+                    // Header
                     HStack {
                         Button {
                             dismiss()
                         } label: {
-                            Label("Back", systemImage: "chevron.left")
+                            Label(
+                                "Back",
+                                systemImage: "chevron.left"
+                            )
                         }
                         .foregroundStyle(mint)
 
@@ -48,6 +58,7 @@ struct ResultView: View {
                             .opacity(0)
                     }
 
+                    // Segmentation preview
                     Text("Segmentation preview")
                         .font(.title2.bold())
                         .foregroundStyle(.white)
@@ -57,31 +68,47 @@ struct ResultView: View {
                             .resizable()
                             .scaledToFit()
 
-                        if let overlay = SegmentationOverlay.makeImage(
-                            from: result
-                        ) {
+                        if let overlay =
+                            SegmentationOverlay.makeImage(from: result) {
                             Image(uiImage: overlay)
                                 .resizable()
                                 .scaledToFit()
                                 .allowsHitTesting(false)
                         }
                     }
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 18)
+                    )
                     .overlay {
                         RoundedRectangle(cornerRadius: 18)
-                            .stroke(.white.opacity(0.15), lineWidth: 1)
+                            .stroke(
+                                .white.opacity(0.15),
+                                lineWidth: 1
+                            )
                     }
 
+                    // Segmentation legend
                     HStack(spacing: 18) {
-                        legend(color: Color(
-                            red: 0.18, green: 0.86, blue: 0.53
-                        ), title: "Optic disc")
+                        legend(
+                            color: Color(
+                                red: 0.18,
+                                green: 0.86,
+                                blue: 0.53
+                            ),
+                            title: "Optic disc"
+                        )
 
-                        legend(color: Color(
-                            red: 1, green: 0.29, blue: 0.33
-                        ), title: "Optic cup")
+                        legend(
+                            color: Color(
+                                red: 1,
+                                green: 0.29,
+                                blue: 0.33
+                            ),
+                            title: "Optic cup"
+                        )
                     }
 
+                    // Measurements
                     VStack(alignment: .leading, spacing: 14) {
                         Text("Measurements")
                             .font(.headline)
@@ -91,7 +118,8 @@ struct ResultView: View {
                             title: "Vertical cup-to-disc ratio",
                             value: result.verticalCDR.map {
                                 String(format: "%.3f", $0)
-                            } ?? "N/A"                        )
+                            } ?? "N/A"
+                        )
 
                         Divider()
                             .overlay(.white.opacity(0.12))
@@ -111,8 +139,11 @@ struct ResultView: View {
                     }
                     .padding(18)
                     .background(.white.opacity(0.06))
-                    .clipShape(RoundedRectangle(cornerRadius: 18))
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 18)
+                    )
 
+                    // Disclaimer
                     Text(
                         "Research prototype only. Segmentation boundaries " +
                         "and the calculated ratio have not been clinically " +
@@ -120,19 +151,35 @@ struct ResultView: View {
                     )
                     .font(.footnote)
                     .foregroundStyle(.white.opacity(0.65))
-                    .fixedSize(horizontal: false, vertical: true)
+                    .fixedSize(
+                        horizontal: false,
+                        vertical: true
+                    )
 
-                    Button {
-                        dismiss()
-                    } label: {
-                        Text("Back to image review")
-                            .fontWeight(.semibold)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 15)
+                    // Save result to the current patient
+                    Button(action: onSave) {
+                        Label(
+                            "Save to patient",
+                            systemImage: "square.and.arrow.down"
+                        )
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 15)
                     }
                     .buttonStyle(.borderedProminent)
                     .tint(mint)
                     .foregroundStyle(.black)
+
+                    // Return to image review
+                    Button {
+                        dismiss()
+                    } label: {
+                        Text("Back to image review")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                    }
+                    .buttonStyle(.bordered)
+                    .tint(mint)
                 }
                 .padding(20)
             }
@@ -141,7 +188,12 @@ struct ResultView: View {
         .preferredColorScheme(.dark)
     }
 
-    private func legend(color: Color, title: String) -> some View {
+    // MARK: - Segmentation Legend
+
+    private func legend(
+        color: Color,
+        title: String
+    ) -> some View {
         HStack(spacing: 8) {
             Circle()
                 .fill(color)
@@ -152,6 +204,8 @@ struct ResultView: View {
                 .foregroundStyle(.white.opacity(0.8))
         }
     }
+
+    // MARK: - Measurement Row
 
     private func measurementRow(
         title: String,

@@ -7,41 +7,63 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		00407F43D6F9D57910689373 /* PatientCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5BFDABC2649E07F5AA069A3 /* PatientCard.swift */; };
 		0BB0C499738095AADBFBA766 /* ResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E561F2A24BDC25CB17470F3E /* ResultView.swift */; };
-		0C04793BF9676D3FC94CC4D8 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC4581AFF4DBDD92C1B096BF /* ScanView.swift */; };
 		1287F9D03385BCF640DE6998 /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FB46093372FE1EA813E899B8 /* Vision.framework */; };
+		19BC4EFCE02DDB8AF737E570 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA16E41AFE09FBFD0431A06 /* ScanView.swift */; };
 		27DF7767D414820797761072 /* GlaucomaSegmentation.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 5BFB47739A8A38AE06EE7D50 /* GlaucomaSegmentation.mlpackage */; };
 		39597D0C2EE4DA7F49089FD8 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6717170381F38A66B50836C0 /* AVFoundation.framework */; };
+		421F09306A15F9AA61247D7B /* PatientDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6E42D16F3C163CF625D28E /* PatientDetailView.swift */; };
 		517A97BC621561BE768AB3A4 /* ImageInferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 139CBBF61E2473F224BB8351 /* ImageInferenceService.swift */; };
+		609FA2A9FB041671B35DCA81 /* AddPatientViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4366F2C0E7B7232CA684A79 /* AddPatientViewModel.swift */; };
+		6202EFDD1A159A45465EFEE0 /* ScreeningSessionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = CACAFB2A01279F89CA3926D4 /* ScreeningSessionStore.swift */; };
 		65661AD431B4ED20AC75279A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC7A1154B64C5C75BA5AD3D0 /* Assets.xcassets */; };
-		74F77F5B9BFAC8205D00047A /* ScannerCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC02D5D5F5CA7BC200B0324B /* ScannerCorners.swift */; };
+		76EBD58917C1C2555C3D2BCE /* PatientStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BA8D2F8BAF72257C8EB608 /* PatientStore.swift */; };
+		7E8C7E60EC100E58ACDFF535 /* PatientDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0C12EC5EFE3439826141DF /* PatientDetailViewModel.swift */; };
+		817AE54B0E7D8B305D63C837 /* PatientListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A2D1ED4BA1F20F5A1119EB /* PatientListViewModel.swift */; };
 		875373E1A57512D067DB29C0 /* SegmentationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7311A7BD0EFCA6B3291212C1 /* SegmentationOverlay.swift */; };
 		8868294CB76A2856D7444A2D /* ImageReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA184E192C9431DA4ADB22ED /* ImageReviewView.swift */; };
+		9165A8B9A89B2DA7F40FE65F /* ViewModelPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708B191A9A7A96ECF12B920D /* ViewModelPlaceholder.swift */; };
 		A06004C2C16CFDB1AC498BE9 /* ModelPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC676AE33BEF441442BEBDA /* ModelPlaceholder.swift */; };
+		A33BCE7C6E182A69426DE893 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1C7EB92A4283D19C52377A /* HomeView.swift */; };
 		A37EA349D63404F578976176 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A26143884B6F7F9F36CB67A1 /* ContentView.swift */; };
+		BEA843F7A5866B782988CAB9 /* Patient.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFB9AE43DD08F1BBE2640634 /* Patient.swift */; };
 		CC9BEC1067145627E4DAD5B7 /* POCApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 123B63EB1560F6F48DF1C7C9 /* POCApp.swift */; };
+		DCA7909683E633FBAE298727 /* ScannerCorners.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB795F9713C2361DC6247DD4 /* ScannerCorners.swift */; };
+		E4280A3A660F9D5552EEBEAC /* AddPatientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96B7F9D966BE5400A4284429 /* AddPatientView.swift */; };
 		EADDF54F866636C33099AAD3 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = E14D5879E3A8E5A8D2D2321B /* CameraService.swift */; };
 		F608051076216842EA4FAD07 /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0F48E788B7D74C2B4285C74 /* PhotosUI.framework */; };
 		F6A33CE28CA4D4036CD1B873 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D30892D279ECEA29BC64492 /* Photos.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		05BA8D2F8BAF72257C8EB608 /* PatientStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientStore.swift; sourceTree = "<group>"; };
+		0AA16E41AFE09FBFD0431A06 /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
 		123B63EB1560F6F48DF1C7C9 /* POCApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POCApp.swift; sourceTree = "<group>"; };
 		139CBBF61E2473F224BB8351 /* ImageInferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageInferenceService.swift; sourceTree = "<group>"; };
-		31B7E1DDFE865DC4BC46C654 /* POC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = POC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		31B7E1DDFE865DC4BC46C654 /* POC.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = POC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D30892D279ECEA29BC64492 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
-		5BFB47739A8A38AE06EE7D50 /* GlaucomaSegmentation.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = GlaucomaSegmentation.mlpackage; sourceTree = "<group>"; };
+		5BFB47739A8A38AE06EE7D50 /* GlaucomaSegmentation.mlpackage */ = {isa = PBXFileReference; path = GlaucomaSegmentation.mlpackage; sourceTree = "<group>"; };
 		5FC676AE33BEF441442BEBDA /* ModelPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPlaceholder.swift; sourceTree = "<group>"; };
 		6717170381F38A66B50836C0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		708B191A9A7A96ECF12B920D /* ViewModelPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelPlaceholder.swift; sourceTree = "<group>"; };
 		7311A7BD0EFCA6B3291212C1 /* SegmentationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationOverlay.swift; sourceTree = "<group>"; };
+		96B7F9D966BE5400A4284429 /* AddPatientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPatientView.swift; sourceTree = "<group>"; };
 		A0F48E788B7D74C2B4285C74 /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
 		A26143884B6F7F9F36CB67A1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		AC4581AFF4DBDD92C1B096BF /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		AA6E42D16F3C163CF625D28E /* PatientDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDetailView.swift; sourceTree = "<group>"; };
+		B4366F2C0E7B7232CA684A79 /* AddPatientViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPatientViewModel.swift; sourceTree = "<group>"; };
+		CACAFB2A01279F89CA3926D4 /* ScreeningSessionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningSessionStore.swift; sourceTree = "<group>"; };
+		D5BFDABC2649E07F5AA069A3 /* PatientCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientCard.swift; sourceTree = "<group>"; };
 		DA184E192C9431DA4ADB22ED /* ImageReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageReviewView.swift; sourceTree = "<group>"; };
+		DFB9AE43DD08F1BBE2640634 /* Patient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Patient.swift; sourceTree = "<group>"; };
 		E14D5879E3A8E5A8D2D2321B /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 		E561F2A24BDC25CB17470F3E /* ResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultView.swift; sourceTree = "<group>"; };
+		E8A2D1ED4BA1F20F5A1119EB /* PatientListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientListViewModel.swift; sourceTree = "<group>"; };
+		EB795F9713C2361DC6247DD4 /* ScannerCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerCorners.swift; sourceTree = "<group>"; };
 		FB46093372FE1EA813E899B8 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
-		FC02D5D5F5CA7BC200B0324B /* ScannerCorners.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerCorners.swift; sourceTree = "<group>"; };
+		FC0C12EC5EFE3439826141DF /* PatientDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDetailViewModel.swift; sourceTree = "<group>"; };
+		FC1C7EB92A4283D19C52377A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		FC7A1154B64C5C75BA5AD3D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -60,6 +82,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		066C77EB91D59FB4826A7384 /* AddPatient */ = {
+			isa = PBXGroup;
+			children = (
+				54BF78CEA7616DA80A0B9299 /* View */,
+				30C6B1BE81E97F0AFEE18382 /* ViewModel */,
+			);
+			path = AddPatient;
+			sourceTree = "<group>";
+		};
 		08FFD2BBFCA45CFE60B5C79D /* Result */ = {
 			isa = PBXGroup;
 			children = (
@@ -77,18 +108,61 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		171448257083AB19B3F3A05B /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				708B191A9A7A96ECF12B920D /* ViewModelPlaceholder.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
 		1AA1F7A0F5EEE2D91923E84F /* PhotoReview */ = {
 			isa = PBXGroup;
 			children = (
 				8EC4FE2ED3622F0652D5F6C4 /* View */,
+				171448257083AB19B3F3A05B /* ViewModels */,
 			);
 			path = PhotoReview;
+			sourceTree = "<group>";
+		};
+		1EB0323F3D13A5FB731D2A78 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				FC1C7EB92A4283D19C52377A /* HomeView.swift */,
+				5318EF3CFBB93244116F0D32 /* Components */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		30C6B1BE81E97F0AFEE18382 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B4366F2C0E7B7232CA684A79 /* AddPatientViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		5318EF3CFBB93244116F0D32 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				D5BFDABC2649E07F5AA069A3 /* PatientCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		54BF78CEA7616DA80A0B9299 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				96B7F9D966BE5400A4284429 /* AddPatientView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		54E3D113E044A64B38C32C74 /* Models */ = {
 			isa = PBXGroup;
 			children = (
 				5FC676AE33BEF441442BEBDA /* ModelPlaceholder.swift */,
+				DFB9AE43DD08F1BBE2640634 /* Patient.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -98,16 +172,35 @@
 			children = (
 				E14D5879E3A8E5A8D2D2321B /* CameraService.swift */,
 				139CBBF61E2473F224BB8351 /* ImageInferenceService.swift */,
+				05BA8D2F8BAF72257C8EB608 /* PatientStore.swift */,
+				CACAFB2A01279F89CA3926D4 /* ScreeningSessionStore.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
 		};
-		65FE627270556ADE9EBBD54D /* Camera */ = {
+		6F201B6205ABD425B3CBDAC7 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				FF71EA51467DD70E23EFD176 /* View */,
+				AA6E42D16F3C163CF625D28E /* PatientDetailView.swift */,
 			);
-			path = Camera;
+			path = View;
+			sourceTree = "<group>";
+		};
+		731469615F13780DF0C1D02D /* Scan */ = {
+			isa = PBXGroup;
+			children = (
+				794639E0D583FA35F22461AB /* View */,
+			);
+			path = Scan;
+			sourceTree = "<group>";
+		};
+		794639E0D583FA35F22461AB /* View */ = {
+			isa = PBXGroup;
+			children = (
+				EB795F9713C2361DC6247DD4 /* ScannerCorners.swift */,
+				0AA16E41AFE09FBFD0431A06 /* ScanView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 		7EF850CAF061D286AA9CE80D /* Frameworks */ = {
@@ -119,6 +212,14 @@
 				FB46093372FE1EA813E899B8 /* Vision.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		889BD5E8F42350A35AE5B69E /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FC0C12EC5EFE3439826141DF /* PatientDetailViewModel.swift */,
+			);
+			path = ViewModel;
 			sourceTree = "<group>";
 		};
 		8EC4FE2ED3622F0652D5F6C4 /* View */ = {
@@ -156,9 +257,12 @@
 		C0CAC862421C716533417B37 /* Features */ = {
 			isa = PBXGroup;
 			children = (
-				65FE627270556ADE9EBBD54D /* Camera */,
+				066C77EB91D59FB4826A7384 /* AddPatient */,
+				EB9843A0782F1A58D06ACE71 /* Home */,
+				D0B59A5BC0E058E433BCC6CC /* PatientDetail */,
 				1AA1F7A0F5EEE2D91923E84F /* PhotoReview */,
 				08FFD2BBFCA45CFE60B5C79D /* Result */,
+				731469615F13780DF0C1D02D /* Scan */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -185,6 +289,15 @@
 			);
 			sourceTree = "<group>";
 		};
+		D0B59A5BC0E058E433BCC6CC /* PatientDetail */ = {
+			isa = PBXGroup;
+			children = (
+				6F201B6205ABD425B3CBDAC7 /* View */,
+				889BD5E8F42350A35AE5B69E /* ViewModel */,
+			);
+			path = PatientDetail;
+			sourceTree = "<group>";
+		};
 		D3EF30CF4A04EAD3FB80555E /* View */ = {
 			isa = PBXGroup;
 			children = (
@@ -194,21 +307,29 @@
 			path = View;
 			sourceTree = "<group>";
 		};
+		E22DDF760C3B87F0FACF4F00 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				E8A2D1ED4BA1F20F5A1119EB /* PatientListViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		EB9843A0782F1A58D06ACE71 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				1EB0323F3D13A5FB731D2A78 /* View */,
+				E22DDF760C3B87F0FACF4F00 /* ViewModel */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
 		FEF2562279E96F38E1F3DD3D /* Assets */ = {
 			isa = PBXGroup;
 			children = (
 				FC7A1154B64C5C75BA5AD3D0 /* Assets.xcassets */,
 			);
 			path = Assets;
-			sourceTree = "<group>";
-		};
-		FF71EA51467DD70E23EFD176 /* View */ = {
-			isa = PBXGroup;
-			children = (
-				FC02D5D5F5CA7BC200B0324B /* ScannerCorners.swift */,
-				AC4581AFF4DBDD92C1B096BF /* ScanView.swift */,
-			);
-			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -241,6 +362,8 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+				};
 			};
 			buildConfigurationList = 2CD8FCDD5E48F8E350372D3E /* Build configuration list for PBXProject "POC" */;
 			developmentRegion = en;
@@ -277,17 +400,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E4280A3A660F9D5552EEBEAC /* AddPatientView.swift in Sources */,
+				609FA2A9FB041671B35DCA81 /* AddPatientViewModel.swift in Sources */,
 				EADDF54F866636C33099AAD3 /* CameraService.swift in Sources */,
 				A37EA349D63404F578976176 /* ContentView.swift in Sources */,
 				27DF7767D414820797761072 /* GlaucomaSegmentation.mlpackage in Sources */,
+				A33BCE7C6E182A69426DE893 /* HomeView.swift in Sources */,
 				517A97BC621561BE768AB3A4 /* ImageInferenceService.swift in Sources */,
 				8868294CB76A2856D7444A2D /* ImageReviewView.swift in Sources */,
 				A06004C2C16CFDB1AC498BE9 /* ModelPlaceholder.swift in Sources */,
 				CC9BEC1067145627E4DAD5B7 /* POCApp.swift in Sources */,
+				BEA843F7A5866B782988CAB9 /* Patient.swift in Sources */,
+				00407F43D6F9D57910689373 /* PatientCard.swift in Sources */,
+				421F09306A15F9AA61247D7B /* PatientDetailView.swift in Sources */,
+				7E8C7E60EC100E58ACDFF535 /* PatientDetailViewModel.swift in Sources */,
+				817AE54B0E7D8B305D63C837 /* PatientListViewModel.swift in Sources */,
+				76EBD58917C1C2555C3D2BCE /* PatientStore.swift in Sources */,
 				0BB0C499738095AADBFBA766 /* ResultView.swift in Sources */,
-				0C04793BF9676D3FC94CC4D8 /* ScanView.swift in Sources */,
-				74F77F5B9BFAC8205D00047A /* ScannerCorners.swift in Sources */,
+				19BC4EFCE02DDB8AF737E570 /* ScanView.swift in Sources */,
+				DCA7909683E633FBAE298727 /* ScannerCorners.swift in Sources */,
+				6202EFDD1A159A45465EFEE0 /* ScreeningSessionStore.swift in Sources */,
 				875373E1A57512D067DB29C0 /* SegmentationOverlay.swift in Sources */,
+				9165A8B9A89B2DA7F40FE65F /* ViewModelPlaceholder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -299,7 +433,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3R47563279;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = POC;
 				INFOPLIST_KEY_CFBundleShortVersionString = 1.0;
@@ -325,7 +458,6 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				DEVELOPMENT_TEAM = 3R47563279;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = POC;
 				INFOPLIST_KEY_CFBundleShortVersionString = 1.0;

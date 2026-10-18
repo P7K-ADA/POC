@@ -10,24 +10,54 @@ import PhotosUI
 import UIKit
 
 struct ScanView: View {
+    // MARK: - Patient Context
+
+    let patientID: UUID
+    let onSaveSession: (ScreeningSession) -> Void
+
+    init(
+        patientID: UUID,
+        onSaveSession: @escaping (ScreeningSession) -> Void
+    ) {
+        self.patientID = patientID
+        self.onSaveSession = onSaveSession
+    }
+
+    // MARK: - Camera
+
     @StateObject private var camera = CameraService()
+
+    // MARK: - Image State
 
     @State private var selectedImage: UIImage?
     @State private var selectedItem: PhotosPickerItem?
+
+    // MARK: - Screen State
 
     @State private var isReviewing = false
     @State private var isAnalyzing = false
     @State private var showResult = false
 
+    // MARK: - Analysis State
+
     @State private var inferenceResult: SegmentationResult?
     @State private var errorMessage: String?
 
+    // MARK: - Colors
+
     private let ink = Color(
-        red: 0.055, green: 0.085, blue: 0.105
+        red: 0.055,
+        green: 0.085,
+        blue: 0.105
     )
+
     private let mint = Color(
-        red: 0.66, green: 0.91, blue: 0.83
+        red: 0.66,
+        green: 0.91,
+        blue: 0.83
     )
+
+    // MARK: - Body
 
     var body: some View {
         NavigationStack {
@@ -40,19 +70,22 @@ struct ScanView: View {
                         selectedItem: $selectedItem,
                         onUseImage: { editedImage in
                             selectedImage = editedImage
+                            inferenceResult = nil
                             isReviewing = true
                         },
                         onRetake: {
-                            selectedImage = nil
-                            selectedItem = nil
-                            isReviewing = false
+                            resetScan()
                             camera.start()
                         },
                         onChooseAnother: {
                             selectedItem = nil
                         },
                         onAnalyze: {
-                            analyze(image: selectedImage ?? image)
+                            guard let currentImage = selectedImage else {
+                                return
+                            }
+
+                            analyze(image: currentImage)
                         },
                         isAnalyzing: isAnalyzing,
                         mint: mint
@@ -62,12 +95,22 @@ struct ScanView: View {
                 }
             }
             .toolbar(.hidden, for: .navigationBar)
+
+            // MARK: - Result Navigation
+
             .navigationDestination(isPresented: $showResult) {
                 if let image = selectedImage,
                    let result = inferenceResult {
-                    ResultView(image: image, result: result)
+                    ResultView(
+                        image: image,
+                        result: result,
+                        onSave: saveCurrentSession
+                    )
                 }
             }
+
+            // MARK: - Camera Lifecycle
+
             .task {
                 if !isReviewing {
                     camera.start()
@@ -76,13 +119,21 @@ struct ScanView: View {
             .onDisappear {
                 camera.stop()
             }
+
+            // MARK: - Captured Image
+
             .onChange(of: camera.capturedImage) { _, image in
                 guard let image else { return }
 
                 selectedImage = image
+                selectedItem = nil
+                inferenceResult = nil
                 isReviewing = true
                 camera.stop()
             }
+
+            // MARK: - Gallery Selection
+
             .onChange(of: selectedItem) { _, item in
                 guard let item else { return }
 
@@ -90,11 +141,18 @@ struct ScanView: View {
                     await loadGalleryImage(item)
                 }
             }
+
+            // MARK: - Error Alert
+
             .alert(
                 "Unable to continue",
                 isPresented: Binding(
                     get: { errorMessage != nil },
-                    set: { if !$0 { errorMessage = nil } }
+                    set: {
+                        if !$0 {
+                            errorMessage = nil
+                        }
+                    }
                 )
             ) {
                 Button("OK", role: .cancel) {
@@ -106,6 +164,8 @@ struct ScanView: View {
         }
         .preferredColorScheme(.dark)
     }
+
+    // MARK: - Camera Screen
 
     private var cameraScreen: some View {
         VStack(spacing: 22) {
@@ -121,7 +181,9 @@ struct ScanView: View {
                     .fill(Color.black)
 
                 CameraPreview(session: camera.session)
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .clipShape(
+                        RoundedRectangle(cornerRadius: 24)
+                    )
 
                 ScannerCorners()
                     .stroke(mint, lineWidth: 3)
@@ -129,6 +191,7 @@ struct ScanView: View {
 
                 VStack {
                     Spacer()
+
                     Text("CENTER THE OPTIC DISC")
                         .font(.caption2.weight(.bold))
                         .tracking(1.4)
@@ -141,7 +204,9 @@ struct ScanView: View {
                 }
             }
             .aspectRatio(3 / 4, contentMode: .fit)
-            .clipShape(RoundedRectangle(cornerRadius: 24))
+            .clipShape(
+                RoundedRectangle(cornerRadius: 24)
+            )
 
             if !camera.status.isEmpty {
                 Text(camera.status)
@@ -166,6 +231,7 @@ struct ScanView: View {
                     VStack(spacing: 6) {
                         Image(systemName: "photo.on.rectangle")
                             .font(.title2)
+
                         Text("Gallery")
                             .font(.caption)
                     }
@@ -198,6 +264,8 @@ struct ScanView: View {
         .padding(20)
     }
 
+    // MARK: - Header
+
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 5) {
@@ -218,22 +286,46 @@ struct ScanView: View {
         }
     }
 
+    // MARK: - Reset Scan
+
+    private func resetScan() {
+        selectedImage = nil
+        selectedItem = nil
+        inferenceResult = nil
+        isReviewing = false
+        showResult = false
+    }
+
+    // MARK: - Load Gallery Image
+
     @MainActor
-    private func loadGalleryImage(_ item: PhotosPickerItem) async {
+    private func loadGalleryImage(
+        _ item: PhotosPickerItem
+    ) async {
         do {
-            guard let data = try await item.loadTransferable(type: Data.self),
-                  let image = UIImage(data: data) else {
-                errorMessage = "Couldn't load that image. Please choose another."
+            guard
+                let data = try await item.loadTransferable(
+                    type: Data.self
+                ),
+                let image = UIImage(data: data)
+            else {
+                errorMessage =
+                    "Couldn't load that image. Please choose another."
                 return
             }
 
             camera.stop()
             selectedImage = image
+            inferenceResult = nil
             isReviewing = true
         } catch {
-            errorMessage = "Couldn't load the selected image: \(error.localizedDescription)"
+            errorMessage =
+                "Couldn't load the selected image: " +
+                error.localizedDescription
         }
     }
+
+    // MARK: - Analyze Image
 
     private func analyze(image: UIImage) {
         guard !isAnalyzing else { return }
@@ -243,8 +335,12 @@ struct ScanView: View {
 
         Task {
             do {
-                let result = try await Task.detached(priority: .userInitiated) {
-                    try ImageInferenceService().predict(image: image)
+                let result = try await Task.detached(
+                    priority: .userInitiated
+                ) {
+                    try ImageInferenceService().predict(
+                        image: image
+                    )
                 }.value
 
                 await MainActor.run {
@@ -255,9 +351,55 @@ struct ScanView: View {
             } catch {
                 await MainActor.run {
                     isAnalyzing = false
-                    errorMessage = "Analysis failed: \(error.localizedDescription)"
+                    errorMessage =
+                        "Analysis failed: " +
+                        error.localizedDescription
                 }
             }
         }
+    }
+
+    // MARK: - Save Screening Session
+
+    private func saveCurrentSession() {
+        guard
+            let image = selectedImage,
+            let result = inferenceResult
+        else {
+            errorMessage =
+                "There is no completed analysis to save."
+            return
+        }
+
+        let sessionID = UUID()
+
+        // Current POC: actual scan is assigned to the left eye.
+        let leftEye = EyeExaminationRecord(
+            sessionID: sessionID,
+            eyeSide: .left,
+            image: image,
+            segmentationResult: result
+        )
+
+        // Temporary placeholder until right-eye scanning is implemented.
+        let rightEye = EyeExaminationRecord(
+            sessionID: sessionID,
+            eyeSide: .right,
+            image: nil,
+            segmentationResult: nil,
+            isDummy: true
+        )
+
+        let session = ScreeningSession(
+            id: sessionID,
+            patientID: patientID,
+            examDate: .now,
+            status: .completed,
+            leftEye: leftEye,
+            rightEye: rightEye
+        )
+
+        // Patient Detail handles persistence and dismisses the scanner.
+        onSaveSession(session)
     }
 }
