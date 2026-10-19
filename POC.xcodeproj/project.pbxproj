@@ -20,6 +20,8 @@
 		65661AD431B4ED20AC75279A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FC7A1154B64C5C75BA5AD3D0 /* Assets.xcassets */; };
 		76EBD58917C1C2555C3D2BCE /* PatientStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05BA8D2F8BAF72257C8EB608 /* PatientStore.swift */; };
 		7E8C7E60EC100E58ACDFF535 /* PatientDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0C12EC5EFE3439826141DF /* PatientDetailViewModel.swift */; };
+		8056D3D8308687AD00DEFB91 /* CDRAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8056D3D73086877700DEFB91 /* CDRAssessment.swift */; };
+		8056D3DA3086881D00DEFB91 /* ReportExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8056D3D93086881600DEFB91 /* ReportExportService.swift */; };
 		817AE54B0E7D8B305D63C837 /* PatientListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E8A2D1ED4BA1F20F5A1119EB /* PatientListViewModel.swift */; };
 		875373E1A57512D067DB29C0 /* SegmentationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7311A7BD0EFCA6B3291212C1 /* SegmentationOverlay.swift */; };
 		8868294CB76A2856D7444A2D /* ImageReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA184E192C9431DA4ADB22ED /* ImageReviewView.swift */; };
@@ -43,11 +45,13 @@
 		139CBBF61E2473F224BB8351 /* ImageInferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageInferenceService.swift; sourceTree = "<group>"; };
 		31B7E1DDFE865DC4BC46C654 /* POC.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = POC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D30892D279ECEA29BC64492 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
-		5BFB47739A8A38AE06EE7D50 /* GlaucomaSegmentation.mlpackage */ = {isa = PBXFileReference; path = GlaucomaSegmentation.mlpackage; sourceTree = "<group>"; };
+		5BFB47739A8A38AE06EE7D50 /* GlaucomaSegmentation.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = GlaucomaSegmentation.mlpackage; sourceTree = "<group>"; };
 		5FC676AE33BEF441442BEBDA /* ModelPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPlaceholder.swift; sourceTree = "<group>"; };
 		6717170381F38A66B50836C0 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		708B191A9A7A96ECF12B920D /* ViewModelPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelPlaceholder.swift; sourceTree = "<group>"; };
 		7311A7BD0EFCA6B3291212C1 /* SegmentationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationOverlay.swift; sourceTree = "<group>"; };
+		8056D3D73086877700DEFB91 /* CDRAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDRAssessment.swift; sourceTree = "<group>"; };
+		8056D3D93086881600DEFB91 /* ReportExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportExportService.swift; sourceTree = "<group>"; };
 		96B7F9D966BE5400A4284429 /* AddPatientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddPatientView.swift; sourceTree = "<group>"; };
 		A0F48E788B7D74C2B4285C74 /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
 		A26143884B6F7F9F36CB67A1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -66,6 +70,14 @@
 		FC1C7EB92A4283D19C52377A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		FC7A1154B64C5C75BA5AD3D0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		8056D3DB3086885000DEFB91 /* Report */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Report;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		6DF35C50B2E36DB80A8A8467 /* Frameworks */ = {
@@ -161,6 +173,7 @@
 		54E3D113E044A64B38C32C74 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				8056D3D73086877700DEFB91 /* CDRAssessment.swift */,
 				5FC676AE33BEF441442BEBDA /* ModelPlaceholder.swift */,
 				DFB9AE43DD08F1BBE2640634 /* Patient.swift */,
 			);
@@ -170,6 +183,7 @@
 		54F3B75B44691392A30A1F47 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				8056D3D93086881600DEFB91 /* ReportExportService.swift */,
 				E14D5879E3A8E5A8D2D2321B /* CameraService.swift */,
 				139CBBF61E2473F224BB8351 /* ImageInferenceService.swift */,
 				05BA8D2F8BAF72257C8EB608 /* PatientStore.swift */,
@@ -257,6 +271,7 @@
 		C0CAC862421C716533417B37 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				8056D3DB3086885000DEFB91 /* Report */,
 				066C77EB91D59FB4826A7384 /* AddPatient */,
 				EB9843A0782F1A58D06ACE71 /* Home */,
 				D0B59A5BC0E058E433BCC6CC /* PatientDetail */,
@@ -347,6 +362,9 @@
 			);
 			dependencies = (
 			);
+			fileSystemSynchronizedGroups = (
+				8056D3DB3086885000DEFB91 /* Report */,
+			);
 			name = POC;
 			packageProductDependencies = (
 			);
@@ -362,8 +380,6 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
-				TargetAttributes = {
-				};
 			};
 			buildConfigurationList = 2CD8FCDD5E48F8E350372D3E /* Build configuration list for PBXProject "POC" */;
 			developmentRegion = en;
@@ -411,7 +427,9 @@
 				A06004C2C16CFDB1AC498BE9 /* ModelPlaceholder.swift in Sources */,
 				CC9BEC1067145627E4DAD5B7 /* POCApp.swift in Sources */,
 				BEA843F7A5866B782988CAB9 /* Patient.swift in Sources */,
+				8056D3DA3086881D00DEFB91 /* ReportExportService.swift in Sources */,
 				00407F43D6F9D57910689373 /* PatientCard.swift in Sources */,
+				8056D3D8308687AD00DEFB91 /* CDRAssessment.swift in Sources */,
 				421F09306A15F9AA61247D7B /* PatientDetailView.swift in Sources */,
 				7E8C7E60EC100E58ACDFF535 /* PatientDetailViewModel.swift in Sources */,
 				817AE54B0E7D8B305D63C837 /* PatientListViewModel.swift in Sources */,
