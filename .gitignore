@@ -1,4 +1,6 @@
 # macOS
+
+# macOS
 .DS_Store
 
 # Xcode user-specific files
@@ -12,3 +14,6 @@ build/
 # Temporary files
 *.swp
 *~
+
+# XcodeGen
+POC.xcodeproj/project.pbxproj
