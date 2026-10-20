@@ -1,3 +1,9 @@
+//
+//  PatientSubmitButton.swift
+//  POC
+//
+//  Created by Carolyn Santana on 20/10/26.
+//
 
 import SwiftUI
 
@@ -11,10 +17,9 @@ struct PatientSubmitButton: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity)
                 .padding()
-                .background(.primary, in: Capsule())
+                .background(Color.gray, in: Capsule())
         }
         .padding()
-        .background(Color(uiColor: .systemGroupedBackground))
     }
 }
 

@@ -1,3 +1,11 @@
+//
+//  ExaminationSessionSection.swift
+//  POC
+//
+//  Created by Carolyn Santana on 20/10/26.
+//
+
+
 
 import SwiftUI
 

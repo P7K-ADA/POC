@@ -1,3 +1,11 @@
+//
+//  PatientRegistrationHeader.swift
+//  POC
+//
+//  Created by Carolyn Santana on 20/10/26.
+//
+
+
 
 import SwiftUI
 
@@ -7,13 +15,20 @@ struct PatientRegistrationHeader: View {
 
     var body: some View {
         HStack {
-            Button(action: onBack) {
-                Image(systemName: "chevron.left")
-                    .font(.title3.weight(.medium))
-                    .frame(width: 44, height: 44)
-                    .background(.background, in: Circle())
+            if #available(iOS 26.0, *) {
+                Button(action: onBack) {
+                    Image(systemName: "chevron.left")
+                        .font(.title3.weight(.medium))
+                        .frame(width: 44, height: 44)
+                        .background(.background, in: Circle())
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.primary)
+                .glassEffect(.regular, in: .circle)
+                .accessibilityLabel("Back")
+            } else {
+                // Fallback on earlier versions
             }
-            .accessibilityLabel("Back")
 
             Spacer()
 
@@ -24,13 +39,20 @@ struct PatientRegistrationHeader: View {
 
             Spacer()
 
-            Button(action: onFAQ) {
-                Image(systemName: "questionmark.circle")
-                    .font(.title2)
-                    .frame(width: 44, height: 44)
-                    .background(.background, in: Circle())
+            if #available(iOS 26.0, *) {
+                Button(action: onFAQ) {
+                    Image(systemName: "questionmark.circle")
+                        .font(.title2)
+                        .frame(width: 44, height: 44)
+                        .background(.background, in: Circle())
+                }
+                .buttonStyle(.plain)
+                .foregroundStyle(.primary)
+                .glassEffect(.regular, in: .circle)
+                .accessibilityLabel("FAQ")
+            } else {
+                // Fallback on earlier versions
             }
-            .accessibilityLabel("FAQ")
         }
         .foregroundStyle(.primary)
         .padding()

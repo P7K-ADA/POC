@@ -1,3 +1,10 @@
+//
+//  PatientSearchBar.swift
+//  POC
+//
+//  Created by Carolyn Santana on 20/10/26.
+//
+
 
 import SwiftUI
 
@@ -5,14 +12,12 @@ struct PatientSearchBar: View {
     @Binding var text: String
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .font(.system(size: 19, weight: .medium))
                 .foregroundStyle(.secondary)
 
             TextField("Search Patient", text: $text)
-                .font(.system(size: 17))
-                .textInputAutocapitalization(.words)
+                .textFieldStyle(.plain)
                 .autocorrectionDisabled()
 
             if !text.isEmpty {
@@ -25,10 +30,9 @@ struct PatientSearchBar: View {
                 .buttonStyle(.plain)
             }
         }
-        .padding(.horizontal, 18)
-        .frame(height: 74)
-        .background(Color(uiColor: .systemGray5))
-        .clipShape(Capsule())
+        .padding(.horizontal, 12)
+        .frame(height: 48)
+        .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
     }
 }
 

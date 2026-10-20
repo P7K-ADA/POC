@@ -13,7 +13,7 @@ struct ContentView: View {
         NavigationStack {
             HomeView()
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
     }
 }
 

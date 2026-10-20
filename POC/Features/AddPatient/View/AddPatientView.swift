@@ -5,12 +5,12 @@
 //  Created by Carolyn Santana on 18/10/26.
 //
 
-
 import SwiftUI
 
 struct AddPatientView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: AddPatientViewModel
+    @State private var showingFAQ = false
 
     init(store: PatientStore) {
         _viewModel = StateObject(
@@ -19,61 +19,74 @@ struct AddPatientView: View {
     }
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section("Patient Information") {
-                    TextField("Name", text: $viewModel.name)
-                        .textInputAutocapitalization(.words)
+        ZStack {
+            Color(uiColor: .systemGroupedBackground)
+                .ignoresSafeArea()
 
-                    TextField("Age", text: $viewModel.ageText)
-                        .keyboardType(.numberPad)
-
-                    Picker("Sex", selection: $viewModel.selectedSex) {
-                        Text("Not specified")
-                            .tag(nil as PatientSex?)
-
-                        ForEach(PatientSex.allCases) { sex in
-                            Text(sex.rawValue)
-                                .tag(sex as PatientSex?)
-                        }
-                    }
-                }
-            }
-            .navigationTitle("Add Patient")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        dismiss()
-                    }
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        viewModel.savePatient()
-                    }
-                    .fontWeight(.semibold)
-                }
-            }
-            .onChange(of: viewModel.didSave) { _, didSave in
-                if didSave {
-                    dismiss()
-                }
-            }
-            .alert(
-                "Check Patient Information",
-                isPresented: Binding(
-                    get: { viewModel.errorMessage != nil },
-                    set: { if !$0 { viewModel.errorMessage = nil } }
+            VStack(spacing: 0) {
+                PatientRegistrationHeader(
+                    onBack: { dismiss() },
+                    onFAQ: { showingFAQ = true }
                 )
-            ) {
-                Button("OK", role: .cancel) {
-                    viewModel.errorMessage = nil
+
+                Form {
+                    ExaminationSessionSection()
+
+                    PatientInformationSection(
+                        name: $viewModel.name,
+                        age: $viewModel.ageText,
+                        selectedSex: $viewModel.selectedSex
+                    )
                 }
-            } message: {
-                Text(viewModel.errorMessage ?? "Please check the fields.")
+                .formStyle(.grouped)
+                .scrollContentBackground(.hidden)
+            }
+            .padding(.horizontal, 5)
+        }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            PatientSubmitButton {
+                viewModel.savePatient()
+            }
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+        }
+        .toolbar(.hidden, for: .navigationBar)
+        .onChange(of: viewModel.didSave) { _, didSave in
+            if didSave {
+                dismiss()
             }
         }
+        .alert(
+            "Check Patient Information",
+            isPresented: errorAlertPresented
+        ) {
+            Button("OK", role: .cancel) {
+                viewModel.errorMessage = nil
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "Please check the fields.")
+        }
+        .alert("FAQ", isPresented: $showingFAQ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Patient registration help will be available here.")
+        }
         .preferredColorScheme(.light)
+    }
+
+    private var errorAlertPresented: Binding<Bool> {
+        Binding(
+            get: { viewModel.errorMessage != nil },
+            set: {
+                if !$0 {
+                    viewModel.errorMessage = nil
+                }
+            }
+        )
+    }
+}
+
+#Preview("Patient Registration") {
+    NavigationStack {
+        AddPatientView(store: PatientStore())
     }
 }

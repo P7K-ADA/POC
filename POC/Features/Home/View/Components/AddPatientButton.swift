@@ -1,24 +1,24 @@
+//
+//  AddPatientButton.swift
+//  POC
+//
+//  Created by Carolyn Santana on 20/10/26.
+//
 
 import SwiftUI
 
 struct AddPatientButton: View {
-    let action: () -> Void
-
     var body: some View {
-        Button(action: action) {
-            Image(systemName: "plus")
-                .font(.system(size: 22, weight: .medium))
-                .foregroundStyle(.primary)
-                .frame(width: 74, height: 74)
-                .background(Color(uiColor: .systemGray5))
-                .clipShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel("Add Patient")
+        Image(systemName: "plus")
+            .font(.title3.weight(.semibold))
+            .foregroundStyle(.primary)
+            .frame(width: 48, height: 48)
+            .background(.quaternary, in: Circle())
+            .accessibilityLabel("Add Patient")
     }
 }
 
 #Preview {
-    AddPatientButton {}
-        .padding()
+    AddPatientButton()
 }
+

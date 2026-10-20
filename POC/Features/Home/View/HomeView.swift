@@ -5,6 +5,8 @@
 //  Created by Carolyn Santana on 18/10/26.
 //
 
+
+
 import SwiftUI
 
 struct HomeView: View {
@@ -12,124 +14,95 @@ struct HomeView: View {
     @StateObject private var viewModel: PatientListViewModel
     @StateObject private var sessionStore: ScreeningSessionStore
 
-    @State private var showingAddPatient = false
-
     init() {
-        let patientStore = PatientStore()
-        let screeningSessionStore = ScreeningSessionStore()
+        let store = PatientStore()
 
-        _store = StateObject(
-            wrappedValue: patientStore
-        )
-
+        _store = StateObject(wrappedValue: store)
         _viewModel = StateObject(
-            wrappedValue: PatientListViewModel(
-                store: patientStore
-            )
+            wrappedValue: PatientListViewModel(store: store)
         )
-
         _sessionStore = StateObject(
-            wrappedValue: screeningSessionStore
+            wrappedValue: ScreeningSessionStore()
         )
     }
 
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 16) {
-                // MARK: - Header
-
-                HStack {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Patients")
-                            .font(.largeTitle.bold())
-
-                        Text("GlaucoScan patient records")
-                            .foregroundStyle(.secondary)
-                    }
-
-                    Spacer()
-                }
-
-                // MARK: - Patient List
-
-                if viewModel.patients.isEmpty {
-                    ContentUnavailableView(
-                        "No Patients",
-                        systemImage: "person.crop.rectangle.stack",
-                        description: Text(
-                            "Add a patient to get started."
-                        )
-                    )
-                    .frame(maxHeight: .infinity)
-
-                } else {
-                    List {
-                        ForEach(viewModel.patients) { patient in
-                            NavigationLink {
-                                PatientDetailView(
-                                    patient: patient,
-                                    sessionStore: sessionStore
-                                )
-                            } label: {
-                                PatientCard(
-                                    patient: patient
-                                )
-                            }
-                        }
-                        .onDelete(
-                            perform: viewModel.deletePatient
-                        )
-                    }
-                    .listStyle(.plain)
-                }
-
-                // MARK: - Add Patient Button
-
-                Button {
-                    showingAddPatient = true
-                } label: {
-                    Label(
-                        "Add Patient",
-                        systemImage: "plus"
-                    )
-                    .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.borderedProminent)
+        ZStack {
+            VStack(spacing: 0) {
+                header
+                patientContent
+                bottomBar
             }
-            .padding()
-            .navigationBarTitleDisplayMode(.inline)
-
-            // MARK: - Add Patient Sheet
-
-            .sheet(isPresented: $showingAddPatient) {
-                AddPatientView(store: store)
-            }
-
-            // MARK: - Error Alert
-
+            .padding(.horizontal, 5)
+            .toolbar(.hidden, for: .navigationBar)
             .alert(
-                "Unable to complete action",
+                "Unable to Complete Action",
                 isPresented: Binding(
-                    get: {
-                        viewModel.errorMessage != nil
-                    },
-                    set: {
-                        if !$0 {
-                            viewModel.errorMessage = nil
-                        }
-                    }
+                    get: { viewModel.errorMessage != nil },
+                    set: { if !$0 { viewModel.clearError() } }
                 )
             ) {
                 Button("OK", role: .cancel) {
-                    viewModel.errorMessage = nil
+                    viewModel.clearError()
                 }
             } message: {
-                Text(
-                    viewModel.errorMessage
-                    ?? "Please try again."
-                )
+                Text(viewModel.errorMessage ?? "")
             }
-        }
-        .preferredColorScheme(.light)
+        }.background(Color(uiColor: .systemGroupedBackground))
     }
+
+    private var header: some View {
+        Text("Patient")
+            .font(.largeTitle.bold())
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+    }
+
+    @ViewBuilder
+    private var patientContent: some View {
+        if viewModel.patients.isEmpty {
+            PatientEmptyStateView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if viewModel.filteredPatients.isEmpty {
+            ContentUnavailableView.search(
+                text: viewModel.searchText
+            )
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            List {
+                ForEach(viewModel.filteredPatients) { patient in
+                    NavigationLink {
+                        PatientDetailView(
+                            patient: patient,
+                            sessionStore: sessionStore
+                        )
+                    } label: {
+                        PatientCard(patient: patient)
+                    }
+                }
+                .onDelete(perform: viewModel.deletePatients)
+            }
+            .listStyle(.insetGrouped)
+            .scrollContentBackground(.hidden)
+            .contentMargins(.vertical, 0)
+        }
+    }
+
+    private var bottomBar: some View {
+        HStack(spacing: 12) {
+            PatientSearchBar(text: $viewModel.searchText)
+
+            NavigationLink {
+                AddPatientView(store: store)
+            } label: {
+                AddPatientButton()
+            }
+            .buttonStyle(.plain)
+        }
+        .padding()
+    }
+}
+
+#Preview {
+    HomeView()
 }

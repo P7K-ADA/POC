@@ -1,35 +1,33 @@
+//
+//  PatientEmptyStateView.swift
+//  POC
+//
+//  Created by Carolyn Santana on 20/10/26.
+//
+
 
 import SwiftUI
 
 struct PatientEmptyStateView: View {
     var body: some View {
-        VStack(spacing: 18) {
+        VStack(spacing: 16) {
             Image(systemName: "person")
-                .font(.system(size: 34, weight: .regular))
-                .foregroundStyle(.primary)
-                .frame(width: 92, height: 92)
-                .background(Color(uiColor: .systemGray5))
-                .clipShape(Circle())
+                .font(.system(size: 32))
+                .frame(width: 80, height: 80)
+                .background(.quaternary, in: Circle())
 
             Text("No patients yet")
-                .font(.system(size: 25, weight: .bold))
-                .foregroundStyle(.primary)
+                .font(.title2.bold())
 
-            Text(
-                "Add your first patient to start managing\n" +
-                "their records and appointments."
-            )
-            .font(.system(size: 16))
-            .foregroundStyle(.secondary)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
+            Text("Add your first patient to start managing their records.")
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
         }
-        .padding(.horizontal, 24)
+        .padding()
     }
 }
 
 #Preview {
     PatientEmptyStateView()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(uiColor: .systemGroupedBackground))
 }

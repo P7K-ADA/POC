@@ -12,28 +12,45 @@ import Combine
 @MainActor
 final class PatientListViewModel: ObservableObject {
     @Published private(set) var patients: [Patient] = []
+    @Published var searchText = ""
     @Published var errorMessage: String?
 
     private let store: PatientStore
+    private var cancellables = Set<AnyCancellable>()
 
     init(store: PatientStore) {
         self.store = store
-        self.patients = store.patients
-        // Keep the view model in sync with the store.
+        patients = store.patients
+
         store.$patients
             .receive(on: RunLoop.main)
-            .assign(to: &$patients)
+            .sink { [weak self] in self?.patients = $0 }
+            .store(in: &cancellables)
     }
 
-    func deletePatient(at offsets: IndexSet) {
+    var filteredPatients: [Patient] {
+        guard !searchText.isEmpty else { return patients }
+
+        return patients.filter {
+            $0.name.localizedCaseInsensitiveContains(
+                searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+            )
+        }
+    }
+
+    func deletePatients(at offsets: IndexSet) {
         for index in offsets {
-            guard patients.indices.contains(index) else { continue }
+            guard filteredPatients.indices.contains(index) else { continue }
 
             do {
-                try store.deletePatient(patients[index])
+                try store.deletePatient(filteredPatients[index])
             } catch {
                 errorMessage = error.localizedDescription
             }
         }
+    }
+
+    func clearError() {
+        errorMessage = nil
     }
 }
