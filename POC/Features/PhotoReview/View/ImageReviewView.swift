@@ -19,6 +19,8 @@ struct ImageReviewView: View {
     let onAnalyze: () -> Void
     let isAnalyzing: Bool
     let mint: Color
+    let eyeSide: EyeSide
+    let isLastEye: Bool
 
     @State private var zoom: CGFloat = 1
     @State private var lastZoom: CGFloat = 1
@@ -36,7 +38,7 @@ struct ImageReviewView: View {
 
                 Spacer()
 
-                Text(cropMode ? "Crop image" : "Review image")
+                Text(cropMode ? "Crop image" : "Review: \(eyeSide.rawValue)")
                     .font(.headline)
                     .foregroundStyle(.white)
 
@@ -172,11 +174,13 @@ struct ImageReviewView: View {
                         if isAnalyzing {
                             ProgressView()
                                 .tint(.black)
+                            Text("Analyzing...")
                         } else {
-                            Image(systemName: "waveform.path.ecg")
+                            Image(systemName: isLastEye ? "waveform.path.ecg" : "arrow.right.circle.fill")
+                            Text(isLastEye ? "Analyze Both Eyes" : "Next: \(eyeSide == .right ? "Left Eye (OS)" : "Right Eye (OD)")")
                         }
 
-                        Text(isAnalyzing ? "Analyzing…" : "Analyze")
+                        
                     }
                     .frame(maxWidth: .infinity)
                 }

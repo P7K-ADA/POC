@@ -17,8 +17,14 @@ final class CameraService: NSObject, ObservableObject,
     @Published var status = "Starting camera..."
     @Published var errorMessage: String?
     @Published var capturedImage: UIImage?
-
+    @Published var currentZoomFactor: CGFloat = 1.0
+    
+    let minZoom: CGFloat = 1.0
+    let maxZoom: CGFloat = 4.0
+    private var currentDevice: AVCaptureDevice?
+    
     private let photoOutput = AVCapturePhotoOutput()
+
     private let queue = DispatchQueue(label: "glaucoscan.camera")
     private var configured = false
     private var capturing = false
@@ -87,6 +93,7 @@ final class CameraService: NSObject, ObservableObject,
 
                 self.session.addInput(input)
                 self.session.addOutput(self.photoOutput)
+                self.currentDevice = device
                 self.session.commitConfiguration()
                 self.configured = true
             }
@@ -152,6 +159,43 @@ final class CameraService: NSObject, ObservableObject,
             DispatchQueue.main.async {
                 self.isReady = false
             }
+        }
+    }
+    
+    func setZoom(factor: CGFloat){
+        guard let device = currentDevice else {return}
+        let targetZoom = max(minZoom, min(factor, maxZoom))
+        
+        do {
+            try device.lockForConfiguration()
+            device.videoZoomFactor = targetZoom
+            device.unlockForConfiguration()
+            DispatchQueue.main.async{
+                self.currentZoomFactor = targetZoom
+            }
+        }
+        catch {
+                    print("Zoom configuration failed: \(error.localizedDescription)")
+                }
+    }
+    
+    func focus(at devicePoint: CGPoint) {
+        guard let device = currentDevice else {return}
+        do {
+            try device.lockForConfiguration()
+            
+            if device.isFocusPointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
+                device.focusPointOfInterest = devicePoint
+                device.focusMode = .autoFocus
+            }
+            if device.isExposurePointOfInterestSupported && device.isFocusModeSupported(.autoFocus) {
+                device.exposurePointOfInterest = devicePoint
+                device.focusMode = .autoFocus
+            }
+            device.unlockForConfiguration()
+        }
+        catch{
+            print("Focus configuration failed: \(error.localizedDescription)")
         }
     }
 }
