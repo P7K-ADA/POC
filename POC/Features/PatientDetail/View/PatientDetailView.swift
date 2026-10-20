@@ -5,12 +5,14 @@
 //  Created by Carolyn Santana on 18/10/26.
 //
 
-
 import SwiftUI
 
 struct PatientDetailView: View {
+    @Environment(\.dismiss) private var dismiss
+
     @StateObject private var viewModel: PatientDetailViewModel
     @State private var showingScan = false
+    @State private var showingFAQ = false
 
     init(
         patient: Patient,
@@ -25,166 +27,71 @@ struct PatientDetailView: View {
     }
 
     var body: some View {
-        List {
-            Section("Patient Information") {
-                detailRow("Name", value: viewModel.patient.name)
+        ZStack {
+            Color(uiColor: .systemGroupedBackground)
+                .ignoresSafeArea()
 
-                detailRow(
-                    "Age",
-                    value: viewModel.patient.age.map {
-                        "\($0)"
-                    } ?? "Not specified"
+            VStack(spacing: 0) {
+                PatientDetailHeader(
+                    onBack: { dismiss() },
+                    onFAQ: { showingFAQ = true }
                 )
 
-                detailRow(
-                    "Sex",
-                    value: viewModel.patient.sex?.rawValue
-                        ?? "Not specified"
-                )
-            }
-
-            Section("Screening Sessions") {
-                if viewModel.sessions.isEmpty {
-                    ContentUnavailableView(
-                        "No Screening Sessions",
-                        systemImage: "eye",
-                        description: Text(
-                            "Add a session to see its images and CDR."
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 20) {
+                        PatientSummaryCard(
+                            patient: viewModel.patient
                         )
-                    )
-                    .listRowSeparator(.hidden)
-                } else {
-                    ForEach(viewModel.sessions) { session in
-                        ScreeningSessionCard(session: session)
-                    }
-                }
 
-                Button {
-                    showingScan = true
-                } label: {
-                    Label("Add Session", systemImage: "plus")
+                        Text(
+                            "Previous Scans · \(viewModel.sessions.count)"
+                        )
+                        .font(.subheadline)
+                        .padding(.horizontal, 8)
+
+                        if viewModel.sessions.isEmpty {
+                            PatientDetailEmptyState()
+                                .frame(
+                                    maxWidth: .infinity,
+                                    minHeight: 300
+                                )
+                        } else {
+                            LazyVStack(spacing: 12) {
+                                ForEach(viewModel.sessions) { session in
+                                    ScreeningSessionCard(
+                                        session: session,
+                                        onPreview: {
+                                            // TODO: Implement preview action later
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                    .padding(.top, 8)
+                    .padding(.bottom, 16)
                 }
+                .scrollIndicators(.hidden)
             }
         }
-        .navigationTitle("Patient Details")
-        .navigationBarTitleDisplayMode(.inline)
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            StartScanningButton {
+                showingScan = true
+            }
+        }
+        .toolbar(.hidden, for: .navigationBar)
         .sheet(isPresented: $showingScan) {
             ScanView(patientID: viewModel.patient.id) { session in
                 viewModel.addSession(session)
-
-                // Close scanner and return to Patient Detail.
                 showingScan = false
             }
         }
+        .alert("FAQ", isPresented: $showingFAQ) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Patient detail help will be available here.")
+        }
         .preferredColorScheme(.light)
-    }
-
-    private func detailRow(
-        _ title: String,
-        value: String
-    ) -> some View {
-        HStack {
-            Text(title)
-            Spacer()
-            Text(value)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.trailing)
-        }
-    }
-}
-
-private struct ScreeningSessionCard: View {
-    let session: ScreeningSession
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text(
-                session.examDate.formatted(
-                    date: .abbreviated,
-                    time: .shortened
-                )
-            )
-            .font(.headline)
-
-            Text(session.status.rawValue)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            eyeSection(session.leftEye)
-
-            Divider()
-
-            eyeSection(session.rightEye)
-        }
-        .padding(.vertical, 8)
-    }
-
-    @ViewBuilder
-    private func eyeSection(
-        _ eye: EyeExaminationRecord
-    ) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text(eye.eyeSide.rawValue)
-                    .font(.subheadline.weight(.semibold))
-
-                Spacer()
-
-                if eye.isDummy {
-                    Text("Placeholder")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-            }
-
-            if let image = eye.image {
-                ZStack {
-                    Image(uiImage: image)
-                        .resizable()
-                        .scaledToFit()
-
-                    if let result = eye.segmentationResult,
-                       let overlay = SegmentationOverlay.makeImage(
-                           from: result
-                       ) {
-                        Image(uiImage: overlay)
-                            .resizable()
-                            .scaledToFit()
-                    }
-                }
-                .frame(maxHeight: 180)
-                .frame(maxWidth: .infinity)
-                .background(Color.black)
-                .clipShape(
-                    RoundedRectangle(cornerRadius: 8)
-                )
-            } else {
-                Label(
-                    "Image not captured yet",
-                    systemImage: "eye"
-                )
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical, 8)
-            }
-
-            HStack {
-                Text("Vertical CDR")
-                    .foregroundStyle(.secondary)
-
-                Spacer()
-
-                if let cdr = eye.verticalCDR {
-                    Text(String(format: "%.3f", cdr))
-                        .fontWeight(.semibold)
-                        .monospacedDigit()
-                } else {
-                    Text("—")
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .font(.subheadline)
-        }
     }
 }
