@@ -7,6 +7,7 @@
 
 
 import SwiftUI
+import UIKit
 
 enum ReportPalette {
     static let page = Color(red: 0.96, green: 0.96, blue: 0.97)
@@ -14,11 +15,11 @@ enum ReportPalette {
 }
 
 extension View {
-    func reportCard() -> some View {
+    func reportCard(background: Color = .white) -> some View {
         self
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.white)
+            .background(background)
             .clipShape(RoundedRectangle(cornerRadius: 14))
     }
 }
@@ -35,7 +36,7 @@ struct StatusPill: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
         .foregroundStyle(status.tint)
-        .background(status.tint.opacity(0.14))
+        .background(Color.clear)
         .clipShape(Capsule())
     }
 }
@@ -54,6 +55,53 @@ struct ReportHeaderView: View {
     }
 }
 
+struct SegmentationImageView: View {
+    let side: EyeSide
+    let image: UIImage?
+    let segmentationMask: [UInt8]?
+    let maskWidth: Int
+    let maskHeight: Int
+    var aspectRatio: CGFloat = 1.1
+
+    var body: some View {
+        Group {
+            if let image {
+                GeometryReader { geometry in
+                    ZStack {
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: geometry.size.width,
+                                   height: geometry.size.height)
+                            .clipped()
+
+                        if let segmentationMask,
+                           let overlay = SegmentationOverlay.makeImage(
+                            from: segmentationMask,
+                            width: maskWidth,
+                            height: maskHeight
+                           ) {
+                            Image(uiImage: overlay)
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: geometry.size.width,
+                                       height: geometry.size.height)
+                                .clipped()
+                        }
+                    }
+                }
+                .aspectRatio(aspectRatio, contentMode: .fit)
+                .clipped()
+                .allowsHitTesting(false)
+            } else {
+                EyeSchematicView(side: side, cdr: nil,
+                                 showsCaption: false, aspectRatio: aspectRatio)
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+    }
+}
+
 struct EyeSummaryCard: View {
     let eye: EyeReport
     var showsDetailsLink = true
@@ -63,7 +111,13 @@ struct EyeSummaryCard: View {
             Text(eye.side.rawValue)
                 .font(.subheadline.weight(.semibold))
 
-            EyeSchematicView(side: eye.side, cdr: eye.cdr, showsCaption: false)
+            SegmentationImageView(
+                side: eye.side,
+                image: eye.image,
+                segmentationMask: eye.segmentationMask,
+                maskWidth: eye.maskWidth,
+                maskHeight: eye.maskHeight
+            )
 
             HStack(alignment: .firstTextBaseline) {
                 Text("CDR")
@@ -86,40 +140,40 @@ struct EyeSummaryCard: View {
                 .foregroundStyle(ReportPalette.accent)
             }
         }
-        .reportCard()
+        .reportCard(background: eye.status.tint.opacity(0.14))
     }
 }
 
-struct SummaryOfFindingsCard: View {
-    let report: ReportData
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            Text("Summary of Findings")
-                .font(.subheadline.weight(.semibold))
-
-            ForEach([report.left, report.right]) { eye in
-                HStack {
-                    Text(eye.side.rawValue)
-                        .font(.footnote)
-                    Spacer()
-                    Text("CDR \(eye.cdrText)")
-                        .font(.footnote.monospacedDigit())
-                        .foregroundStyle(.secondary)
-                    StatusPill(status: eye.status)
-                }
-            }
-
-            Divider()
-
-            Text(report.summarySentence)
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-                .fixedSize(horizontal: false, vertical: true)
-        }
-        .reportCard()
-    }
-}
+//struct SummaryOfFindingsCard: View {
+//    let report: ReportData
+//
+//    var body: some View {
+//        VStack(alignment: .leading, spacing: 10) {
+//            Text("Summary of Findings")
+//                .font(.subheadline.weight(.semibold))
+//
+//            ForEach([report.left, report.right]) { eye in
+//                HStack {
+//                    Text(eye.side.rawValue)
+//                        .font(.footnote)
+//                    Spacer()
+//                    Text("CDR \(eye.cdrText)")
+//                        .font(.footnote.monospacedDigit())
+//                        .foregroundStyle(.secondary)
+//                    StatusPill(status: eye.status)
+//                }
+//            }
+//
+//            Divider()
+//
+//            Text(report.summarySentence)
+//                .font(.footnote)
+//                .foregroundStyle(.secondary)
+//                .fixedSize(horizontal: false, vertical: true)
+//        }
+//        .reportCard()
+//    }
+//}
 
 struct RecommendationCard: View {
     let title: String
@@ -147,7 +201,14 @@ struct EyeDetailContent: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            EyeSchematicView(side: eye.side, cdr: eye.cdr, aspectRatio: 2.0)
+            SegmentationImageView(
+                side: eye.side,
+                image: eye.image,
+                segmentationMask: eye.segmentationMask,
+                maskWidth: eye.maskWidth,
+                maskHeight: eye.maskHeight,
+                aspectRatio: 2.0
+            )
 
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: 2) {
@@ -165,7 +226,7 @@ struct EyeDetailContent: View {
                     StatusPill(status: eye.status)
                 }
             }
-            .reportCard()
+            .reportCard(background: eye.status.tint.opacity(0.14))
 
             RecommendationCard(
                 title: eye.status.nextStepTitle,

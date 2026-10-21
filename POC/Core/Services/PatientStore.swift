@@ -5,75 +5,95 @@
 //  Created by Carolyn Santana on 18/10/26.
 //
 
-
 import Foundation
+import SwiftData
 import Combine
 
 @MainActor
 final class PatientStore: ObservableObject {
-    @Published private(set) var patients: [Patient] = []
+    @Published private(set) var patients: [PatientEntity] = []
 
-    private let fileName = "patients.json"
+    private let modelContext: ModelContext
 
-    init() {
-        loadPatients()
+    init(modelContext: ModelContext) {
+        self.modelContext = modelContext
+        fetchPatients()
     }
 
-    func addPatient(name: String, age: Int?, sex: PatientSex?) throws {
-        let cleanedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+    func fetchPatients() {
+        let descriptor = FetchDescriptor<PatientEntity>(
+            sortBy: [
+                SortDescriptor(\.createdAt, order: .reverse)
+            ]
+        )
+
+        do {
+            patients = try modelContext.fetch(descriptor)
+        } catch {
+            print("Failed to fetch patients: \(error)")
+            patients = []
+        }
+    }
+
+    func addPatient(
+        name: String,
+        dateOfBirth: Date,
+        sex: PatientSex
+    ) throws {
+        let cleanedName = name.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+
         guard !cleanedName.isEmpty else {
             throw PatientStoreError.nameIsRequired
         }
 
-        patients.insert(
-            Patient(name: cleanedName, age: age, sex: sex),
-            at: 0
-        )
-        try savePatients()
-    }
+        guard Calendar.current.startOfDay(for: dateOfBirth)
+                <= Calendar.current.startOfDay(for: .now) else {
+            throw PatientStoreError.invalidDateOfBirth
+        }
 
-    func deletePatient(_ patient: Patient) throws {
-        let oldPatients = patients
-        patients.removeAll { $0.id == patient.id }
+        let patient = PatientEntity(
+            name: cleanedName,
+            dateOfBirth: dateOfBirth,
+            sex: sex.rawValue
+        )
+
+        modelContext.insert(patient)
 
         do {
-            try savePatients()
+            try modelContext.save()
+            fetchPatients()
         } catch {
-            patients = oldPatients
+            modelContext.delete(patient)
             throw error
         }
     }
 
-    private var storageURL: URL {
-        FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            .appendingPathComponent(fileName)
-    }
-
-    private func loadPatients() {
-        guard let data = try? Data(contentsOf: storageURL) else {
-            patients = []
-            return
-        }
+    func deletePatient(_ patient: PatientEntity) throws {
+        modelContext.delete(patient)
 
         do {
-            patients = try JSONDecoder().decode([Patient].self, from: data)
+            try modelContext.save()
+            fetchPatients()
         } catch {
-            patients = []
+            modelContext.rollback()
+            fetchPatients()
+            throw error
         }
-    }
-
-    private func savePatients() throws {
-        let encoder = JSONEncoder()
-        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
-        let data = try encoder.encode(patients)
-        try data.write(to: storageURL, options: [.atomic])
     }
 }
 
 enum PatientStoreError: LocalizedError {
     case nameIsRequired
+    case invalidDateOfBirth
 
     var errorDescription: String? {
-        "Please enter the patient's name."
+        switch self {
+        case .nameIsRequired:
+            return "Please enter the patient's full name."
+        case .invalidDateOfBirth:
+            return "Date of birth cannot be in the future."
+        }
     }
 }

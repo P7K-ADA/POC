@@ -10,17 +10,22 @@ import PhotosUI
 import UIKit
 
 struct ScanView: View {
+    @Environment(\.dismiss) private var dismiss
+
     // MARK: - Patient Context
 
-    let patientID: UUID
+    let patient: PatientEntity
     let onSaveSession: (ScreeningSession) -> Void
+    let onDone: () -> Void
 
     init(
-        patientID: UUID,
-        onSaveSession: @escaping (ScreeningSession) -> Void
+        patient: PatientEntity,
+        onSaveSession: @escaping (ScreeningSession) -> Void,
+        onDone: @escaping () -> Void = {}
     ) {
-        self.patientID = patientID
+        self.patient = patient
         self.onSaveSession = onSaveSession
+        self.onDone = onDone
     }
 
     // MARK: - Camera
@@ -43,7 +48,8 @@ struct ScanView: View {
     @State private var selectedItem: PhotosPickerItem?
     @State private var isReviewing = false
     @State private var isAnalyzing = false
-    @State private var showResult = false
+    @State private var completedSession: ScreeningSession?
+    @State private var showReport = false
     @State private var errorMessage: String?
     
     private var isLastEye: Bool {
@@ -58,17 +64,9 @@ struct ScanView: View {
 
     // MARK: - Colors
 
-    private let ink = Color(
-        red: 0.055,
-        green: 0.085,
-        blue: 0.105
-    )
+    private let ink = Color(uiColor: .systemGroupedBackground)
 
-    private let mint = Color(
-        red: 0.66,
-        green: 0.91,
-        blue: 0.83
-    )
+    private let mint = Color.white
 
     // MARK: - Body
 
@@ -108,16 +106,14 @@ struct ScanView: View {
             }
             .toolbar(.hidden, for: .navigationBar)
 
-            // MARK: - Result Navigation
+            // MARK: - Report Navigation
 
-            .navigationDestination(isPresented: $showResult) {
-                if let image = rightImage ?? leftImage ?? selectedImage,
-                   let result = rightResult ?? leftResult
-                    {
-                    ResultView(
-                        image: image,
-                        result: result,
-                        onSave: saveCurrentSession
+            .navigationDestination(isPresented: $showReport) {
+                if let completedSession {
+                    ReportOverviewView(
+                        patient: patient,
+                        session: completedSession,
+                        onDone: onDone
                     )
                 }
             }
@@ -174,15 +170,16 @@ struct ScanView: View {
                 Text(errorMessage ?? "Please try again.")
             }
         }
-        .preferredColorScheme(.dark)
+        .preferredColorScheme(.light)
     }
 
     // MARK: - Camera Screen
 
     private var cameraScreen: some View {
-        VStack(spacing: 22) {
+        VStack(spacing: 18) {
             header
             
+            /*
             EyeSelectorBar(
                 selectedEye: $selectedEye,
                 isRightCaptured: rightImage != nil,
@@ -190,11 +187,8 @@ struct ScanView: View {
                 mintColor: mint
             )
             .padding(.horizontal, 4)
-            
-            Text("Position \(selectedEye.rawValue.lowercased()) inside the frame")
-                .font(.subheadline)
-                .foregroundStyle(.white.opacity(0.7))
-                .multilineTextAlignment(.center)
+            */
+
             GeometryReader { geo in
             ZStack {
                 RoundedRectangle(cornerRadius: 24)
@@ -205,9 +199,12 @@ struct ScanView: View {
                         RoundedRectangle(cornerRadius: 24)
                     )
                 
-                ScannerCorners()
-                    .stroke(mint, lineWidth: 3)
-                    .padding(28)
+                Circle()
+                    .stroke(
+                        Color.black.opacity(0.85),
+                        style: StrokeStyle(lineWidth: 1, dash: [10, 10])
+                    )
+                    .frame(width: 240, height: 240)
                 
                 if let point = focusPoint {
                     FocusSquareView(color: mint)
@@ -218,14 +215,17 @@ struct ScanView: View {
                 VStack {
                     Spacer()
                     
-                    Text("CENTER THE OPTIC DISC")
-                        .font(.caption2.weight(.bold))
-                        .tracking(1.4)
-                        .foregroundStyle(.white)
+                    Text("ALIGN EYE TO TARGET")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
-                        .background(.black.opacity(0.55))
-                        .clipShape(Capsule())
+                        .background(.background)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.secondary.opacity(0.35), lineWidth: 1)
+                        }
                         .padding(.bottom, 20)
                 }
             }
@@ -250,7 +250,7 @@ struct ScanView: View {
                     }
             )
         }
-            .aspectRatio(3 / 4, contentMode: .fit)
+            .aspectRatio(6 / 7, contentMode: .fit)
             .clipShape(
                 RoundedRectangle(cornerRadius: 24)
             )
@@ -258,7 +258,7 @@ struct ScanView: View {
             if !camera.status.isEmpty {
                 Text(camera.status)
                     .font(.caption)
-                    .foregroundStyle(.white.opacity(0.65))
+                    .foregroundStyle(.secondary)
             }
 
             if let cameraError = camera.errorMessage,
@@ -269,10 +269,10 @@ struct ScanView: View {
                     .multilineTextAlignment(.center)
             }
 
-            HStack(spacing: 12){
+            HStack(spacing: 12) {
                 Text("1x")
                     .font(.caption.weight(.bold))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(.secondary)
                 
                 Slider(
                     value: Binding(
@@ -281,33 +281,18 @@ struct ScanView: View {
                     ),
                     in: 1...4
                 )
-                .tint(.mint)
+                .tint(.black)
                 
                 Text("4x")
                     .font(.caption.weight(.bold))
-                    .foregroundStyle(.white.opacity(0.7))
+                    .foregroundStyle(.secondary)
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 8)
             
             
-            HStack(spacing: 24) {
-                PhotosPicker(
-                    selection: $selectedItem,
-                    matching: .images,
-                    photoLibrary: .shared()
-                ) {
-                    VStack(spacing: 6) {
-                        Image(systemName: "photo.on.rectangle")
-                            .font(.title2)
-
-                        Text("Gallery")
-                            .font(.caption)
-                    }
-                    .foregroundStyle(mint)
-                    .frame(width: 76)
-                }
-
+            // Gallery and secondary actions are intentionally hidden for this camera pass.
+            HStack {
                 Button {
                     camera.capturePhoto()
                 } label: {
@@ -316,42 +301,46 @@ struct ScanView: View {
                         .frame(width: 76, height: 76)
                         .overlay {
                             Circle()
-                                .stroke(.white, lineWidth: 4)
+                                .stroke(.black, lineWidth: 4)
                                 .padding(6)
                         }
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Capture photo")
 
-                Spacer()
-                    .frame(width: 76)
             }
             .padding(.top, 4)
 
             Spacer(minLength: 8)
         }
-        .padding(20)
+        .padding(.horizontal, 18)
+        .padding(.top, 8)
+        .padding(.bottom, 16)
     }
 
     // MARK: - Header
 
     private var header: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 5) {
-                Text("GlaucoScan")
-                    .font(.title2.bold())
-                    .foregroundStyle(.white)
+        ZStack {
+            HStack {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(systemName: "chevron.left")
+                        .font(.title2.weight(.medium))
+                        .foregroundStyle(.primary)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Back")
 
-                Text("Optic disc screening prototype")
-                    .font(.caption)
-                    .foregroundStyle(.white.opacity(0.6))
+                Spacer()
+
+                // Help and other secondary functions are intentionally hidden for now.
             }
 
-            Spacer()
-
-            Image(systemName: "viewfinder")
-                .font(.title2)
-                .foregroundStyle(mint)
+            Text(selectedEye == .left ? "Left Eye" : "Right Eye")
+                .font(.title2.weight(.bold))
+                .foregroundStyle(.primary)
         }
     }
 
@@ -361,7 +350,8 @@ struct ScanView: View {
         selectedImage = nil
         selectedItem = nil
         isReviewing = false
-        showResult = false
+        showReport = false
+        completedSession = nil
     }
 
     // MARK: - Load Gallery Image
@@ -430,7 +420,7 @@ struct ScanView: View {
                     self.rightResult = rRes
                     self.leftResult = lRes
                     self.isAnalyzing = false
-                    self.showResult = true
+                    self.saveCurrentSession()
                 }
             } catch {
                 await MainActor.run {
@@ -469,14 +459,16 @@ struct ScanView: View {
 
         let session = ScreeningSession(
             id: sessionID,
-            patientID: patientID,
+            patientID: patient.id,
             examDate: .now,
             status: .completed,
             leftEye: leftEye,
             rightEye: rightEye
         )
 
-        // Patient Detail handles persistence and dismisses the scanner.
+        // Persist the completed session, then show the combined report.
         onSaveSession(session)
+        completedSession = session
+        showReport = true
     }
 }

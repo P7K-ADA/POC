@@ -43,8 +43,14 @@ final class LocalFileStorage {
     
     func loadImage(from relativePath: String) -> UIImage? {
         let fullURL = documentsDirectory.appendingPathComponent(relativePath)
-        guard let data = try? Data(contentsOf: fullURL) else{return nil}
+        guard let data = try? Data(contentsOf: fullURL) else { return nil }
         return UIImage(data: data)
+    }
+
+    func loadMask(from relativePath: String) -> [UInt8]? {
+        let fullURL = documentsDirectory.appendingPathComponent(relativePath)
+        guard let data = try? Data(contentsOf: fullURL) else { return nil }
+        return Array(data)
     }
     
     func deleteFile(at relativePath: String) {

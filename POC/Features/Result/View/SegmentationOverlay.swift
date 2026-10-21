@@ -12,12 +12,21 @@ enum SegmentationOverlay {
     static let cupLabel: UInt8 = 2
 
     static func makeImage(from result: SegmentationResult) -> UIImage? {
-        let width = result.width
-        let height = result.height
+        makeImage(
+            from: result.mask,
+            width: result.width,
+            height: result.height
+        )
+    }
 
+    static func makeImage(
+        from mask: [UInt8],
+        width: Int,
+        height: Int
+    ) -> UIImage? {
         guard width > 0,
               height > 0,
-              result.mask.count == width * height else {
+              mask.count == width * height else {
             return nil
         }
 
@@ -27,7 +36,7 @@ enum SegmentationOverlay {
         )
 
         func labelAt(_ x: Int, _ y: Int) -> UInt8 {
-            result.mask[y * width + x]
+            mask[y * width + x]
         }
 
         for y in 0..<height {

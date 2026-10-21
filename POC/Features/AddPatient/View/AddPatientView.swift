@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddPatientView: View {
     @Environment(\.dismiss) private var dismiss
@@ -31,12 +32,13 @@ struct AddPatientView: View {
 
                 Form {
                     ExaminationSessionSection()
-
+                    
                     PatientInformationSection(
                         name: $viewModel.name,
-                        age: $viewModel.ageText,
+                        dateOfBirth: $viewModel.dateOfBirth,
                         selectedSex: $viewModel.selectedSex
                     )
+
                 }
                 .formStyle(.grouped)
                 .scrollContentBackground(.hidden)
@@ -87,6 +89,32 @@ struct AddPatientView: View {
 
 #Preview("Patient Registration") {
     NavigationStack {
-        AddPatientView(store: PatientStore())
+        AddPatientView(
+            store: PatientStore(
+                modelContext: previewContainer.mainContext
+            )
+        )
     }
+    .modelContainer(previewContainer)
 }
+
+@MainActor
+private let previewContainer: ModelContainer = {
+    let schema = Schema([
+        PatientEntity.self,
+        ScreeningSessionEntity.self,
+        EyeExaminationEntity.self,
+        AnalysisRunEntity.self,
+        ReportEntity.self
+    ])
+
+    let configuration = ModelConfiguration(
+        schema: schema,
+        isStoredInMemoryOnly: true
+    )
+
+    return try! ModelContainer(
+        for: schema,
+        configurations: [configuration]
+    )
+}()

@@ -10,26 +10,35 @@ import Combine
 
 @MainActor
 final class PatientDetailViewModel: ObservableObject {
-    let patient: Patient
+    let patient: PatientEntity
 
-    @Published private(set) var sessions: [ScreeningSession] = []
+    @Published private(set) var sessions: [ScreeningSessionEntity] = []
     @Published var errorMessage: String?
 
     private let sessionStore: ScreeningSessionStore
 
     init(
-        patient: Patient,
+        patient: PatientEntity,
         sessionStore: ScreeningSessionStore
     ) {
         self.patient = patient
         self.sessionStore = sessionStore
-        self.sessions = sessionStore.sessions(for: patient.id)
+        refreshSessions()
+    }
+
+    func refreshSessions() {
+        do {
+            sessions = try sessionStore.sessions(for: patient.id)
+        } catch {
+            sessions = []
+            errorMessage = "Unable to load sessions: \(error.localizedDescription)"
+        }
     }
 
     func addSession(_ session: ScreeningSession) {
         do {
             try sessionStore.addSession(session)
-            sessions = sessionStore.sessions(for: patient.id)
+            refreshSessions()
         } catch {
             errorMessage = "Unable to save session: \(error.localizedDescription)"
         }

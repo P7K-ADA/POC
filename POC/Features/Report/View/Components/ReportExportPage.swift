@@ -38,7 +38,7 @@ struct OverviewExportPage: View {
                 EyeSummaryCard(eye: report.left, showsDetailsLink: false)
                 EyeSummaryCard(eye: report.right, showsDetailsLink: false)
             }
-            SummaryOfFindingsCard(report: report)
+            //SummaryOfFindingsCard(report: report)
             RecommendationCard(
                 title: report.recommendation.title,
                 message: report.recommendation.message

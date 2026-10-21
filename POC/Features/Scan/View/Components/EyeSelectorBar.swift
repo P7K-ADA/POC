@@ -14,26 +14,19 @@ struct EyeSelectorBar: View {
     let mintColor: Color
     
     var body: some View {
-        HStack(spacing: 8){
+        HStack(spacing: 28) {
             eyeButton(
                 side: .left,
-                title: "Left Eye (OS)",
-                isCaptured: isRightCaptured
-            )
-            
-            eyeButton(
-                side: .right,
-                title: "Right Eye (OD)",
+                title: "Left Eye",
                 isCaptured: isLeftCaptured
             )
+
+            eyeButton(
+                side: .right,
+                title: "Right Eye",
+                isCaptured: isRightCaptured
+            )
         }
-        .padding(4)
-                .background(Color.black.opacity(0.45))
-                .clipShape(Capsule())
-                .overlay(
-                    Capsule()
-                        .stroke(Color.white.opacity(0.12), lineWidth: 1)
-                )
     }
     
     @ViewBuilder
@@ -52,20 +45,16 @@ struct EyeSelectorBar: View {
                 if isCaptured {
                     Image(systemName: "checkmark.circle.fill")
                         .font(.caption.weight(.bold))
-                        .foregroundStyle(isSelected ? Color.black : mintColor)
+                        .foregroundStyle(isSelected ? Color.primary : mintColor)
                 }
                 else {
                     Image(systemName: "eye")
                         .font(.caption)
                 }
                 Text(title)
-                    .font(.subheadline.weight(.semibold))
+                    .font(.body.weight(isSelected ? .semibold : .regular))
             }
-            .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(isSelected ? mintColor : Color.clear)
-                        .foregroundStyle(isSelected ? Color.black : Color.white)
-                        .clipShape(Capsule())
+            .foregroundStyle(isSelected ? Color.primary : Color.secondary)
         }
         .buttonStyle(.plain)
     }

@@ -5,12 +5,10 @@
 //  Created by Carolyn Santana on 20/10/26.
 //
 
-
-
 import SwiftUI
 
 struct PatientSummaryCard: View {
-    let patient: Patient
+    let patient: PatientEntity
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -25,11 +23,8 @@ struct PatientSummaryCard: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    Text(
-                        patient.age.map { "\($0) years" }
-                            ?? "Not specified"
-                    )
-                    .font(.subheadline.weight(.semibold))
+                    Text("\(patient.age) years")
+                        .font(.subheadline.weight(.semibold))
                 }
 
                 Spacer()
@@ -39,13 +34,16 @@ struct PatientSummaryCard: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
 
-                    Text(patient.sex?.rawValue ?? "Not specified")
+                    Text(patient.sex)
                         .font(.subheadline.weight(.semibold))
                 }
             }
         }
         .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(.background, in: RoundedRectangle(cornerRadius: 16))
+        .background(
+            .background,
+            in: RoundedRectangle(cornerRadius: 16)
+        )
     }
 }

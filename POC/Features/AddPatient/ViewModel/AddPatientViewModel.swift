@@ -5,14 +5,21 @@
 //  Created by Carolyn Santana on 18/10/26.
 //
 
-
 import Foundation
 import Combine
 
 @MainActor
 final class AddPatientViewModel: ObservableObject {
     @Published var name = ""
-    @Published var ageText = ""
+
+    @Published var dateOfBirth = Calendar.current.date(
+        from: DateComponents(
+            year: 2000,
+            month: 1,
+            day: 1
+        )
+    )!
+
     @Published var selectedSex: PatientSex?
     @Published var errorMessage: String?
     @Published private(set) var didSave = false
@@ -24,24 +31,33 @@ final class AddPatientViewModel: ObservableObject {
     }
 
     func savePatient() {
-        let cleanedAge = ageText.trimmingCharacters(in: .whitespacesAndNewlines)
-        let age: Int?
+        let cleanedName = name.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
 
-        if cleanedAge.isEmpty {
-            age = nil
-        } else if let parsedAge = Int(cleanedAge), (0...130).contains(parsedAge) {
-            age = parsedAge
-        } else {
-            errorMessage = "Enter a valid age between 0 and 130, or leave it blank."
+        guard !cleanedName.isEmpty else {
+            errorMessage = "Please enter the patient's full name."
+            return
+        }
+
+        guard Calendar.current.startOfDay(for: dateOfBirth)
+                <= Calendar.current.startOfDay(for: .now) else {
+            errorMessage = "Date of birth cannot be in the future."
+            return
+        }
+
+        guard let selectedSex else {
+            errorMessage = "Please select the patient's sex."
             return
         }
 
         do {
             try store.addPatient(
-                name: name,
-                age: age,
+                name: cleanedName,
+                dateOfBirth: dateOfBirth,
                 sex: selectedSex
             )
+
             didSave = true
         } catch {
             errorMessage = error.localizedDescription

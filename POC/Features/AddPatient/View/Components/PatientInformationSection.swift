@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PatientInformationSection: View {
     @Binding var name: String
-    @Binding var age: String
+    @Binding var dateOfBirth: Date
     @Binding var selectedSex: PatientSex?
 
     var body: some View {
@@ -27,14 +27,18 @@ struct PatientInformationSection: View {
             }
 
             HStack {
-                Text("Age")
+                Text("Date Of Birth")
                     .foregroundStyle(.primary)
 
                 Spacer()
 
-                TextField("Enter age", text: $age)
-                    .keyboardType(.numberPad)
-                    .multilineTextAlignment(.trailing)
+                DatePicker(
+                    "Date Of Birth",
+                    selection: $dateOfBirth,
+                    in: ...Date.now,
+                    displayedComponents: .date
+                )
+                .labelsHidden()
             }
 
             HStack {
@@ -44,15 +48,15 @@ struct PatientInformationSection: View {
                 Spacer()
 
                 Picker("Sex", selection: $selectedSex) {
-                    Text("Not specified")
-                        .tag(nil as PatientSex?)
+                    Text("Male")
+                        .tag(PatientSex.male as PatientSex?)
 
-                    ForEach(PatientSex.allCases) { sex in
-                        Text(sex.rawValue)
-                            .tag(sex as PatientSex?)
-                    }
+                    Text("Female")
+                        .tag(PatientSex.female as PatientSex?)
                 }
+                .pickerStyle(.segmented)
                 .labelsHidden()
+                .frame(maxWidth: 220)
             }
         } header: {
             Text("Patient Information")
@@ -60,13 +64,3 @@ struct PatientInformationSection: View {
     }
 }
 
-#Preview {
-    Form {
-        PatientInformationSection(
-            name: .constant("Andi Budiman"),
-            age: .constant("35"),
-            selectedSex: .constant(.male)
-        )
-    }
-    .formStyle(.grouped)
-}

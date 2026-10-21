@@ -5,13 +5,12 @@
 //  Created by Carolyn Santana on 18/10/26.
 //
 
-
 import Foundation
 import Combine
 
 @MainActor
 final class PatientListViewModel: ObservableObject {
-    @Published private(set) var patients: [Patient] = []
+    @Published private(set) var patients: [PatientEntity] = []
     @Published var searchText = ""
     @Published var errorMessage: String?
 
@@ -24,23 +23,31 @@ final class PatientListViewModel: ObservableObject {
 
         store.$patients
             .receive(on: RunLoop.main)
-            .sink { [weak self] in self?.patients = $0 }
+            .sink { [weak self] patients in
+                self?.patients = patients
+            }
             .store(in: &cancellables)
     }
 
-    var filteredPatients: [Patient] {
-        guard !searchText.isEmpty else { return patients }
+    var filteredPatients: [PatientEntity] {
+        let query = searchText.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        )
+
+        guard !query.isEmpty else {
+            return patients
+        }
 
         return patients.filter {
-            $0.name.localizedCaseInsensitiveContains(
-                searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-            )
+            $0.name.localizedCaseInsensitiveContains(query)
         }
     }
 
     func deletePatients(at offsets: IndexSet) {
         for index in offsets {
-            guard filteredPatients.indices.contains(index) else { continue }
+            guard filteredPatients.indices.contains(index) else {
+                continue
+            }
 
             do {
                 try store.deletePatient(filteredPatients[index])

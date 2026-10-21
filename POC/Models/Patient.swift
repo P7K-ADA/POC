@@ -34,15 +34,6 @@ struct Patient: Identifiable, Codable, Equatable {
     }
 }
 
-enum PatientSex: String, Codable, CaseIterable, Identifiable {
-    case female = "Female"
-    case male = "Male"
-    case other = "Other"
-    case preferNotToSay = "Prefer not to say"
-
-    var id: String { rawValue }
-}
-
 enum ScreeningStatus: String, Codable {
     case completed = "Completed"
 }

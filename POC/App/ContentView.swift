@@ -9,9 +9,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var navigationPath = NavigationPath()
+
     var body: some View {
-        NavigationStack {
-            HomeView()
+        NavigationStack(path: $navigationPath) {
+            HomeView(
+                onReturnHome: {
+                    navigationPath = NavigationPath()
+                }
+            )
         }
         .preferredColorScheme(.light)
     }

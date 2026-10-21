@@ -10,14 +10,17 @@ import SwiftUI
 struct PatientDetailView: View {
     @Environment(\.dismiss) private var dismiss
 
+    let onReturnHome: () -> Void
     @StateObject private var viewModel: PatientDetailViewModel
     @State private var showingScan = false
     @State private var showingFAQ = false
 
     init(
-        patient: Patient,
-        sessionStore: ScreeningSessionStore
+        patient: PatientEntity,
+        sessionStore: ScreeningSessionStore,
+        onReturnHome: @escaping () -> Void = {}
     ) {
+        self.onReturnHome = onReturnHome
         _viewModel = StateObject(
             wrappedValue: PatientDetailViewModel(
                 patient: patient,
@@ -26,6 +29,11 @@ struct PatientDetailView: View {
         )
     }
 
+    private func returnToHome() {
+        dismiss()
+        onReturnHome()
+    }
+    
     var body: some View {
         ZStack {
             Color(uiColor: .systemGroupedBackground)
@@ -59,10 +67,9 @@ struct PatientDetailView: View {
                             LazyVStack(spacing: 12) {
                                 ForEach(viewModel.sessions) { session in
                                     ScreeningSessionCard(
+                                        patient: viewModel.patient,
                                         session: session,
-                                        onPreview: {
-                                            // TODO: Implement preview action later
-                                        }
+                                        onDone: returnToHome
                                     )
                                 }
                             }
@@ -81,11 +88,17 @@ struct PatientDetailView: View {
             }
         }
         .toolbar(.hidden, for: .navigationBar)
-        .sheet(isPresented: $showingScan) {
-            ScanView(patientID: viewModel.patient.id) { session in
-                viewModel.addSession(session)
-                showingScan = false
-            }
+        .fullScreenCover(isPresented: $showingScan) {
+            ScanView(
+                patient: viewModel.patient,
+                onSaveSession: { session in
+                    viewModel.addSession(session)
+                },
+                onDone: {
+                    showingScan = false
+                    returnToHome()
+                }
+            )
         }
         .alert("FAQ", isPresented: $showingFAQ) {
             Button("OK", role: .cancel) {}

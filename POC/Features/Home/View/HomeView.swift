@@ -5,24 +5,42 @@
 //  Created by Carolyn Santana on 18/10/26.
 //
 
-
-
 import SwiftUI
+import SwiftData
 
 struct HomeView: View {
+    @Environment(\.modelContext) private var modelContext
+    let onReturnHome: () -> Void
+
+    init(onReturnHome: @escaping () -> Void = {}) {
+        self.onReturnHome = onReturnHome
+    }
+
+    var body: some View {
+        HomeViewContent(
+            modelContext: modelContext,
+            onReturnHome: onReturnHome
+        )
+    }
+}
+
+private struct HomeViewContent: View {
+    @Environment(\.modelContext) private var modelContext
+    let onReturnHome: () -> Void
+    
     @StateObject private var store: PatientStore
     @StateObject private var viewModel: PatientListViewModel
-    @StateObject private var sessionStore: ScreeningSessionStore
 
-    init() {
-        let store = PatientStore()
+    init(
+        modelContext: ModelContext,
+        onReturnHome: @escaping () -> Void
+    ) {
+        self.onReturnHome = onReturnHome
+        let store = PatientStore(modelContext: modelContext)
 
         _store = StateObject(wrappedValue: store)
         _viewModel = StateObject(
             wrappedValue: PatientListViewModel(store: store)
-        )
-        _sessionStore = StateObject(
-            wrappedValue: ScreeningSessionStore()
         )
     }
 
@@ -39,7 +57,11 @@ struct HomeView: View {
                 "Unable to Complete Action",
                 isPresented: Binding(
                     get: { viewModel.errorMessage != nil },
-                    set: { if !$0 { viewModel.clearError() } }
+                    set: {
+                        if !$0 {
+                            viewModel.clearError()
+                        }
+                    }
                 )
             ) {
                 Button("OK", role: .cancel) {
@@ -48,7 +70,8 @@ struct HomeView: View {
             } message: {
                 Text(viewModel.errorMessage ?? "")
             }
-        }.background(Color(uiColor: .systemGroupedBackground))
+        }
+        .background(Color(uiColor: .systemGroupedBackground))
     }
 
     private var header: some View {
@@ -74,7 +97,10 @@ struct HomeView: View {
                     NavigationLink {
                         PatientDetailView(
                             patient: patient,
-                            sessionStore: sessionStore
+                            sessionStore: ScreeningSessionStore(
+                                modelContext: modelContext
+                            ),
+                            onReturnHome: onReturnHome
                         )
                     } label: {
                         PatientCard(patient: patient)
@@ -104,5 +130,17 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    NavigationStack {
+        HomeView()
+    }
+    .modelContainer(
+        for: [
+            PatientEntity.self,
+            ScreeningSessionEntity.self,
+            EyeExaminationEntity.self,
+            AnalysisRunEntity.self,
+            ReportEntity.self
+        ],
+        inMemory: true
+    )
 }

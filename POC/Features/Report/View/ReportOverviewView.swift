@@ -9,14 +9,44 @@
 import SwiftUI
 
 struct ReportOverviewView: View {
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: ReportViewModel
+    private let onDone: () -> Void
 
-    init(report: ReportData) {
+    init(
+        report: ReportData,
+        onDone: @escaping () -> Void = {}
+    ) {
         _viewModel = StateObject(wrappedValue: ReportViewModel(report: report))
+        self.onDone = onDone
     }
 
-    init(patient: Patient, session: ScreeningSession) {
-        self.init(report: ReportData.make(patient: patient, session: session))
+    init(
+        patient: PatientEntity,
+        session: ScreeningSession,
+        onDone: @escaping () -> Void = {}
+    ) {
+        self.init(
+            report: ReportData.make(
+                patient: patient,
+                session: session
+            ),
+            onDone: onDone
+        )
+    }
+
+    init(
+        patient: PatientEntity,
+        session: ScreeningSessionEntity,
+        onDone: @escaping () -> Void = {}
+    ) {
+        self.init(
+            report: ReportData.make(
+                patient: patient,
+                session: session
+            ),
+            onDone: onDone
+        )
     }
 
     private var report: ReportData { viewModel.report }
@@ -43,7 +73,7 @@ struct ReportOverviewView: View {
                     eyeLink(report.right)
                 }
 
-                SummaryOfFindingsCard(report: report)
+                //SummaryOfFindingsCard(report: report)
 
                 RecommendationCard(
                     title: report.recommendation.title,
@@ -55,8 +85,14 @@ struct ReportOverviewView: View {
             .padding()
         }
         .background(ReportPalette.page)
+        .preferredColorScheme(.light)
         .navigationTitle("Report")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Done", action: finishReport)
+            }
+        }
         .safeAreaInset(edge: .bottom) {
             Button {
                 viewModel.showingExport = true
@@ -74,6 +110,15 @@ struct ReportOverviewView: View {
         .sheet(isPresented: $viewModel.showingExport) {
             ExportJPGsSheet(report: report)
                 .presentationDetents([.large])
+        }
+    }
+
+    private func finishReport() {
+        dismiss()
+
+        Task { @MainActor in
+            await Task.yield()
+            onDone()
         }
     }
 
