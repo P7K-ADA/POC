@@ -16,6 +16,7 @@ targets:
       - path: POC
         excludes:
           - "**/.DS_Store"
+          - "Models/Patient.swift"
 
       - path: APIs
         excludes:
@@ -35,6 +36,8 @@ targets:
         TARGETED_DEVICE_FAMILY: "1,2"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         SUPPORTS_MACCATALYST: NO
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: W9AZH37T99
 
         INFOPLIST_KEY_CFBundleDisplayName: POC
         INFOPLIST_KEY_CFBundleVersion: "1"
