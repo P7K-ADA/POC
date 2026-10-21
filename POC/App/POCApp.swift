@@ -7,11 +7,19 @@
 
 import SwiftUI
 
+import SwiftData
 @main
 struct POCApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
         }
+        .modelContainer(for: [
+            PatientEntity.self,
+            ScreeningSessionEntity.self,
+            EyeExaminationEntity.self,
+            AnalysisRunEntity.self,
+            ReportEntity.self
+        ])
     }
 }
