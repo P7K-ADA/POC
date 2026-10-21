@@ -270,24 +270,24 @@ struct ScanView: View {
             }
 
             HStack(spacing: 12){
-                ForEach([1.0, 2.0], id: \.self) {
-                    factor in
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            camera.setZoom(factor: factor)
-                            baseZoom = factor
-                        }
-                    }
-                    label: {
-                        Text("\(Int (factor))x")
-                            .font(.caption2.weight(.bold))
-                            .foregroundStyle(camera.currentZoomFactor == factor ? Color.black : Color.white)
-                            .frame(width: 34, height: 34)
-                            .background(camera.currentZoomFactor == factor ? mint : Color.black.opacity(0.6))
-                            .clipShape(Circle())
-                    }
-                }
+                Text("1x")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.white.opacity(0.7))
+                
+                Slider(
+                    value: Binding(
+                        get: {camera.currentZoomFactor},
+                        set: {camera.setZoom(factor: $0)}
+                    ),
+                    in: 1...4
+                )
+                .tint(.mint)
+                
+                Text("4x")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(.white.opacity(0.7))
             }
+            .padding(.horizontal, 24)
             .padding(.bottom, 8)
             
             
