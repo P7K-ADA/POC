@@ -93,7 +93,9 @@ struct ScanView: View {
                             selectedItem = nil
                         },
                         onAnalyze: {
-                            handleConfirmOrAnalyze(image: image)
+                            Task {
+                                await handleConfirmOrAnalyze(image: image)
+                            }
                         },
                         isAnalyzing: isAnalyzing,
                         mint: mint,
@@ -120,11 +122,6 @@ struct ScanView: View {
 
             // MARK: - Camera Lifecycle
 
-            .task {
-                if !isReviewing {
-                    camera.start()
-                }
-            }
             .onDisappear {
                 camera.stop()
             }
@@ -137,7 +134,7 @@ struct ScanView: View {
                 selectedImage = image
                 selectedItem = nil
                 isReviewing = true
-                camera.stop()
+                camera.setTorch(enabled: false)
             }
 
             // MARK: - Gallery Selection
@@ -316,6 +313,9 @@ struct ScanView: View {
         .padding(.horizontal, 18)
         .padding(.top, 8)
         .padding(.bottom, 16)
+        .onAppear {
+            camera.start()
+        }
     }
 
     // MARK: - Header
@@ -382,55 +382,50 @@ struct ScanView: View {
         }
     }
     // MARK: - Handle Confirmation & Sequencing
-    
-    private func handleConfirmOrAnalyze(image: UIImage){
-        if selectedEye == .right {
-                    rightImage = image
-                } else {
-                    leftImage = image
-                }
-        if !isLastEye {
-            selectedEye = (selectedEye == .right) ? .left : .right
-            selectedImage = nil
-            isReviewing = false
-            camera.start()
-        }
-        else{
-            analyzeBothEyes()
-        }
-    }
-    // MARK: - Analyze Image
 
-    private func analyzeBothEyes() {
+    @MainActor
+    private func handleConfirmOrAnalyze(image: UIImage) async {
         guard !isAnalyzing else { return }
 
         isAnalyzing = true
-        
 
-        Task {
-            do {
-                let service = try ImageInferenceService()
-                var rRes: SegmentationResult?
-                var lRes: SegmentationResult?
-                
-                if let rImg = rightImage {rRes = try service.predict(image: rImg)}
-                if let lImg = leftImage { lRes = try service.predict(image: lImg)}
+        do {
+            let service = try ImageInferenceService()
+            let result = try service.predict(image: image)
 
-                await MainActor.run {
-                    self.rightResult = rRes
-                    self.leftResult = lRes
-                    self.isAnalyzing = false
-                    self.saveCurrentSession()
-                }
-            } catch {
-                await MainActor.run {
-                    self.isAnalyzing = false
-                    self.errorMessage =
-                        "Analysis failed: \(error.localizedDescription)"
-                        
-                }
+            if selectedEye == .left {
+                leftImage = image
+                leftResult = result
+            } else {
+                rightImage = image
+                rightResult = result
             }
+
+            isAnalyzing = false
+
+            if !isLastEye {
+                selectedEye = selectedEye == .right ? .left : .right
+                selectedImage = nil
+                isReviewing = false
+                camera.start()
+            } else {
+                saveCurrentSession()
+            }
+        } catch {
+            isAnalyzing = false
+            errorMessage = modelErrorMessage(
+                error,
+                eye: selectedEye
+            )
         }
+    }
+
+    private func modelErrorMessage(
+        _ error: Error,
+        eye: EyeSide
+    ) -> String {
+        let eyeName = eye == .left ? "left eye" : "right eye"
+        return "The model was unable to analyze the \(eyeName): \(error.localizedDescription)"
     }
 
     // MARK: - Save Screening Session

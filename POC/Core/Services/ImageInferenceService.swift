@@ -37,7 +37,7 @@ enum InferenceError: LocalizedError {
         case .invalidOutputShape:
             return "The model output has an unexpected shape."
         case .emptyMask:
-            return "The model returned an empty disc or cup mask."
+            return "The model was unable to identify the optic disc or cup."
         }
     }
 }

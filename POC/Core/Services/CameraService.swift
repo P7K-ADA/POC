@@ -102,6 +102,8 @@ final class CameraService: NSObject, ObservableObject,
                 self.session.startRunning()
             }
 
+            self.enableTorchForRunningSession()
+
             DispatchQueue.main.async {
                 self.isReady = true
                 self.status = "Camera ready"
@@ -150,8 +152,48 @@ final class CameraService: NSObject, ObservableObject,
         }
     }
 
+    private func enableTorchForRunningSession() {
+        guard session.isRunning else { return }
+
+        queue.asyncAfter(deadline: .now() + 0.45) { [weak self] in
+            guard let self, self.session.isRunning else { return }
+            self.setTorchOnQueue(enabled: true)
+        }
+    }
+
+    func setTorch(enabled: Bool) {
+        queue.async {
+            self.setTorchOnQueue(enabled: enabled)
+        }
+    }
+
+    private func setTorchOnQueue(enabled: Bool) {
+        guard let device = currentDevice,
+              device.hasTorch,
+              device.isTorchModeSupported(enabled ? .on : .off)
+        else {
+            return
+        }
+
+        do {
+            try device.lockForConfiguration()
+            if enabled, device.isTorchAvailable {
+                try device.setTorchModeOn(
+                    level: AVCaptureDevice.maxAvailableTorchLevel
+                )
+            } else {
+                device.torchMode = .off
+            }
+            device.unlockForConfiguration()
+        } catch {
+            print("Torch configuration failed: \(error.localizedDescription)")
+        }
+    }
+
     func stop() {
         queue.async {
+            self.setTorchOnQueue(enabled: false)
+
             if self.session.isRunning {
                 self.session.stopRunning()
             }
