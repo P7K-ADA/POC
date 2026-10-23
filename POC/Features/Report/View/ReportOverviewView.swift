@@ -56,7 +56,7 @@ struct ReportOverviewView: View {
             Button {
                 viewModel.showingExport = true
             } label: {
-                Text("Export JPGs")
+                Text("Export")
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)

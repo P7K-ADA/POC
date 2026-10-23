@@ -11,7 +11,7 @@ import UniformTypeIdentifiers
 
 struct ExportItem: Identifiable {
     enum Kind: String, CaseIterable {
-        case overview, leftEye, rightEye
+        case overview
     }
 
     let kind: Kind
@@ -47,21 +47,7 @@ enum ReportExportService {
                 title: "Overview",
                 detail: "overview.jpg · Both eyes + CDR values",
                 filename: "overview.jpg",
-                view: OverviewExportPage(report: report)
-            ),
-            try makeItem(
-                kind: .leftEye,
-                title: EyeSide.left.rawValue,
-                detail: "left_eye.jpg · CDR \(report.left.cdrText) · \(report.left.status.label)",
-                filename: "left_eye.jpg",
-                view: EyeExportPage(report: report, side: .left)
-            ),
-            try makeItem(
-                kind: .rightEye,
-                title: EyeSide.right.rawValue,
-                detail: "right_eye.jpg · CDR \(report.right.cdrText) · \(report.right.status.label)",
-                filename: "right_eye.jpg",
-                view: EyeExportPage(report: report, side: .right)
+                view: SingleReportExportPage(report: report)
             )
         ]
     }
@@ -109,5 +95,82 @@ enum ReportExportService {
             image: image,
             jpegData: data
         )
+    }
+}
+
+
+
+struct SingleReportExportPage: View {
+    let report: ReportData
+
+    var body: some View {
+        VStack(spacing: 0) {
+            // BAGIAN ATAS (Hitam): Dua Foto Retina Berdampingan
+            HStack(spacing: 0) {
+                eyePhotoCell(eye: report.left)
+                eyePhotoCell(eye: report.right)
+            }
+            .background(Color.black)
+
+            // BAGIAN BAWAH (Abu-Abu): Banner AI DISCLAIMER
+            VStack(alignment: .leading, spacing: 6) {
+                Text("AI DISCLAIMER")
+                    .font(.system(size: 18, weight: .black))
+                    .foregroundStyle(Color.black)
+
+                Text("\(ReportCopy.cdrExplainer) \(ReportCopy.aiDisclaimer)")
+                    .font(.system(size: 11, weight: .regular))
+                    .foregroundStyle(Color.black.opacity(0.75))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(18)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(red: 0.86, green: 0.86, blue: 0.86))
+        }
+        .frame(width: 700) // Lebar kanvas (akan di-render 3x lebih tajam untuk JPG)
+        .environment(\.colorScheme, .light)
+    }
+
+    @ViewBuilder
+    private func eyePhotoCell(eye: EyeReport) -> some View {
+        ZStack(alignment: .bottomLeading) {
+            if let image = eye.image {
+                ZStack {
+                    // Foto retina asli
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+
+                    // Garis overlay AI (Disc & Cup)
+                    if let mask = eye.segmentationMask,
+                       let overlay = SegmentationOverlay.makeImage(
+                        from: mask,
+                        width: eye.maskWidth,
+                        height: eye.maskHeight
+                       ) {
+                        Image(uiImage: overlay)
+                            .resizable()
+                            .scaledToFill()
+                    }
+                }
+                .aspectRatio(1.0, contentMode: .fit)
+                .clipped()
+            } else {
+                Color.black
+                    .aspectRatio(1.0, contentMode: .fit)
+                    .overlay {
+                        Text("No Image")
+                            .font(.headline)
+                            .foregroundStyle(.gray)
+                    }
+            }
+
+            // Teks CDR di pojok kiri bawah persis seperti gambar referensi
+            Text("CDR : \(eye.cdrText)")
+                .font(.system(size: 26, weight: .heavy))
+                .foregroundStyle(.white)
+                .padding(16)
+                .shadow(color: .black.opacity(0.85), radius: 4, x: 2, y: 2)
+        }
     }
 }

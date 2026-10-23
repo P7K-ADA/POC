@@ -107,7 +107,7 @@ private struct ExportSheetHeader: View {
 
     var body: some View {
         HStack {
-            Text("Export JPGs")
+            Text("Export")
                 .font(.title2.bold())
 
             Spacer()
