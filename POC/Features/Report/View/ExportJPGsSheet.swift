@@ -2,122 +2,133 @@
 //  ExportJPGsSheet.swift
 //  POC
 //
-//  Created by Harley Ganisson on 20/10/26.
-//
-
 
 import SwiftUI
 
 struct ExportJPGsSheet: View {
-    let report: ReportData
-
+    @StateObject private var viewModel: ExportJPGsViewModel
     @Environment(\.dismiss) private var dismiss
-    @State private var items: [ExportItem] = []
-    @State private var selection = Set(ExportItem.Kind.allCases)
-    @State private var isSaving = false
-    @State private var alert: ExportAlert?
 
-    private struct ExportAlert {
-        let title: String
-        let message: String
-        let dismissesSheet: Bool
-    }
-
-    private var selectedCount: Int {
-        items.filter { selection.contains($0.kind) }.count
+    init(report: ReportData) {
+        _viewModel = StateObject(
+            wrappedValue: ExportJPGsViewModel(report: report)
+        )
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack {
-                Text("Export JPGs")
-                    .font(.title2.bold())
-                Spacer()
-                Button {
-                    dismiss()
-                } label: {
-                    Image(systemName: "xmark.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(.secondary)
-                }
-                .accessibilityLabel("Close")
-            }
+            ExportSheetHeader(onClose: dismiss.callAsFunction)
 
-            ReportHeaderView(report: report)
+            ReportHeaderView(capturedLine: viewModel.report.capturedLine)
 
-            if items.isEmpty {
+            if viewModel.items.isEmpty {
                 ProgressView()
                     .frame(maxWidth: .infinity, minHeight: 160)
             } else {
                 VStack(spacing: 10) {
-                    ForEach(items) { item in
-                        row(item)
+                    ForEach(viewModel.items) { item in
+                        ExportJPGRow(
+                            item: item,
+                            isSelected: viewModel.selection.contains(item.kind),
+                            onToggle: {
+                                viewModel.toggleSelection(for: item)
+                            }
+                        )
                     }
                 }
             }
 
             Spacer(minLength: 0)
 
-            Text("Patient name, capture date, and the AI disclaimer appear on all exported report images. Saved images are identifiable patient data and will appear in your Photos library.")
+            Text("The screening label, capture date, and AI disclaimer appear on all exported report images.")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
 
             Button {
-                save()
+                Task {
+                    await viewModel.saveSelectedItems()
+                }
             } label: {
                 HStack {
-                    if isSaving { ProgressView() }
-                    Label(
-                        "Save \(selectedCount) image\(selectedCount == 1 ? "" : "s") to Photos",
-                        systemImage: "square.and.arrow.down"
-                    )
-                    .fontWeight(.semibold)
+                    if viewModel.isSaving {
+                        ProgressView()
+                    }
+
+                    Text(saveButtonTitle)
+                        .fontWeight(.semibold)
                 }
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 6)
             }
             .buttonStyle(.borderedProminent)
-            .disabled(selectedCount == 0 || isSaving)
+            .disabled(viewModel.selectedCount == 0 || viewModel.isSaving)
         }
         .padding(20)
         .task {
-            do {
-                items = try ReportExportService.render(report)
-            } catch {
-                alert = ExportAlert(
-                    title: "Couldn't prepare images",
-                    message: error.localizedDescription,
-                    dismissesSheet: true
-                )
-            }
+            await viewModel.prepare()
         }
         .alert(
-            alert?.title ?? "",
-            isPresented: Binding(
-                get: { alert != nil },
-                set: { if !$0 { alert = nil } }
-            ),
-            presenting: alert
-        ) { current in
+            viewModel.alert?.title ?? "",
+            isPresented: alertBinding
+        ) {
             Button("OK") {
-                if current.dismissesSheet { dismiss() }
+                let dismissesSheet = viewModel.alert?.dismissesSheet == true
+                viewModel.dismissAlert()
+
+                if dismissesSheet {
+                    dismiss()
+                }
             }
-        } message: { current in
-            Text(current.message)
+        } message: {
+            Text(viewModel.alert?.message ?? "")
         }
     }
 
-    private func row(_ item: ExportItem) -> some View {
-        let isSelected = selection.contains(item.kind)
+    private var saveButtonTitle: String {
+        let suffix = viewModel.selectedCount == 1 ? "" : "s"
+        return "Save " + String(viewModel.selectedCount) + " image" + suffix + " to Photos"
+    }
 
-        return Button {
-            if isSelected {
-                selection.remove(item.kind)
-            } else {
-                selection.insert(item.kind)
+    private var alertBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.alert != nil },
+            set: { isPresented in
+                if !isPresented {
+                    viewModel.dismissAlert()
+                }
             }
-        } label: {
+        )
+    }
+}
+
+private struct ExportSheetHeader: View {
+    let onClose: () -> Void
+
+    var body: some View {
+        HStack {
+            Text("Export JPGs")
+                .font(.title2.bold())
+
+            Spacer()
+
+            Button(action: onClose) {
+                Image(systemName: "xmark.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(.secondary)
+            }
+            .accessibilityLabel("Close")
+        }
+    }
+}
+
+private struct ExportJPGRow: View {
+    let item: ExportItem
+    let isSelected: Bool
+    let onToggle: () -> Void
+
+    var body: some View {
+        Button(action: onToggle) {
             HStack(spacing: 12) {
                 Image(uiImage: item.image)
                     .resizable()
@@ -128,6 +139,7 @@ struct ExportJPGsSheet: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(item.title)
                         .font(.subheadline.weight(.semibold))
+
                     Text(item.detail)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
@@ -143,30 +155,6 @@ struct ExportJPGsSheet: View {
             .clipShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain)
-    }
-
-    private func save() {
-        let chosen = items.filter { selection.contains($0.kind) }
-        guard !chosen.isEmpty else { return }
-
-        isSaving = true
-        Task {
-            do {
-                try await ReportExportService.saveToPhotos(chosen)
-                alert = ExportAlert(
-                    title: "Saved to Photos",
-                    message: "\(chosen.count) image\(chosen.count == 1 ? "" : "s") saved.",
-                    dismissesSheet: true
-                )
-            } catch {
-                alert = ExportAlert(
-                    title: "Couldn't save",
-                    message: error.localizedDescription,
-                    dismissesSheet: false
-                )
-            }
-            isSaving = false
-        }
     }
 }
 

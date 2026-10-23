@@ -2,135 +2,167 @@
 //  ScanViewModel.swift
 //  POC
 //
-//  Created by Alessandro Moreno Lawadinata on 20/10/26.
-//
 
+import PhotosUI
 import SwiftUI
 import UIKit
 
 @MainActor
 final class ScanViewModel: ObservableObject {
-    let patientID: UUID
-    
-    @Published var selectedEye: EyeSide = .right
-    
-    @Published var rightImage: UIImage?
-    @Published var leftImage: UIImage?
-    @Published var rightResult: SegmentationResult?
-    @Published var leftResult: SegmentationResult?
-    
+    let camera = CameraService()
+
+    @Published var selectedEye: EyeSide = .left
     @Published var selectedImage: UIImage?
-    @Published var isReviewing = false
-    @Published var isAnalyzing = false
-    @Published var showResult = false
+    @Published var selectedItem: PhotosPickerItem?
+    @Published private(set) var leftImage: UIImage?
+    @Published private(set) var rightImage: UIImage?
+    @Published private(set) var leftResult: SegmentationResult?
+    @Published private(set) var rightResult: SegmentationResult?
+    @Published private(set) var isReviewing = false
+    @Published private(set) var isAnalyzing = false
+    @Published private(set) var completedSession: ScreeningSession?
+    @Published var showReport = false
     @Published var errorMessage: String?
-    
-    private let inferenceService: ImageInferenceService?
-    
-    init(patientID: UUID) {
-        self.patientID = patientID
-        self.inferenceService = try? ImageInferenceService()
-    }
-    
+
     var isLastEye: Bool {
-        if selectedEye == .right {
-            return leftImage != nil
-        }
-        else {
-            return rightImage != nil
+        selectedEye == .right ? leftImage != nil : rightImage != nil
+    }
+
+    func handleCapturedImage(_ image: UIImage) {
+        selectedImage = image
+        selectedItem = nil
+        isReviewing = true
+        camera.setTorch(enabled: false)
+    }
+
+    func loadGalleryImage(_ item: PhotosPickerItem) async {
+        do {
+            guard
+                let data = try await item.loadTransferable(type: Data.self),
+                let image = UIImage(data: data)
+            else {
+                errorMessage = "Couldn't load that image. Please choose another."
+                return
+            }
+
+            camera.stop()
+            selectedImage = image
+            isReviewing = true
+        } catch {
+            errorMessage = "Couldn't load the selected image: \(error.localizedDescription)"
         }
     }
-    func onPhotoCaptured(_ image: UIImage){
+
+    func retakeCurrentEye() {
+        if selectedEye == .right {
+            rightImage = nil
+        } else {
+            leftImage = nil
+        }
+
+        selectedImage = nil
+        selectedItem = nil
+        isReviewing = false
+        camera.start()
+    }
+
+    func chooseAnotherImage() {
+        selectedItem = nil
+    }
+
+    func useEditedImage(_ image: UIImage) {
         selectedImage = image
         isReviewing = true
     }
-    func onRetake() {
-        if selectedEye == .right {
-            rightImage = nil
-        }
-        else {
-            leftImage = nil
-        }
-        selectedImage = nil
-        isReviewing = false
-    }
-    
-    func handleConfirmOrAnalyze(image: UIImage, onNeedCameraResume: () -> Void) {
-        if selectedEye == .right {
-            rightImage = image
-        }
-        else {
-            leftImage = image
-        }
-        if !isLastEye {
-            selectedEye = (selectedEye == .right) ? .left : .right
-            selectedImage = nil
-            isReviewing = false
-            onNeedCameraResume()
-        }
-        else {
-            analyzeBothEyes()
-        }
-    }
-    
-    func analyzeBothEyes(){
-        guard !isAnalyzing else {return}
-        guard let service = inferenceService else{
-            errorMessage = "Model AI Core ML tidak ditemukan."
-            return
-        }
+
+    func analyzeCurrentImage() async {
+        guard let image = selectedImage, !isAnalyzing else { return }
+
         isAnalyzing = true
-        
-        Task {
-            do{
-                var rRes: SegmentationResult?
-                var lRes: SegmentationResult?
-                
-                if let rImg = self.rightImage{
-                    rRes = try service.predict(image: rImg)
-                }
-                if let lImg = self.leftImage {
-                    lRes = try service.predict(image: lImg)
-                }
-                self.rightResult = rRes
-                self.leftResult = lRes
-                self.isAnalyzing = false
-                self.showResult = true
+        defer { isAnalyzing = false }
+
+        do {
+            let service = try ImageInferenceService()
+            let result = try service.predict(image: image)
+
+            if selectedEye == .left {
+                leftImage = image
+                leftResult = result
+            } else {
+                rightImage = image
+                rightResult = result
             }
-            catch{
-                self.isAnalyzing = false
-                self.errorMessage = "Analisis AI gagal: \(error.localizedDescription)"
+
+            if isLastEye {
+                saveCurrentSession()
+            } else {
+                selectedEye = selectedEye == .right ? .left : .right
+                selectedImage = nil
+                isReviewing = false
+                camera.start()
             }
+        } catch {
+            errorMessage = modelErrorMessage(error, eye: selectedEye)
         }
     }
-    
-    func buildScreeingSession() -> ScreeningSession {
+
+    func resetScan() {
+        selectedImage = nil
+        selectedItem = nil
+        isReviewing = false
+        leftImage = nil
+        rightImage = nil
+        leftResult = nil
+        rightResult = nil
+        selectedEye = .left
+        isAnalyzing = false
+        completedSession = nil
+        showReport = false
+        camera.start()
+    }
+
+    func stopCamera() {
+        camera.stop()
+    }
+
+    func dismissError() {
+        // Defer the published mutation until SwiftUI has finished updating the alert.
+        Task { @MainActor [weak self] in
+            self?.errorMessage = nil
+        }
+    }
+
+    private func saveCurrentSession() {
         let sessionID = UUID()
-        
-        let leftRecord = EyeExaminationRecord(
+
+        let leftEye = EyeExaminationRecord(
+            sessionID: sessionID,
+            eyeSide: .left,
+            image: leftImage,
+            segmentationResult: leftResult,
+            isDummy: leftImage == nil
+        )
+
+        let rightEye = EyeExaminationRecord(
             sessionID: sessionID,
             eyeSide: .right,
             image: rightImage,
             segmentationResult: rightResult,
             isDummy: rightImage == nil
         )
-        
-        let rightRecord = EyeExaminationRecord(
-            sessionID: sessionID,
-            eyeSide: .right,
-            image: rightImage,
-            segmentationResult: rightResult,
-            isDummy: rightImage == nil
-        )
-        
-        return ScreeningSession(
+
+        completedSession = ScreeningSession(
             id: sessionID,
-            patientID: patientID,
             examDate: .now,
             status: .completed,
-            leftEye: leftRecord,
-            rightEye: rightRecord
+            leftEye: leftEye,
+            rightEye: rightEye
         )
+        showReport = true
     }
-    
+
+    private func modelErrorMessage(_ error: Error, eye: EyeSide) -> String {
+        let eyeName = eye == .left ? "left eye" : "right eye"
+        return "The model was unable to analyze the \(eyeName): \(error.localizedDescription)"
+    }
 }

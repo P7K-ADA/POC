@@ -20,7 +20,7 @@ struct EyeDetailView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 16) {
-                ReportHeaderView(report: report)
+                ReportHeaderView(capturedLine: report.capturedLine)
 
                 Picker("Eye", selection: $side) {
                     Text(EyeSide.left.rawValue).tag(EyeSide.left)

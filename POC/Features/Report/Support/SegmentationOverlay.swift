@@ -1,8 +1,8 @@
 //
-//  SegmentationOverkay.swift
+//  SegmentationOverlay.swift
 //  POC
 //
-//  Created by Harley Ganisson on 14/10/26.
+//  Creates transparent disc and cup boundaries for report previews.
 //
 
 import UIKit
@@ -12,28 +12,15 @@ enum SegmentationOverlay {
     static let cupLabel: UInt8 = 2
 
     static func makeImage(from result: SegmentationResult) -> UIImage? {
-        makeImage(
-            from: result.mask,
-            width: result.width,
-            height: result.height
-        )
+        makeImage(from: result.mask, width: result.width, height: result.height)
     }
 
-    static func makeImage(
-        from mask: [UInt8],
-        width: Int,
-        height: Int
-    ) -> UIImage? {
-        guard width > 0,
-              height > 0,
-              mask.count == width * height else {
+    static func makeImage(from mask: [UInt8], width: Int, height: Int) -> UIImage? {
+        guard width > 0, height > 0, mask.count == width * height else {
             return nil
         }
 
-        var pixels = [UInt8](
-            repeating: 0,
-            count: width * height * 4
-        )
+        var pixels = [UInt8](repeating: 0, count: width * height * 4)
 
         func labelAt(_ x: Int, _ y: Int) -> UInt8 {
             mask[y * width + x]
@@ -42,46 +29,32 @@ enum SegmentationOverlay {
         for y in 0..<height {
             for x in 0..<width {
                 let label = labelAt(x, y)
-
-                guard label == discLabel || label == cupLabel else {
-                    continue
-                }
+                guard label == discLabel || label == cupLabel else { continue }
 
                 let left = x > 0 ? labelAt(x - 1, y) : 0
                 let right = x + 1 < width ? labelAt(x + 1, y) : 0
                 let up = y > 0 ? labelAt(x, y - 1) : 0
                 let down = y + 1 < height ? labelAt(x, y + 1) : 0
-
-                let isBoundary =
-                    left != label ||
-                    right != label ||
-                    up != label ||
-                    down != label
-
-                guard isBoundary else { continue }
+                guard left != label || right != label || up != label || down != label else {
+                    continue
+                }
 
                 let index = (y * width + x) * 4
-
                 if label == discLabel {
-                    // Green disc boundary
                     pixels[index] = 45
                     pixels[index + 1] = 220
                     pixels[index + 2] = 135
-                    pixels[index + 3] = 255
                 } else {
-                    // Red cup boundary
                     pixels[index] = 255
                     pixels[index + 1] = 75
                     pixels[index + 2] = 85
-                    pixels[index + 3] = 255
                 }
+                pixels[index + 3] = 255
             }
         }
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
-        let bitmapInfo = CGBitmapInfo(
-            rawValue: CGImageAlphaInfo.premultipliedLast.rawValue
-        )
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
 
         guard let context = CGContext(
             data: &pixels,

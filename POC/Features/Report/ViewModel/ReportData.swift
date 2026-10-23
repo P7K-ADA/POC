@@ -46,7 +46,6 @@ struct ReportRecommendation: Equatable {
 
 /// Plain value type holding everything the report screens and JPG exports need.
 struct ReportData {
-    let patientLine: String
     let capturedLine: String
     let left: EyeReport
     let right: EyeReport
@@ -58,7 +57,6 @@ struct ReportData {
     }
 
     static func make(
-        patient: PatientEntity,
         session: ScreeningSession,
         thresholds: CDRThresholds = .standard
     ) -> ReportData {
@@ -80,48 +78,10 @@ struct ReportData {
         formatter.locale = Locale(identifier: "en_US")
         formatter.dateFormat = "d MMM yyyy, h:mm a"
 
-        let patientLine = "\(patient.name) · \(patient.age) years old"
-
         return ReportData(
-            patientLine: patientLine,
             capturedLine: "Captured \(formatter.string(from: session.examDate))",
             left: report(.left, session.leftEye),
             right: report(.right, session.rightEye)
-        )
-    }
-
-    static func make(
-        patient: PatientEntity,
-        session: ScreeningSessionEntity,
-        thresholds: CDRThresholds = .standard
-    ) -> ReportData {
-        func report(_ side: EyeSide, _ examination: EyeExaminationEntity?) -> EyeReport {
-            let analysisRun = examination?.analysisRun
-            let cdr = analysisRun?.verticalCDR.map { Double($0) }
-            let maskPath = analysisRun?.segmentationMaskPath
-            return EyeReport(
-                side: side,
-                cdr: cdr,
-                status: CDRStatus(cdr: cdr, thresholds: thresholds),
-                image: examination.flatMap {
-                    guard !$0.originalImagePath.isEmpty else { return nil }
-                    return LocalFileStorage.shared.loadImage(from: $0.originalImagePath)
-                },
-                segmentationMask: maskPath.flatMap {
-                    LocalFileStorage.shared.loadMask(from: $0)
-                }
-            )
-        }
-
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "en_US")
-        formatter.dateFormat = "d MMM yyyy, h:mm a"
-
-        return ReportData(
-            patientLine: "\(patient.name) · \(patient.age) years old",
-            capturedLine: "Captured \(formatter.string(from: session.examDate))",
-            left: report(.left, session.examinations.first { $0.eyeSide == EyeSide.left.rawValue }),
-            right: report(.right, session.examinations.first { $0.eyeSide == EyeSide.right.rawValue })
         )
     }
 
@@ -173,7 +133,6 @@ struct ReportData {
 #if DEBUG
 extension ReportData {
     static let sample = ReportData(
-        patientLine: "Alex Morgan · 32 years old",
         capturedLine: "Captured 17 Oct 2026, 9:38 AM",
         left: EyeReport(side: .left, cdr: 0.66, status: CDRStatus(cdr: 0.66)),
         right: EyeReport(side: .right, cdr: 0.42, status: CDRStatus(cdr: 0.42))

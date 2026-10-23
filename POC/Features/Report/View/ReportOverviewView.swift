@@ -9,7 +9,6 @@
 import SwiftUI
 
 struct ReportOverviewView: View {
-    @Environment(\.dismiss) private var dismiss
     @StateObject private var viewModel: ReportViewModel
     private let onDone: () -> Void
 
@@ -21,34 +20,6 @@ struct ReportOverviewView: View {
         self.onDone = onDone
     }
 
-    init(
-        patient: PatientEntity,
-        session: ScreeningSession,
-        onDone: @escaping () -> Void = {}
-    ) {
-        self.init(
-            report: ReportData.make(
-                patient: patient,
-                session: session
-            ),
-            onDone: onDone
-        )
-    }
-
-    init(
-        patient: PatientEntity,
-        session: ScreeningSessionEntity,
-        onDone: @escaping () -> Void = {}
-    ) {
-        self.init(
-            report: ReportData.make(
-                patient: patient,
-                session: session
-            ),
-            onDone: onDone
-        )
-    }
-
     private var report: ReportData { viewModel.report }
 
     var body: some View {
@@ -57,21 +28,9 @@ struct ReportOverviewView: View {
                 Text("Report Overview")
                     .font(.title.bold())
 
-                ReportHeaderView(report: report)
+                ReportHeaderView(capturedLine: report.capturedLine)
 
-                HStack {
-                    Text("STRUCTURE SCANS")
-                        .font(.system(size: 10, weight: .semibold))
-                    Spacer()
-                    Text("Schematic · Vertical CDR")
-                        .font(.system(size: 10))
-                }
-                .foregroundStyle(.secondary)
-
-                HStack(alignment: .top, spacing: 12) {
-                    eyeLink(report.left)
-                    eyeLink(report.right)
-                }
+                ReportEyeScansSection(report: report)
 
                 //SummaryOfFindingsCard(report: report)
 
@@ -114,21 +73,7 @@ struct ReportOverviewView: View {
     }
 
     private func finishReport() {
-        dismiss()
-
-        Task { @MainActor in
-            await Task.yield()
-            onDone()
-        }
-    }
-
-    private func eyeLink(_ eye: EyeReport) -> some View {
-        NavigationLink {
-            EyeDetailView(report: report, initialSide: eye.side)
-        } label: {
-            EyeSummaryCard(eye: eye)
-        }
-        .buttonStyle(.plain)
+        onDone()
     }
 }
 

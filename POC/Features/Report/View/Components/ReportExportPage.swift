@@ -9,7 +9,7 @@
 import SwiftUI
 
 /// Fixed-width pages that ImageRenderer turns into JPGs.
-/// Every page carries patient name, capture date and the AI disclaimer.
+/// Every page carries the screening label, capture date and the AI disclaimer.
 struct ReportExportPage<Content: View>: View {
     let title: String
     let report: ReportData
@@ -19,7 +19,7 @@ struct ReportExportPage<Content: View>: View {
         VStack(alignment: .leading, spacing: 16) {
             Text(title)
                 .font(.title.bold())
-            ReportHeaderView(report: report)
+            ReportHeaderView(capturedLine: report.capturedLine)
             content
         }
         .padding(20)

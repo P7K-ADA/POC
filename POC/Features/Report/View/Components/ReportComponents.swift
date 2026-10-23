@@ -42,13 +42,11 @@ struct StatusPill: View {
 }
 
 struct ReportHeaderView: View {
-    let report: ReportData
+    let capturedLine: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(report.patientLine)
-                .font(.footnote.weight(.medium))
-            Text(report.capturedLine)
+            Text(capturedLine)
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }

@@ -11,7 +11,6 @@ import Foundation
 
 struct ScreeningSession: Identifiable {
     let id: UUID
-    let patientID: UUID
     let examDate: Date
     let createdAt: Date
     let status: ScreeningStatus
@@ -20,7 +19,6 @@ struct ScreeningSession: Identifiable {
 
     init(
         id: UUID = UUID(),
-        patientID: UUID,
         examDate: Date = .now,
         createdAt: Date = .now,
         status: ScreeningStatus = .completed,
@@ -28,7 +26,6 @@ struct ScreeningSession: Identifiable {
         rightEye: EyeExaminationRecord
     ) {
         self.id = id
-        self.patientID = patientID
         self.examDate = examDate
         self.createdAt = createdAt
         self.status = status
