@@ -6,14 +6,25 @@
 //
 
 import SwiftUI
-
+ 
 struct ContentView: View {
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+ 
     var body: some View {
-        ScanView()
-            .preferredColorScheme(.light)
+        Group {
+            if hasCompletedOnboarding {
+                ScanView()
+            } else {
+                OnboardingView {
+                    hasCompletedOnboarding = true
+                }
+            }
+        }
+        .preferredColorScheme(.light)
     }
 }
-
+ 
 #Preview {
     ContentView()
 }
+ 
