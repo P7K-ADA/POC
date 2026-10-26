@@ -2,14 +2,6 @@
 //  OnboardingPermission.swift
 //  POC
 //
-//  Created by Harley Ganisson on 25/10/26.
-//
-
-
-//
-//  OnboardingViewModel.swift
-//  POC
-//
 
 import SwiftUI
 import AVFoundation
@@ -47,30 +39,70 @@ enum OnboardingPermission: CaseIterable {
 final class OnboardingViewModel: ObservableObject {
     @Published private(set) var currentIndex = 0
     @Published private(set) var isFinished = false
+    @Published private(set) var isNFCDetected = false
+    @Published var showsNFCInstruction = false
 
     let pages = OnboardingPermission.allCases
 
-    var currentPage: OnboardingPermission { pages[currentIndex] }
+    private let nfcDetector = NFCFrameDetector()
 
-    /// Shows the system permission prompt for the current page, then moves on.
+    var currentPage: OnboardingPermission {
+        pages[currentIndex]
+    }
+
+    var canAllowCurrentPermission: Bool {
+        currentPage != .camera || isNFCDetected
+    }
+
+    func startNFCScanning() {
+        guard currentPage == .camera, !isNFCDetected else {
+            return
+        }
+
+        nfcDetector.startScanning { [weak self] in
+            Task { @MainActor in
+                self?.isNFCDetected = true
+            }
+        }
+    }
+
+    func stopNFCScanning() {
+        nfcDetector.stopScanning()
+    }
+
+    /// Shows the system permission prompt only after the frame has been detected.
     func allow() async {
+        if currentPage == .camera, !isNFCDetected {
+            showsNFCInstruction = true
+            return
+        }
+
         switch currentPage {
         case .camera:
-            _ = await AVCaptureDevice.requestAccess(for: .video)
+            let status = AVCaptureDevice.authorizationStatus(for: .video)
+            if status == .notDetermined {
+                _ = await AVCaptureDevice.requestAccess(for: .video)
+            }
         case .photos:
-            _ = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+            let status = PHPhotoLibrary.authorizationStatus(for: .addOnly)
+            if status == .notDetermined {
+                _ = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+            }
         }
+
         advance()
     }
 
-    /// "Maybe later" – skip without asking.
+    /// “Maybe later” – skip without asking.
     func skip() {
         advance()
     }
 
     private func advance() {
         if currentIndex < pages.count - 1 {
-            withAnimation { currentIndex += 1 }
+            withAnimation {
+                currentIndex += 1
+            }
         } else {
             isFinished = true
         }

@@ -2,21 +2,12 @@
 //  OnboardingPermissionPage.swift
 //  POC
 //
-//  Created by Harley Ganisson on 25/10/26.
-//
-
-
-//
-//  OnboardingPermissionPage.swift
-//  POC
-//
-//  Lo-fi layout: icon circle, title, description, Allow button, Maybe later.
-//
 
 import SwiftUI
 
 struct OnboardingPermissionPage: View {
     let permission: OnboardingPermission
+    let isAllowEnabled: Bool
     let onAllow: () -> Void
     let onSkip: () -> Void
 
@@ -24,7 +15,6 @@ struct OnboardingPermissionPage: View {
         VStack(spacing: 0) {
             Spacer()
 
-            // Icon placeholder
             ZStack {
                 Circle()
                     .fill(Color.gray.opacity(0.15))
@@ -55,7 +45,10 @@ struct OnboardingPermissionPage: View {
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
                     .frame(height: 52)
-                    .background(Capsule().fill(Color.gray))
+                    .background(
+                        Capsule()
+                            .fill(isAllowEnabled ? Color.accentColor : Color.gray)
+                    )
             }
             .padding(.horizontal, 32)
 
@@ -70,5 +63,10 @@ struct OnboardingPermissionPage: View {
 }
 
 #Preview {
-    OnboardingPermissionPage(permission: .camera, onAllow: {}, onSkip: {})
+    OnboardingPermissionPage(
+        permission: .camera,
+        isAllowEnabled: false,
+        onAllow: {},
+        onSkip: {}
+    )
 }
