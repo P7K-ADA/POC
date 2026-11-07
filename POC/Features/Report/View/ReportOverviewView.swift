@@ -27,6 +27,7 @@ struct ReportOverviewView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Report Overview")
                     .font(.title.bold())
+                    .accessibilityAddTraits(.isHeader)
 
                 ReportHeaderView(capturedLine: report.capturedLine)
 
@@ -50,6 +51,7 @@ struct ReportOverviewView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Done", action: finishReport)
+                .accessibilityHint("Closes the report.")
             }
         }
         .safeAreaInset(edge: .bottom) {
@@ -59,9 +61,11 @@ struct ReportOverviewView: View {
                 Text("Export")
                     .fontWeight(.semibold)
                     .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44)
                     .padding(.vertical, 6)
             }
             .buttonStyle(.borderedProminent)
+            .accessibilityHint("Export report as images.")
             .padding(.horizontal)
             .padding(.vertical, 8)
             .background(ReportPalette.page)

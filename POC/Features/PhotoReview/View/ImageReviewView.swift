@@ -1,7 +1,3 @@
-//
-//  ImageReviewView.swift
-//  POC
-//
 
 import PhotosUI
 import SwiftUI
@@ -15,6 +11,7 @@ struct ImageReviewView: View {
     let onRetake: () -> Void
     let onChooseAnother: () -> Void
     let onAnalyze: () -> Void
+
     let isAnalyzing: Bool
     let mint: Color
     let eyeSide: EyeSide
@@ -23,43 +20,40 @@ struct ImageReviewView: View {
     @StateObject private var viewModel = ImageReviewViewModel()
 
     var body: some View {
-        VStack(spacing: 16) {
-            ReviewHeader(
-                eyeTitle: eyeSide == .left ? "Left eye" : "Right eye",
-                onBack: onRetake
-            )
+        ScrollView {
+            VStack(spacing: 20) {
 
-            ReviewImageCanvas(
-                image: image,
-                eyeSide: eyeSide,
-                viewModel: viewModel
-            )
+                ReviewHeader(
+                    eyeTitle: eyeSide == .left ? "Left eye" : "Right eye",
+                    onBack: onRetake
+                )
 
-            ReviewGuidance(isLastEye: isLastEye)
+                ReviewImageCanvas(
+                    image: image,
+                    eyeSide: eyeSide,
+                    viewModel: viewModel
+                )
 
-            ReviewEditingActions(
-                isAnalyzing: isAnalyzing,
-                isLastEye: isLastEye,
-                onRetake: onRetake,
-                onAnalyze: onAnalyze
-            )
+                ReviewGuidance(isLastEye: isLastEye)
 
-            Spacer(minLength: 0)
+                ReviewEditingActions(
+                    isAnalyzing: isAnalyzing,
+                    isLastEye: isLastEye,
+                    onRetake: onRetake,
+                    onAnalyze: onAnalyze
+                )
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.horizontal, 18)
+            .padding(.top, 8)
+            .padding(.bottom, 20)
         }
-        .padding(.horizontal, 18)
-        .padding(.top, 8)
-        .padding(.bottom, 16)
         .background(Color(uiColor: .systemGroupedBackground))
         .preferredColorScheme(.light)
     }
-
-    /*
-    private func handleCrop() {
-        guard let croppedImage = viewModel.applyCrop(to: image) else { return }
-        onUseImage(croppedImage)
-    }
-    */
 }
+
+// MARK: - Header
 
 private struct ReviewHeader: View {
     let eyeTitle: String
@@ -72,10 +66,14 @@ private struct ReviewHeader: View {
                     Button(action: onBack) {
                         Image(systemName: "chevron.left")
                             .font(.title2.weight(.medium))
+                            .frame(minWidth: 44, minHeight: 44)
                             .foregroundStyle(.primary)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Back")
+                    .accessibilityHint(
+                        "Returns to the camera to retake the image."
+                    )
 
                     Spacer()
                 }
@@ -83,18 +81,25 @@ private struct ReviewHeader: View {
                 Text("Review")
                     .font(.title2.weight(.bold))
                     .foregroundStyle(.primary)
+                    .accessibilityAddTraits(.isHeader)
             }
 
             Label(eyeTitle, systemImage: "eye.fill")
                 .font(.title3)
                 .foregroundStyle(.primary)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityElement(children: .combine)
         }
+        .frame(maxWidth: .infinity)
     }
 }
+
+// MARK: - Image Canvas
 
 private struct ReviewImageCanvas: View {
     let image: UIImage
     let eyeSide: EyeSide
+
     @ObservedObject var viewModel: ImageReviewViewModel
 
     var body: some View {
@@ -111,6 +116,7 @@ private struct ReviewImageCanvas: View {
                         width: geometry.size.width,
                         height: geometry.size.height
                     )
+                    .clipped()
                     .gesture(
                         MagnificationGesture()
                             .onChanged(viewModel.updateZoom(with:))
@@ -134,18 +140,26 @@ private struct ReviewImageCanvas: View {
 
                 if viewModel.cropMode {
                     CropGuide(
-                        side: min(geometry.size.width, geometry.size.height) * 0.72
+                        side: min(
+                            geometry.size.width,
+                            geometry.size.height
+                        ) * 0.72
                     )
                 }
             }
             .clipShape(RoundedRectangle(cornerRadius: 20))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Preview of image")
         }
         .aspectRatio(1, contentMode: .fit)
+        .frame(maxWidth: .infinity)
         .onAppear {
             viewModel.resetView()
         }
     }
 }
+
+// MARK: - Image Overlay
 
 private struct ReviewImageOverlay: View {
     let eyeSide: EyeSide
@@ -153,18 +167,21 @@ private struct ReviewImageOverlay: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(eyeSide == .left ? "L / OS" : "R / OD")
-                .font(.caption2.weight(.bold))
+                .font(.caption.weight(.bold))
                 .foregroundStyle(.white.opacity(0.8))
 
             Spacer()
 
             Text("CAPTURED IMAGE")
-                .font(.caption2.weight(.medium))
+                .font(.caption.weight(.medium))
                 .foregroundStyle(.white.opacity(0.65))
         }
         .padding(12)
+        .accessibilityHidden(true)
     }
 }
+
+// MARK: - Crop Guide
 
 private struct CropGuide: View {
     let side: CGFloat
@@ -175,14 +192,14 @@ private struct CropGuide: View {
                 .black,
                 style: StrokeStyle(lineWidth: 2, dash: [8, 5])
             )
-            .frame(
-                width: side,
-                height: side
-            )
+            .frame(width: side, height: side)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .allowsHitTesting(false)
+            .accessibilityHidden(true)
     }
 }
+
+// MARK: - Guidance
 
 private struct ReviewGuidance: View {
     let isLastEye: Bool
@@ -196,10 +213,13 @@ private struct ReviewGuidance: View {
         .font(.body)
         .foregroundStyle(.secondary)
         .multilineTextAlignment(.leading)
+        .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 40)
+        .padding(.horizontal, 4)
     }
 }
+
+// MARK: - Editing Actions
 
 private struct ReviewEditingActions: View {
     let isAnalyzing: Bool
@@ -208,59 +228,78 @@ private struct ReviewEditingActions: View {
     let onAnalyze: () -> Void
 
     var body: some View {
-        HStack(spacing: 12) {
-            Button(action: onRetake) {
-                Text("Retake")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .tint(.gray.opacity(0.7))
-            .foregroundStyle(.white)
-            .disabled(isAnalyzing)
+        ViewThatFits(in: .horizontal) {
 
-            Button(action: onAnalyze) {
-                HStack {
-                    if isAnalyzing {
-                        ProgressView()
-                            .tint(.white)
-                        Text("Analyzing...")
-                    } else {
-                        Text(isLastEye ? "Analyze Both Eyes" : "Next")
-                    }
-                }
-                .frame(maxWidth: .infinity)
+            // Side-by-side buttons when there is enough room
+            HStack(spacing: 12) {
+                retakeButton
+                analyzeButton
             }
-            .buttonStyle(.borderedProminent)
-            .tint(Color(red: 0.28, green: 0.28, blue: 0.29))
-            .foregroundStyle(.white)
-            .disabled(isAnalyzing)
+
+            // Stacked buttons when text becomes larger
+            VStack(spacing: 12) {
+                retakeButton
+                analyzeButton
+            }
         }
+        .frame(maxWidth: .infinity)
     }
-}
 
-/*
-private struct ReviewAnalyzeButton: View {
-    let isAnalyzing: Bool
-    let isLastEye: Bool
-    let onAnalyze: () -> Void
+    private var retakeButton: some View {
+        Button(action: onRetake) {
+            Text("Retake")
+                .font(.body.weight(.semibold))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 48)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(.gray.opacity(0.7))
+        .foregroundStyle(.white)
+        .disabled(isAnalyzing)
+        .accessibilityLabel("Retake")
+        .accessibilityHint(
+            "Returns to the camera to capture this eye again."
+        )
+    }
 
-    var body: some View {
+    private var analyzeButton: some View {
         Button(action: onAnalyze) {
-            HStack {
+            HStack(spacing: 8) {
                 if isAnalyzing {
                     ProgressView()
                         .tint(.white)
-                    Text("Analyzing...")
-                } else {
-                    Text(isLastEye ? "Analyze Both Eyes" : "Next")
+                        .accessibilityHidden(true)
                 }
+
+                Text(
+                    isAnalyzing
+                    ? "Analyzing..."
+                    : (isLastEye ? "Analyze Both Eyes" : "Next")
+                )
+                .font(.body.weight(.semibold))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity)
+            .frame(minHeight: 48)
         }
         .buttonStyle(.borderedProminent)
         .tint(Color(red: 0.28, green: 0.28, blue: 0.29))
         .foregroundStyle(.white)
         .disabled(isAnalyzing)
+        .accessibilityLabel(
+            isAnalyzing
+            ? "Analyzing"
+            : (isLastEye ? "Analyze both eyes" : "Next")
+        )
+        .accessibilityHint(
+            isAnalyzing
+            ? "Image analysis is in progress."
+            : (isLastEye
+                ? "Analyzes the images of both eyes."
+                : "Continue to capture the other eye.")
+        )
     }
 }
-*/

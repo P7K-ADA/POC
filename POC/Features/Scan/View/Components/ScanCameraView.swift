@@ -87,7 +87,14 @@ struct ScanCameraView: View {
                     }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel("Capture photo")
+            .accessibilityLabel(
+                selectedEye == .left
+                ? "Capture left eye"
+                : "Capture right eye"
+            )
+            .accessibilityHint(
+                "Takes a photo of the current eye."
+            )
 
             Spacer(minLength: 8)
         }
@@ -112,6 +119,11 @@ private struct ScanHeaderView: View {
             .font(.title2.weight(.bold))
             .foregroundStyle(.primary)
             .frame(maxWidth: .infinity)
+            .accessibilityAddTraits(.isHeader)
+                .accessibilityLabel(
+                    selectedEye == .left
+                    ? "Capturing left eye"
+                    : "Capturing right eye")
     }
 }
 
@@ -132,6 +144,8 @@ private struct ScanAlignmentHint: View {
                         .stroke(.secondary.opacity(0.35), lineWidth: 1)
                 }
                 .padding(.bottom, 20)
+                .accessibilityLabel(
+                        "Position the eye to capture the fundus.") //need to review
         }
     }
 }
@@ -166,6 +180,7 @@ private struct CameraZoomControl: View {
             Text("1x")
                 .font(.caption.weight(.bold))
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
 
             Slider(
                 value: Binding(
@@ -179,7 +194,13 @@ private struct CameraZoomControl: View {
             Text("4x")
                 .font(.caption.weight(.bold))
                 .foregroundStyle(.secondary)
+                .accessibilityHidden(true)
         }
+        .tint(.black)
+        .accessibilityLabel("Camera zoom")
+        .accessibilityValue(
+            "\(camera.currentZoomFactor, specifier: "%.1f") times magnification"
+        )
         .padding(.horizontal, 24)
         .padding(.bottom, 8)
     }

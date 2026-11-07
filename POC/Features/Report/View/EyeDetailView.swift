@@ -6,10 +6,12 @@
 //
 
 
+
 import SwiftUI
 
 struct EyeDetailView: View {
     let report: ReportData
+
     @State private var side: EyeSide
 
     init(report: ReportData, initialSide: EyeSide) {
@@ -19,15 +21,17 @@ struct EyeDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: 20) {
+
                 ReportHeaderView(capturedLine: report.capturedLine)
 
-                Picker("Eye", selection: $side) {
-                    Text(EyeSide.left.rawValue).tag(EyeSide.left)
-                    Text(EyeSide.right.rawValue).tag(EyeSide.right)
+                // Eye selector
+                HStack(spacing: 8) {
+                    eyeButton(.left)
+                    eyeButton(.right)
                 }
-                .pickerStyle(.segmented)
 
+                // Selected eye details
                 EyeDetailContent(eye: report.eye(side))
             }
             .padding()
@@ -36,10 +40,40 @@ struct EyeDetailView: View {
         .navigationTitle("Eye Details")
         .navigationBarTitleDisplayMode(.inline)
     }
+
+    private func eyeButton(_ eye: EyeSide) -> some View {
+        let isSelected = side == eye
+
+        return Button {
+            side = eye
+        } label: {
+            Text(eye.rawValue)
+                .font(.body.weight(.semibold))
+                .frame(maxWidth: .infinity)
+                .frame(minHeight: 48)
+                .foregroundStyle(isSelected ? .white : .primary)
+                .background(
+                    isSelected ? ReportPalette.accent : Color.white
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 10)
+                        .strokeBorder(
+                            isSelected ? ReportPalette.accent : Color.gray.opacity(0.25),
+                            lineWidth: 1
+                        )
+                }
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityHint("Shows the \(eye.rawValue.lowercased()) eye report.")
+    }
 }
 
 #if DEBUG
 #Preview {
-    NavigationStack { EyeDetailView(report: .sample, initialSide: .left) }
+    NavigationStack {
+        EyeDetailView(report: .sample, initialSide: .left)
+    }
 }
 #endif

@@ -30,8 +30,10 @@ struct StatusPill: View {
     var body: some View {
         HStack(spacing: 4) {
             Circle().fill(status.tint).frame(width: 5, height: 5)
+                .accessibilityHidden(true)
             Text(status.label)
-                .font(.system(size: 10, weight: .semibold))
+                .font(.caption.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
@@ -47,8 +49,9 @@ struct ReportHeaderView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text(capturedLine)
-                .font(.caption2)
+                .font(.footnote)
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
@@ -107,7 +110,7 @@ struct EyeSummaryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(eye.side.rawValue)
-                .font(.subheadline.weight(.semibold))
+                .font(.headline)
 
             SegmentationImageView(
                 side: eye.side,
@@ -115,7 +118,7 @@ struct EyeSummaryCard: View {
                 segmentationMask: eye.segmentationMask,
                 maskWidth: eye.maskWidth,
                 maskHeight: eye.maskHeight
-            )
+            ).accessibilityHidden(true)
 
             HStack(alignment: .firstTextBaseline) {
                 Text("CDR")
@@ -127,6 +130,7 @@ struct EyeSummaryCard: View {
             }
 
             StatusPill(status: eye.status)
+                .accessibilityElement(children: .ignore)
 
             if showsDetailsLink {
                 HStack(spacing: 2) {
@@ -134,7 +138,7 @@ struct EyeSummaryCard: View {
                     Spacer()
                     Image(systemName: "chevron.right")
                 }
-                .font(.caption)
+                .font(.footnote)
                 .foregroundStyle(ReportPalette.accent)
             }
         }
@@ -180,8 +184,9 @@ struct RecommendationCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text("RECOMMENDED NEXT STEP")
-                .font(.system(size: 9, weight: .semibold))
+                .font(.subheadline.weight(.semibold))
                 .foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
             Text(title)
                 .font(.subheadline.weight(.semibold))
             Text(message)
@@ -194,11 +199,13 @@ struct RecommendationCard: View {
 }
 
 /// Body shared by the Eye Details screen and the per-eye exported JPG.
+
 struct EyeDetailContent: View {
     let eye: EyeReport
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
+
             SegmentationImageView(
                 side: eye.side,
                 image: eye.image,
@@ -206,24 +213,26 @@ struct EyeDetailContent: View {
                 maskWidth: eye.maskWidth,
                 maskHeight: eye.maskHeight,
                 aspectRatio: 2.0
-            )
+                )
+                .frame(maxWidth: .infinity)
 
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 2) {
+            VStack(alignment: .leading, spacing: 16) {
+
+                VStack(alignment: .leading, spacing: 4) {
                     Text("Vertical CDR")
-                        .font(.caption)
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
+                    
                     Text(eye.cdrText)
-                        .font(.system(size: 34, weight: .semibold).monospacedDigit())
-                }
-                Spacer()
-                VStack(alignment: .trailing, spacing: 6) {
-                    Text("Screening assessment")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .font(.largeTitle.weight(.semibold).monospacedDigit())
+                        .fixedSize(horizontal: false, vertical: true)
+                    
                     StatusPill(status: eye.status)
+                    
                 }
             }
+        }
+            .frame(maxWidth: .infinity, alignment: .leading)
             .reportCard(background: eye.status.tint.opacity(0.14))
 
             RecommendationCard(
@@ -232,6 +241,6 @@ struct EyeDetailContent: View {
             )
 
             AIDisclaimerView()
-        }
     }
 }
+

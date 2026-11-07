@@ -53,6 +53,7 @@ struct ExportJPGsSheet: View {
                 HStack {
                     if viewModel.isSaving {
                         ProgressView()
+                        .accessibilityLabel("Saving images")
                     }
 
                     Text(saveButtonTitle)
@@ -62,6 +63,7 @@ struct ExportJPGsSheet: View {
                 .padding(.vertical, 6)
             }
             .buttonStyle(.borderedProminent)
+            .accessibilityHint("Saves the selected report images to Photos.")
             .disabled(viewModel.selectedCount == 0 || viewModel.isSaving)
         }
         .padding(20)
@@ -109,6 +111,7 @@ private struct ExportSheetHeader: View {
         HStack {
             Text("Export")
                 .font(.title2.bold())
+                .accessibilityAddTraits(.isHeader)
 
             Spacer()
 
@@ -117,7 +120,7 @@ private struct ExportSheetHeader: View {
                     .font(.title2)
                     .foregroundStyle(.secondary)
             }
-            .accessibilityLabel("Close")
+            .accessibilityLabel("Close export options.")
         }
     }
 }
@@ -149,10 +152,14 @@ private struct ExportJPGRow: View {
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(isSelected ? ReportPalette.accent : .secondary)
+                    .accessibilityHidden(true)
             }
             .padding(10)
             .background(ReportPalette.page)
             .clipShape(RoundedRectangle(cornerRadius: 12))
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("\(item.title), \(item.detail)")
+            .accessibilityValue(isSelected ? "Selected" : "Not selected")
         }
         .buttonStyle(.plain)
     }

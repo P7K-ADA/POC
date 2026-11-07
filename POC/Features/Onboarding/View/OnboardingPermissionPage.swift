@@ -34,16 +34,22 @@ struct OnboardingPermissionPage: View {
                     .font(.system(size: 72))
                     .foregroundStyle(Color.gray)
             }
+            .accessibilityHidden(true)
 
             Spacer().frame(height: 48)
 
             Text(permission.title)
                 .font(.title3.weight(.bold))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 40)
+                .accessibilityAddTraits(.isHeader)
 
             Text(permission.message)
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 40)
                 .padding(.top, 12)
 
@@ -57,13 +63,19 @@ struct OnboardingPermissionPage: View {
                     .frame(height: 52)
                     .background(Capsule().fill(Color.gray))
             }
+            .accessibilityLabel("Allow permission to access camera.")
             .padding(.horizontal, 32)
 
             Button("Maybe later", action: onSkip)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
-                .padding(.top, 16)
-                .padding(.bottom, 32)
+                .frame(maxWidth: .infinity)
+                    .contentShape(Rectangle())
+                    .padding(.vertical, 20)
+                    .padding(.horizontal, 32)
+                    .padding(.bottom, 20)
+            
+                .accessibilityLabel("Deny permission to access camera.")
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }

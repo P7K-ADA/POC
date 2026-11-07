@@ -10,21 +10,18 @@ struct ReportEyeScansSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("STRUCTURE SCANS")
-                    .font(.system(size: 10, weight: .semibold))
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .top, spacing: 12) {
+                    ReportEyeNavigationLink(eye: report.left, report: report)
+                    ReportEyeNavigationLink(eye: report.right, report: report)
+                }
 
-                Spacer()
-
-                Text("Schematic · Vertical CDR")
-                    .font(.system(size: 10))
+                VStack(spacing: 12) {
+                    ReportEyeNavigationLink(eye: report.left, report: report)
+                    ReportEyeNavigationLink(eye: report.right, report: report)
+                }
             }
             .foregroundStyle(.secondary)
-
-            HStack(alignment: .top, spacing: 12) {
-                ReportEyeNavigationLink(eye: report.left, report: report)
-                ReportEyeNavigationLink(eye: report.right, report: report)
-            }
         }
     }
 }
@@ -40,5 +37,9 @@ private struct ReportEyeNavigationLink: View {
             EyeSummaryCard(eye: eye)
         }
         .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(eye.side.rawValue)")
+        .accessibilityValue("CDR \(eye.cdrText),  \(eye.status.label)")
+        .accessibilityHint("Opens details for this eye.")
     }
 }
