@@ -93,6 +93,11 @@ struct ScanView: View {
                 onRetake: viewModel.retakeCurrentEye,
                 isAnalyzing: viewModel.isAnalyzing,
                 analysisErrorMessage: viewModel.analysisErrorMessage,
+                debugStages: viewModel.debugStages,
+                debugFailureMessage: viewModel.debugFailureMessage,
+                debugVCDR: viewModel.debugVCDR,
+                debugConfidence: viewModel.debugConfidence,
+                qualityWarnings: viewModel.qualityWarnings,
                 eyeSide: viewModel.selectedEye,
                 isLastEye: viewModel.isLastEye
             )

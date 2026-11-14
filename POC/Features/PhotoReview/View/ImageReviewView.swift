@@ -5,8 +5,16 @@ struct ImageReviewView: View {
     let image: UIImage
     let onUseImage: (UIImage) -> Void
     let onRetake: () -> Void
+
     let isAnalyzing: Bool
     let analysisErrorMessage: String?
+
+    let debugStages: [String: UIImage]
+    let debugFailureMessage: String?
+    let debugVCDR: Double?
+    let debugConfidence: Double?
+    let qualityWarnings: [String]
+
     let eyeSide: EyeSide
     let isLastEye: Bool
 
@@ -23,8 +31,31 @@ struct ImageReviewView: View {
                 )
 
                 ReviewStatusCard(
-                    analysisErrorMessage: analysisErrorMessage
+                    analysisErrorMessage: analysisErrorMessage,
+                    isAnalyzing: isAnalyzing,
+                    qualityWarnings: qualityWarnings
                 )
+
+                if !debugStages.isEmpty {
+                    NavigationLink {
+                        GlaumaDebugGridView(
+                            stages: debugStages,
+                            failureMessage: debugFailureMessage,
+                            vCDR: debugVCDR,
+                            confidence: debugConfidence
+                        )
+                    } label: {
+                        Label(
+                            "View preprocessing details",
+                            systemImage: "square.grid.2x2"
+                        )
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(AppColors.normal)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 10)
+                    }
+                    .disabled(isAnalyzing)
+                }
 
                 ReviewEditingActions(
                     isAnalyzing: isAnalyzing,
@@ -73,9 +104,15 @@ struct ImageReviewView: View {
         onRetake: {},
         isAnalyzing: false,
         analysisErrorMessage: nil,
+        debugStages: [:],
+        debugFailureMessage: nil,
+        debugVCDR: nil,
+        debugConfidence: nil,
+        qualityWarnings: [],
         eyeSide: .left,
         isLastEye: false
-    ).preferredColorScheme(.dark)
+    )
+    .preferredColorScheme(.dark)
 }
 
 #Preview("Review - Error") {
@@ -84,7 +121,12 @@ struct ImageReviewView: View {
         onUseImage: { _ in },
         onRetake: {},
         isAnalyzing: false,
-        analysisErrorMessage: "The image is blurry. Please hold the camera steady and retake the photo.",
+        analysisErrorMessage: "Hasil segmentasi belum cukup meyakinkan. Silakan ambil foto ulang.",
+        debugStages: [:],
+        debugFailureMessage: "Hasil segmentasi belum cukup meyakinkan.",
+        debugVCDR: nil,
+        debugConfidence: nil,
+        qualityWarnings: [],
         eyeSide: .right,
         isLastEye: true
     )

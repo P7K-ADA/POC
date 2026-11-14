@@ -1,0 +1,14 @@
+{
+  "NO_FUNDUS": "Area fundus belum terlihat jelas. Posisikan lensa tepat di depan mata dan ambil foto ulang.",
+  "OVEREXPOSED": "Foto terlalu terang. Kurangi pencahayaan/flash, atur posisi lensa, lalu ambil ulang.",
+  "UNDEREXPOSED": "Foto terlalu gelap. Perbaiki pencahayaan dan ambil ulang.",
+  "GLARE": "Pantulan cahaya menutupi area fundus. Ubah sudut lensa atau pencahayaan, lalu ambil ulang.",
+  "BLUR": "Foto kurang fokus. Stabilkan HP dan lensa, fokuskan kembali, lalu ambil ulang.",
+  "LOW_CONTRAST": "Kontras gambar terlalu rendah. Periksa fokus dan pencahayaan, lalu ambil ulang.",
+  "DISC_NOT_FOUND": "Optic disc tidak berhasil ditemukan. Pastikan fundus terlihat utuh dan fokus, lalu ambil ulang.",
+  "PREPROCESS_FAIL": "Foto tidak dapat diproses. Silakan ambil foto fundus ulang.",
+  "EMPTY_DISC_MASK": "Model tidak menghasilkan mask optic disc yang valid. Ambil ulang foto.",
+  "EMPTY_CUP_MASK": "Model tidak menghasilkan mask optic cup yang valid. Ambil ulang foto.",
+  "LOW_SEGMENTATION_CONFIDENCE": "Hasil segmentasi belum cukup meyakinkan. Ambil ulang foto dengan posisi dan fokus yang lebih stabil.",
+  "INVALID_SEGMENTATION": "Hasil segmentasi tidak memenuhi pemeriksaan kualitas. Ambil ulang foto."
+}

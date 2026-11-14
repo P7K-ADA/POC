@@ -28,6 +28,8 @@ targets:
       - sdk: Photos.framework
       - sdk: PhotosUI.framework
       - sdk: Vision.framework
+      - framework: opencv2.xcframework
+        embed: false
 
     settings:
       base:
@@ -48,3 +50,11 @@ targets:
         INFOPLIST_KEY_NFCReaderUsageDescription: "POC uses NFC to detect the attached frame."
         INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription: "Allow POC to save captured or processed eye images to your Photos library."
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
+
+        FRAMEWORK_SEARCH_PATHS:
+        - $(inherited)
+        - $(PROJECT_DIR)/opencv2.xcframework/ios-arm64
+
+        SWIFT_OBJC_BRIDGING_HEADER: POC/Core/Services/Inference/POC-Bridging-Header.h
+
+        CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER: NO

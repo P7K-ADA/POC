@@ -26,6 +26,8 @@ struct ReportOverviewView: View {
             VStack(alignment: .leading, spacing: 16) {
 
                 ReportEyeScansSection(report: report)
+                
+                PreprocessingDetailsSection(report: report)
 
                 RecommendationCard(
                     title: report.recommendation.title,

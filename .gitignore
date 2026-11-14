@@ -17,3 +17,4 @@ build/
 
 # XcodeGen
 POC.xcodeproj/project.pbxproj
+opencv2.xcframework.backup/

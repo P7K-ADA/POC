@@ -17,6 +17,9 @@ struct EyeReport: Identifiable {
     let maskWidth: Int
     let maskHeight: Int
 
+    let debugStages: [String: UIImage]
+    let confidence: Double?
+
     init(
         side: EyeSide,
         cdr: Double?,
@@ -24,7 +27,9 @@ struct EyeReport: Identifiable {
         image: UIImage? = nil,
         segmentationMask: [UInt8]? = nil,
         maskWidth: Int = 512,
-        maskHeight: Int = 512
+        maskHeight: Int = 512,
+        debugStages: [String: UIImage] = [:],
+        confidence: Double? = nil
     ) {
         self.side = side
         self.cdr = cdr
@@ -33,10 +38,14 @@ struct EyeReport: Identifiable {
         self.segmentationMask = segmentationMask
         self.maskWidth = maskWidth
         self.maskHeight = maskHeight
+        self.debugStages = debugStages
+        self.confidence = confidence
     }
 
     var id: EyeSide { side }
-    var cdrText: String { cdr.map { String(format: "%.2f", $0) } ?? "—" }
+    var cdrText: String {
+        cdr.map { String(format: "%.2f", $0) } ?? "—"
+    }
 }
 
 struct ReportRecommendation: Equatable {
@@ -70,7 +79,9 @@ struct ReportData {
                 image: record.image,
                 segmentationMask: result?.mask,
                 maskWidth: result?.width ?? 512,
-                maskHeight: result?.height ?? 512
+                maskHeight: result?.height ?? 512,
+                debugStages: record.debugStages,
+                confidence: record.confidence
             )
         }
 
