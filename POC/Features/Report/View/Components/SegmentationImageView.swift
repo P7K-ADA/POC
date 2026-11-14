@@ -4,10 +4,27 @@ import UIKit
 struct SegmentationImageView: View {
     let side: EyeSide
     let image: UIImage?
+    let segmentationReferenceImage: UIImage?
     let segmentationMask: [UInt8]?
     let maskWidth: Int
     let maskHeight: Int
-    var aspectRatio: CGFloat = Layout.reviewImageAspectRatio
+    var roiRectNormalized: CGRect? = nil
+    var aspectRatio: CGFloat = 3.0 / 4.0
+
+    private var alignedOverlay: UIImage? {
+        guard let image,
+              let mask = segmentationMask,
+              let roi = roiRectNormalized,
+              let cgImage = image.cgImage else { return nil }
+
+        return SegmentationOverlay.makeImage(
+            from: mask,
+            width: maskWidth,
+            height: maskHeight,
+            canvasSize: CGSize(width: cgImage.width, height: cgImage.height),
+            roiRectNormalized: roi
+        )
+    }
 
     var body: some View {
         Group {
@@ -20,13 +37,8 @@ struct SegmentationImageView: View {
                             .frame(width: geometry.size.width, height: geometry.size.height)
                             .clipped()
 
-                        if let segmentationMask,
-                           let overlay = SegmentationOverlay.makeImage(
-                            from: segmentationMask,
-                            width: maskWidth,
-                            height: maskHeight
-                           ) {
-                            Image(uiImage: overlay)
+                        if let alignedOverlay {
+                            Image(uiImage: alignedOverlay)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: geometry.size.width, height: geometry.size.height)

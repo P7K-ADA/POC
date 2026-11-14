@@ -1,0 +1,899 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		09707C84F63D1D16C75F999A /* ScanZoomControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1701FC0E5A5D2D473B8FF8C /* ScanZoomControl.swift */; };
+		0C06388CA26A5900E5EA146B /* ScreeningSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = D1A5B75568B72681125623DD /* ScreeningSession.swift */; };
+		0E17A325EFD66A8C38C9D050 /* ImageInferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57B560A0AC0F32A3D5F91E4D /* ImageInferenceService.swift */; };
+		10DC5FABA387618F44A30244 /* NFCFrameDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17E4D19C5DEA1744D188EFBF /* NFCFrameDetector.swift */; };
+		154791C9551DB36FC9D0808F /* EyeSummaryCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9732F31E04AB57A5A9F9A1A5 /* EyeSummaryCard.swift */; };
+		1C974AC4ECA425F28C56D580 /* ModelPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 541B6155DF8CDEDBADA06D83 /* ModelPlaceholder.swift */; };
+		281505476EB5CAE047085614 /* AppButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A8F55EDF4F392E288A7D10 /* AppButton.swift */; };
+		290B32E4D965917B11FB752B /* SingleReportExportPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D282E2FF016EB97E5021599A /* SingleReportExportPage.swift */; };
+		2A6B74ED295EB9ED96FBAA94 /* ReviewImageCanvas.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C5A26DF134867C75B59454E /* ReviewImageCanvas.swift */; };
+		2C3AA0645A04D07E2A57B314 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2594AFE033FABC0FAE339D14 /* ContentView.swift */; };
+		2FA4DC5F2111AF99536FFC6B /* ScanCropMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D588F5DAF27E5123E9C8DDD /* ScanCropMask.swift */; };
+		2FADE9CD30A8A73F008D1CA3 /* GlaucomaSegV2_EffNetB4 2.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 2FADE9CC30A8A73F008D1CA3 /* GlaucomaSegV2_EffNetB4 2.mlpackage */; };
+		30096D4FD6D9D5F7BB15DD89 /* ReportExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0355AE24A28B7CE2ADACD875 /* ReportExportService.swift */; };
+		35ABB3A30BEB06D5E2436B87 /* ReviewEditingActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0EBA37FDDD081DC2514511EC /* ReviewEditingActions.swift */; };
+		362C6F395211965851BD7E76 /* File.txt in Resources */ = {isa = PBXBuildFile; fileRef = 1B811755831632B0FFEC1253 /* File.txt */; };
+		3924849F14AACCDBE94EF1A2 /* Photos.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DF97A983110B0AA056DA0C94 /* Photos.framework */; };
+		3EB98F040397B9E907021E3B /* PreprocessingDetailsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE1459935C639ECD82265D7 /* PreprocessingDetailsSection.swift */; };
+		3F6E3335B7AFDA3683E6D2A6 /* EyeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1EA72307B455ECD8D02236D /* EyeDetailView.swift */; };
+		4181E40BA2AB05BDE0F26007 /* glauma_preprocessing_config.json in Resources */ = {isa = PBXBuildFile; fileRef = 63F2D6AB34F9869327919575 /* glauma_preprocessing_config.json */; };
+		42537458EB46B6ACA103BD8F /* EyeExaminationRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0ED62FFC2B8590D5FC41789 /* EyeExaminationRecord.swift */; };
+		43DE04A6EFB1DF6ACC531750 /* SegmentationImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA472FF1752892929EB048CD /* SegmentationImageView.swift */; };
+		4724FBC6B94C54FFAE1D5735 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9BE3B82CB36E61B327CB0E4C /* AVFoundation.framework */; };
+		47EA634B8C847E975DB275C7 /* GlaucomaSegV2.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = A75A479991E8D47C520D1ECF /* GlaucomaSegV2.mlpackage */; };
+		4AD6CC3D7447D512F6C02180 /* RecommendationCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9DFBF9759827361C8F1C57 /* RecommendationCard.swift */; };
+		4B78001D1C9BCFA2A4451431 /* ReportOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B05677B1688D4BA9FC3397EC /* ReportOverviewView.swift */; };
+		4D0F19975EA541B367039212 /* ScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3342D81A31965B911F3D084A /* ScanView.swift */; };
+		4D1EDB5D9BF7445D53BA7FD1 /* ScreeningStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A74FDA3AAC3C3BE64FEA26C /* ScreeningStatus.swift */; };
+		4D343125228B3DC2B08D7C93 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6704A17D3B7116E0503A6C3C /* CameraService.swift */; };
+		5266A524E5A5F4A6A61F1E2D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3E7B059EB6E17DE0596F5526 /* Assets.xcassets */; };
+		52E6DAC3D26BFE21005796FF /* ReportData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE0992180D3C70434BFAC80F /* ReportData.swift */; };
+		575F222E765838398B0BACE4 /* ImageReviewPreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73F91337DABAFDE5E3B6C58D /* ImageReviewPreviewData.swift */; };
+		599B5A7D9DB858BF37B3A532 /* OnboardingHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ACD361FE3B46B06F5040E5E /* OnboardingHeader.swift */; };
+		5F34D8ABD620340FB33B8BF6 /* GlaucomaSegmentation.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = 370FF2D7710285C4FC20BA5C /* GlaucomaSegmentation.mlpackage */; };
+		702D82E0ECC99FFCB0C04EE5 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02315A82EF70D9C52F556BD /* CameraPreview.swift */; };
+		7843019C6EA6C67F7885FAE3 /* CDRAssessment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D7A48DEA7639B1AFBB8279 /* CDRAssessment.swift */; };
+		7B944FBD1840416676FB2099 /* POCApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 134B7BC0034F1F78BFC12E00 /* POCApp.swift */; };
+		7B97AA9604DF8EE2C51BAE44 /* CameraStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40E5D9B617DC216013B5130 /* CameraStatusView.swift */; };
+		7D98B36CE9230FD05D4C4CD3 /* Layout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90BF7B4156B46C25A43A8C7E /* Layout.swift */; };
+		7F62AF63A785BFA0E92F56A6 /* ReportExportSuccessView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 34684B39D653F9AED928F9B5 /* ReportExportSuccessView.swift */; };
+		8C80AF99A4236B7574C5C40D /* EyeSideOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93C377BEA2843E3A11892B63 /* EyeSideOverlay.swift */; };
+		8DFCB43E655969B6F4C2D324 /* GlaumaInferenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 044ED56833529C226543A176 /* GlaumaInferenceService.swift */; };
+		9172D483B017C47F12907A90 /* EyeDetailExpandedImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E613FCA02F023F9D99A57738 /* EyeDetailExpandedImageView.swift */; };
+		93867A4544DF2EA8A79DDA77 /* MobileNetV3Gatekeeper.mlpackage in Sources */ = {isa = PBXBuildFile; fileRef = C26A9E86E281438EB04CD636 /* MobileNetV3Gatekeeper.mlpackage */; };
+		95B990F7F23B540A58E704B9 /* ReviewHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FEC5C07A282A1BE1D1A5C8 /* ReviewHeader.swift */; };
+		97609ACB29578EA6BFCF347A /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B6773C49C2204DA705E7400 /* OnboardingView.swift */; };
+		9CA5E99C1516C5F7904DA576 /* ReviewStatusCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F91A381E4726809E5443C5FB /* ReviewStatusCard.swift */; };
+		9D0524EC0A27918F1A8EC482 /* ScanViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6FAACCD192FA6736268E1B2 /* ScanViewModel.swift */; };
+		A48BD0838727FE5DEFE45523 /* FocusSquareView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AF84A6BC1870072FD58F0AB /* FocusSquareView.swift */; };
+		A85C4E98D9CA6F0169D3A011 /* ScanCameraContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33E095883B56B85B3DC35AB7 /* ScanCameraContent.swift */; };
+		AFAFFD14EF9537380C9AE289 /* OnboardingPermission.swift in Sources */ = {isa = PBXBuildFile; fileRef = F86F8A0C2D69F977B40CA9A2 /* OnboardingPermission.swift */; };
+		B401CE5488AD0049DD10BC22 /* OnboardingPermissionPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D747712DDDD146C763109C32 /* OnboardingPermissionPage.swift */; };
+		B756391E7B5EADDECC4BDBB8 /* AIDisclaimerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C403154B42ED9CEF846EAC /* AIDisclaimerView.swift */; };
+		B904D83DE89AA2D95BA0E7C4 /* SegmentationOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE98B8EA9B1B8F4BDCA81C22 /* SegmentationOverlay.swift */; };
+		B92CE3B7DC1BE7DD82FA95A0 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55DD30007CFD277B9B5D78AE /* AppColors.swift */; };
+		BB06373356162DE99DB2E66F /* EyeDetailImagePreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC88019113EA43ABA5DE63C /* EyeDetailImagePreview.swift */; };
+		C29570055CCBBC8A18FFA972 /* Vision.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA04302575712E0C5921E338 /* Vision.framework */; };
+		C45DA2959115DBB8ADED5C0E /* ViewModelPlaceholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF14ADB739D2F41D3C807C92 /* ViewModelPlaceholder.swift */; };
+		CDD9AC1DEE64FC7715BE2B24 /* ReportEyeScansSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DE2E0524ECFDDE3842CA70 /* ReportEyeScansSection.swift */; };
+		D54E58118D790B143BA72B32 /* opencv2.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 35F3DDA6424C84D7E3F9CD8D /* opencv2.xcframework */; };
+		D5CADEF0B1A93D2F60242AA5 /* glauma_error_messages_id.json in Resources */ = {isa = PBXBuildFile; fileRef = ACF580780796A8418A8DBE5E /* glauma_error_messages_id.json */; };
+		D6A77D0E91B7143F0625FEE2 /* OnboardingIllustration.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7DC63F307864F70E87735B5 /* OnboardingIllustration.swift */; };
+		D8F5FA1CAA42F1DAECC7E6DB /* EyeDetailContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24A07D822BCFCAD65DDD8BC6 /* EyeDetailContent.swift */; };
+		DED3254EA545055EB73A7D35 /* CoreNFC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 61D705F724F2B32DCC7076F1 /* CoreNFC.framework */; };
+		E10624E7552EB0B5CA322BA7 /* ReportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4A185C6AB9F4DD3983A6242 /* ReportViewModel.swift */; };
+		E35FC29D335F7E81AF6D73AA /* ScanShutterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 459EE49A98FF9F3A0887892E /* ScanShutterButton.swift */; };
+		E78D95A5AE3A4AED8D5929A3 /* EyeSide.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BBBC19A2A1C1FDC998F844 /* EyeSide.swift */; };
+		EB4D7C194BDCD1EE4C51B353 /* PhotosUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 88D21391D35BA6C2B77A873E /* PhotosUI.framework */; };
+		EB7F5091392D736AECF91596 /* GlaumaOpenCVBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2B90878559EEB8517C75DF09 /* GlaumaOpenCVBridge.mm */; };
+		F1C5508B241BCFC12285B3D8 /* GlaumaDebugGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B69E2B960BA6BE70A15B44 /* GlaumaDebugGridView.swift */; };
+		F37A745BCEE25F91B4FE2382 /* ImageReviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A72716174B78827335290B4D /* ImageReviewView.swift */; };
+		FBD135398839981820362851 /* GatekeeperService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AB7F990AF3AD579DA2DBAF1 /* GatekeeperService.swift */; };
+		FC633258DBA55D195E424EA0 /* EyeDetailStatusCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36D46050BF6F6A438783AE21 /* EyeDetailStatusCards.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0355AE24A28B7CE2ADACD875 /* ReportExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportExportService.swift; sourceTree = "<group>"; };
+		044ED56833529C226543A176 /* GlaumaInferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlaumaInferenceService.swift; sourceTree = "<group>"; };
+		0EBA37FDDD081DC2514511EC /* ReviewEditingActions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewEditingActions.swift; sourceTree = "<group>"; };
+		134B7BC0034F1F78BFC12E00 /* POCApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = POCApp.swift; sourceTree = "<group>"; };
+		17E4D19C5DEA1744D188EFBF /* NFCFrameDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFCFrameDetector.swift; sourceTree = "<group>"; };
+		1AB7F990AF3AD579DA2DBAF1 /* GatekeeperService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GatekeeperService.swift; sourceTree = "<group>"; };
+		1B6773C49C2204DA705E7400 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		1B811755831632B0FFEC1253 /* File.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = File.txt; sourceTree = "<group>"; };
+		24A07D822BCFCAD65DDD8BC6 /* EyeDetailContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeDetailContent.swift; sourceTree = "<group>"; };
+		2594AFE033FABC0FAE339D14 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2B90878559EEB8517C75DF09 /* GlaumaOpenCVBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = GlaumaOpenCVBridge.mm; sourceTree = "<group>"; };
+		2FADE9CC30A8A73F008D1CA3 /* GlaucomaSegV2_EffNetB4 2.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = "GlaucomaSegV2_EffNetB4 2.mlpackage"; sourceTree = "<group>"; };
+		3103200C8A835A39D1C5A8BF /* POC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = POC.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3342D81A31965B911F3D084A /* ScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanView.swift; sourceTree = "<group>"; };
+		33E095883B56B85B3DC35AB7 /* ScanCameraContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanCameraContent.swift; sourceTree = "<group>"; };
+		34684B39D653F9AED928F9B5 /* ReportExportSuccessView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportExportSuccessView.swift; sourceTree = "<group>"; };
+		35F3DDA6424C84D7E3F9CD8D /* opencv2.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = opencv2.xcframework; sourceTree = "<group>"; };
+		36D46050BF6F6A438783AE21 /* EyeDetailStatusCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeDetailStatusCards.swift; sourceTree = "<group>"; };
+		370FF2D7710285C4FC20BA5C /* GlaucomaSegmentation.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = GlaucomaSegmentation.mlpackage; sourceTree = "<group>"; };
+		3E7B059EB6E17DE0596F5526 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		459EE49A98FF9F3A0887892E /* ScanShutterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanShutterButton.swift; sourceTree = "<group>"; };
+		4AF84A6BC1870072FD58F0AB /* FocusSquareView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSquareView.swift; sourceTree = "<group>"; };
+		541B6155DF8CDEDBADA06D83 /* ModelPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelPlaceholder.swift; sourceTree = "<group>"; };
+		55DD30007CFD277B9B5D78AE /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
+		57B560A0AC0F32A3D5F91E4D /* ImageInferenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageInferenceService.swift; sourceTree = "<group>"; };
+		5A74FDA3AAC3C3BE64FEA26C /* ScreeningStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningStatus.swift; sourceTree = "<group>"; };
+		5ACD361FE3B46B06F5040E5E /* OnboardingHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingHeader.swift; sourceTree = "<group>"; };
+		5C5A26DF134867C75B59454E /* ReviewImageCanvas.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewImageCanvas.swift; sourceTree = "<group>"; };
+		61D705F724F2B32DCC7076F1 /* CoreNFC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreNFC.framework; path = System/Library/Frameworks/CoreNFC.framework; sourceTree = SDKROOT; };
+		63F2D6AB34F9869327919575 /* glauma_preprocessing_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = glauma_preprocessing_config.json; sourceTree = "<group>"; };
+		6704A17D3B7116E0503A6C3C /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		68C403154B42ED9CEF846EAC /* AIDisclaimerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIDisclaimerView.swift; sourceTree = "<group>"; };
+		69DD1D72C3091FE2F7321E75 /* POC.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = POC.entitlements; sourceTree = "<group>"; };
+		71B69E2B960BA6BE70A15B44 /* GlaumaDebugGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlaumaDebugGridView.swift; sourceTree = "<group>"; };
+		73F91337DABAFDE5E3B6C58D /* ImageReviewPreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageReviewPreviewData.swift; sourceTree = "<group>"; };
+		79BBBC19A2A1C1FDC998F844 /* EyeSide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeSide.swift; sourceTree = "<group>"; };
+		7D588F5DAF27E5123E9C8DDD /* ScanCropMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanCropMask.swift; sourceTree = "<group>"; };
+		88D21391D35BA6C2B77A873E /* PhotosUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PhotosUI.framework; path = System/Library/Frameworks/PhotosUI.framework; sourceTree = SDKROOT; };
+		90BF7B4156B46C25A43A8C7E /* Layout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Layout.swift; sourceTree = "<group>"; };
+		93C377BEA2843E3A11892B63 /* EyeSideOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeSideOverlay.swift; sourceTree = "<group>"; };
+		95FEC5C07A282A1BE1D1A5C8 /* ReviewHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewHeader.swift; sourceTree = "<group>"; };
+		9732F31E04AB57A5A9F9A1A5 /* EyeSummaryCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeSummaryCard.swift; sourceTree = "<group>"; };
+		98D7A48DEA7639B1AFBB8279 /* CDRAssessment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CDRAssessment.swift; sourceTree = "<group>"; };
+		9BE3B82CB36E61B327CB0E4C /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		A1701FC0E5A5D2D473B8FF8C /* ScanZoomControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanZoomControl.swift; sourceTree = "<group>"; };
+		A72716174B78827335290B4D /* ImageReviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageReviewView.swift; sourceTree = "<group>"; };
+		A75A479991E8D47C520D1ECF /* GlaucomaSegV2.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = GlaucomaSegV2.mlpackage; sourceTree = "<group>"; };
+		ACF580780796A8418A8DBE5E /* glauma_error_messages_id.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = glauma_error_messages_id.json; sourceTree = "<group>"; };
+		B05677B1688D4BA9FC3397EC /* ReportOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportOverviewView.swift; sourceTree = "<group>"; };
+		B9DE2E0524ECFDDE3842CA70 /* ReportEyeScansSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportEyeScansSection.swift; sourceTree = "<group>"; };
+		BE98B8EA9B1B8F4BDCA81C22 /* SegmentationOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationOverlay.swift; sourceTree = "<group>"; };
+		BF14ADB739D2F41D3C807C92 /* ViewModelPlaceholder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelPlaceholder.swift; sourceTree = "<group>"; };
+		C26A9E86E281438EB04CD636 /* MobileNetV3Gatekeeper.mlpackage */ = {isa = PBXFileReference; lastKnownFileType = folder.mlpackage; path = MobileNetV3Gatekeeper.mlpackage; sourceTree = "<group>"; };
+		C4A185C6AB9F4DD3983A6242 /* ReportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewModel.swift; sourceTree = "<group>"; };
+		C6FAACCD192FA6736268E1B2 /* ScanViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanViewModel.swift; sourceTree = "<group>"; };
+		C9A8F55EDF4F392E288A7D10 /* AppButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppButton.swift; sourceTree = "<group>"; };
+		CC9DFBF9759827361C8F1C57 /* RecommendationCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationCard.swift; sourceTree = "<group>"; };
+		D0ED62FFC2B8590D5FC41789 /* EyeExaminationRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeExaminationRecord.swift; sourceTree = "<group>"; };
+		D1A5B75568B72681125623DD /* ScreeningSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScreeningSession.swift; sourceTree = "<group>"; };
+		D282E2FF016EB97E5021599A /* SingleReportExportPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleReportExportPage.swift; sourceTree = "<group>"; };
+		D675957D0C1FF48945CED0EE /* POC-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "POC-Bridging-Header.h"; sourceTree = "<group>"; };
+		D747712DDDD146C763109C32 /* OnboardingPermissionPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermissionPage.swift; sourceTree = "<group>"; };
+		DA472FF1752892929EB048CD /* SegmentationImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentationImageView.swift; sourceTree = "<group>"; };
+		DAB1AFB5D3E8B0C0C4B68324 /* GlaumaOpenCVBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GlaumaOpenCVBridge.h; sourceTree = "<group>"; };
+		DF97A983110B0AA056DA0C94 /* Photos.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Photos.framework; path = System/Library/Frameworks/Photos.framework; sourceTree = SDKROOT; };
+		E40E5D9B617DC216013B5130 /* CameraStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraStatusView.swift; sourceTree = "<group>"; };
+		E613FCA02F023F9D99A57738 /* EyeDetailExpandedImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeDetailExpandedImageView.swift; sourceTree = "<group>"; };
+		EA04302575712E0C5921E338 /* Vision.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Vision.framework; path = System/Library/Frameworks/Vision.framework; sourceTree = SDKROOT; };
+		ECE1459935C639ECD82265D7 /* PreprocessingDetailsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreprocessingDetailsSection.swift; sourceTree = "<group>"; };
+		EEC88019113EA43ABA5DE63C /* EyeDetailImagePreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeDetailImagePreview.swift; sourceTree = "<group>"; };
+		F02315A82EF70D9C52F556BD /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		F1EA72307B455ECD8D02236D /* EyeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EyeDetailView.swift; sourceTree = "<group>"; };
+		F7DC63F307864F70E87735B5 /* OnboardingIllustration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingIllustration.swift; sourceTree = "<group>"; };
+		F86F8A0C2D69F977B40CA9A2 /* OnboardingPermission.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPermission.swift; sourceTree = "<group>"; };
+		F91A381E4726809E5443C5FB /* ReviewStatusCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewStatusCard.swift; sourceTree = "<group>"; };
+		FE0992180D3C70434BFAC80F /* ReportData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportData.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		E61C224BB7D9A5C61360F16A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4724FBC6B94C54FFAE1D5735 /* AVFoundation.framework in Frameworks */,
+				DED3254EA545055EB73A7D35 /* CoreNFC.framework in Frameworks */,
+				3924849F14AACCDBE94EF1A2 /* Photos.framework in Frameworks */,
+				EB4D7C194BDCD1EE4C51B353 /* PhotosUI.framework in Frameworks */,
+				C29570055CCBBC8A18FFA972 /* Vision.framework in Frameworks */,
+				D54E58118D790B143BA72B32 /* opencv2.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0021E6B13FADCC078CA65B5D /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				FE0992180D3C70434BFAC80F /* ReportData.swift */,
+				C4A185C6AB9F4DD3983A6242 /* ReportViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		01DFE82F0AFE90731E50D2E5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3103200C8A835A39D1C5A8BF /* POC.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		02B65B88DC0A830837143412 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				98D7A48DEA7639B1AFBB8279 /* CDRAssessment.swift */,
+				D0ED62FFC2B8590D5FC41789 /* EyeExaminationRecord.swift */,
+				79BBBC19A2A1C1FDC998F844 /* EyeSide.swift */,
+				541B6155DF8CDEDBADA06D83 /* ModelPlaceholder.swift */,
+				D1A5B75568B72681125623DD /* ScreeningSession.swift */,
+				5A74FDA3AAC3C3BE64FEA26C /* ScreeningStatus.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		02C10B40CCCADCF15CB4B27D /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				24A07D822BCFCAD65DDD8BC6 /* EyeDetailContent.swift */,
+				E613FCA02F023F9D99A57738 /* EyeDetailExpandedImageView.swift */,
+				EEC88019113EA43ABA5DE63C /* EyeDetailImagePreview.swift */,
+				36D46050BF6F6A438783AE21 /* EyeDetailStatusCards.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		064603CEF2C7E7DE60449E8B /* Inference */ = {
+			isa = PBXGroup;
+			children = (
+				044ED56833529C226543A176 /* GlaumaInferenceService.swift */,
+				DAB1AFB5D3E8B0C0C4B68324 /* GlaumaOpenCVBridge.h */,
+				2B90878559EEB8517C75DF09 /* GlaumaOpenCVBridge.mm */,
+				D675957D0C1FF48945CED0EE /* POC-Bridging-Header.h */,
+			);
+			path = Inference;
+			sourceTree = "<group>";
+		};
+		088CA8FDC9B3D24DEB4D9874 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B05677B1688D4BA9FC3397EC /* ReportOverviewView.swift */,
+				3F7E997FF5E98E433F802EF9 /* Components */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		0BD4923C7C8B7F765972C5F8 /* Backup */ = {
+			isa = PBXGroup;
+			children = (
+				1AB7F990AF3AD579DA2DBAF1 /* GatekeeperService.swift */,
+				57B560A0AC0F32A3D5F91E4D /* ImageInferenceService.swift */,
+			);
+			path = Backup;
+			sourceTree = "<group>";
+		};
+		1C372DBD08CD9E095E7E5B0F /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				F86F8A0C2D69F977B40CA9A2 /* OnboardingPermission.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		20B7CD00DC2D52B14CAC2B4A /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				73F91337DABAFDE5E3B6C58D /* ImageReviewPreviewData.swift */,
+				0EBA37FDDD081DC2514511EC /* ReviewEditingActions.swift */,
+				95FEC5C07A282A1BE1D1A5C8 /* ReviewHeader.swift */,
+				5C5A26DF134867C75B59454E /* ReviewImageCanvas.swift */,
+				F91A381E4726809E5443C5FB /* ReviewStatusCard.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		2AA9AB595FCE8892EB304ADF /* GlobalComponents */ = {
+			isa = PBXGroup;
+			children = (
+				68C403154B42ED9CEF846EAC /* AIDisclaimerView.swift */,
+				C9A8F55EDF4F392E288A7D10 /* AppButton.swift */,
+				55DD30007CFD277B9B5D78AE /* AppColors.swift */,
+				93C377BEA2843E3A11892B63 /* EyeSideOverlay.swift */,
+				90BF7B4156B46C25A43A8C7E /* Layout.swift */,
+			);
+			path = GlobalComponents;
+			sourceTree = "<group>";
+		};
+		2AD6709CA92077079D1FA407 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				F02315A82EF70D9C52F556BD /* CameraPreview.swift */,
+				E40E5D9B617DC216013B5130 /* CameraStatusView.swift */,
+				4AF84A6BC1870072FD58F0AB /* FocusSquareView.swift */,
+				33E095883B56B85B3DC35AB7 /* ScanCameraContent.swift */,
+				7D588F5DAF27E5123E9C8DDD /* ScanCropMask.swift */,
+				459EE49A98FF9F3A0887892E /* ScanShutterButton.swift */,
+				A1701FC0E5A5D2D473B8FF8C /* ScanZoomControl.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		2D5EC636AC8C7024A867AA24 /* POC */ = {
+			isa = PBXGroup;
+			children = (
+				69DD1D72C3091FE2F7321E75 /* POC.entitlements */,
+				8F8871070DCAE717C3AF0D60 /* App */,
+				D185B1AD4B2688F336E13FB8 /* Assets */,
+				4A83ECE92E941C963E8BEE11 /* Core */,
+				969537E00577E2821D3E97CA /* Features */,
+				02B65B88DC0A830837143412 /* Models */,
+			);
+			path = POC;
+			sourceTree = "<group>";
+		};
+		3048A7E0F7C1009D4E9A545C /* PhotoReview */ = {
+			isa = PBXGroup;
+			children = (
+				F7548DA34DB5228246C00715 /* View */,
+				E924E8656F5030BE792689BC /* ViewModels */,
+			);
+			path = PhotoReview;
+			sourceTree = "<group>";
+		};
+		3F7E997FF5E98E433F802EF9 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				9732F31E04AB57A5A9F9A1A5 /* EyeSummaryCard.swift */,
+				ECE1459935C639ECD82265D7 /* PreprocessingDetailsSection.swift */,
+				CC9DFBF9759827361C8F1C57 /* RecommendationCard.swift */,
+				34684B39D653F9AED928F9B5 /* ReportExportSuccessView.swift */,
+				B9DE2E0524ECFDDE3842CA70 /* ReportEyeScansSection.swift */,
+				DA472FF1752892929EB048CD /* SegmentationImageView.swift */,
+				D282E2FF016EB97E5021599A /* SingleReportExportPage.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		4A83ECE92E941C963E8BEE11 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				7CB263DDE9C3180898427709 /* Services */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		4DA0051922C624ACE728A8E2 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				D747712DDDD146C763109C32 /* OnboardingPermissionPage.swift */,
+				1B6773C49C2204DA705E7400 /* OnboardingView.swift */,
+				636D2DA83CF3BC255FF90109 /* Components */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		51D2E16E23A076FB175C5568 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				3342D81A31965B911F3D084A /* ScanView.swift */,
+				2AD6709CA92077079D1FA407 /* Components */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		636D2DA83CF3BC255FF90109 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				5ACD361FE3B46B06F5040E5E /* OnboardingHeader.swift */,
+				F7DC63F307864F70E87735B5 /* OnboardingIllustration.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		65E7E8F3D16DA619E0D0AD2F = {
+			isa = PBXGroup;
+			children = (
+				6B30FB2FEF66A9AB03FA0B2F /* APIs */,
+				2D5EC636AC8C7024A867AA24 /* POC */,
+				DDBF632358F2CC7E07B11FAD /* Frameworks */,
+				01DFE82F0AFE90731E50D2E5 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		68475CEB4920804D14F7D80A /* ReportDetail */ = {
+			isa = PBXGroup;
+			children = (
+				AEB484C3776FE46C40E32F97 /* View */,
+			);
+			path = ReportDetail;
+			sourceTree = "<group>";
+		};
+		698FA15A3B868D2001A8D27E /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				4DA0051922C624ACE728A8E2 /* View */,
+				1C372DBD08CD9E095E7E5B0F /* ViewModel */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		6B30FB2FEF66A9AB03FA0B2F /* APIs */ = {
+			isa = PBXGroup;
+			children = (
+				370FF2D7710285C4FC20BA5C /* GlaucomaSegmentation.mlpackage */,
+				A75A479991E8D47C520D1ECF /* GlaucomaSegV2.mlpackage */,
+				C26A9E86E281438EB04CD636 /* MobileNetV3Gatekeeper.mlpackage */,
+				2FADE9CC30A8A73F008D1CA3 /* GlaucomaSegV2_EffNetB4 2.mlpackage */,
+			);
+			path = APIs;
+			sourceTree = "<group>";
+		};
+		7CB263DDE9C3180898427709 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				6704A17D3B7116E0503A6C3C /* CameraService.swift */,
+				17E4D19C5DEA1744D188EFBF /* NFCFrameDetector.swift */,
+				0355AE24A28B7CE2ADACD875 /* ReportExportService.swift */,
+				0BD4923C7C8B7F765972C5F8 /* Backup */,
+				064603CEF2C7E7DE60449E8B /* Inference */,
+				AF224C6545B71F800EFD39A7 /* Resources */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		8BB48C5395E821DED3532E2D /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				C6FAACCD192FA6736268E1B2 /* ScanViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		8F8871070DCAE717C3AF0D60 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				2594AFE033FABC0FAE339D14 /* ContentView.swift */,
+				134B7BC0034F1F78BFC12E00 /* POCApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		9177F3AC062A09D71969DD98 /* Scan */ = {
+			isa = PBXGroup;
+			children = (
+				51D2E16E23A076FB175C5568 /* View */,
+				8BB48C5395E821DED3532E2D /* ViewModel */,
+			);
+			path = Scan;
+			sourceTree = "<group>";
+		};
+		969537E00577E2821D3E97CA /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				BEE093E176601912199AE797 /* Development */,
+				2AA9AB595FCE8892EB304ADF /* GlobalComponents */,
+				698FA15A3B868D2001A8D27E /* Onboarding */,
+				3048A7E0F7C1009D4E9A545C /* PhotoReview */,
+				D0D2C11DA1D1EE009E8D06EE /* Report */,
+				68475CEB4920804D14F7D80A /* ReportDetail */,
+				9177F3AC062A09D71969DD98 /* Scan */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		A556C671346B6E99F599F782 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				BE98B8EA9B1B8F4BDCA81C22 /* SegmentationOverlay.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		AEB484C3776FE46C40E32F97 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				F1EA72307B455ECD8D02236D /* EyeDetailView.swift */,
+				02C10B40CCCADCF15CB4B27D /* Components */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		AF224C6545B71F800EFD39A7 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ACF580780796A8418A8DBE5E /* glauma_error_messages_id.json */,
+				63F2D6AB34F9869327919575 /* glauma_preprocessing_config.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		BEE093E176601912199AE797 /* Development */ = {
+			isa = PBXGroup;
+			children = (
+				71B69E2B960BA6BE70A15B44 /* GlaumaDebugGridView.swift */,
+			);
+			path = Development;
+			sourceTree = "<group>";
+		};
+		D0D2C11DA1D1EE009E8D06EE /* Report */ = {
+			isa = PBXGroup;
+			children = (
+				A556C671346B6E99F599F782 /* Support */,
+				088CA8FDC9B3D24DEB4D9874 /* View */,
+				0021E6B13FADCC078CA65B5D /* ViewModel */,
+			);
+			path = Report;
+			sourceTree = "<group>";
+		};
+		D185B1AD4B2688F336E13FB8 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				3E7B059EB6E17DE0596F5526 /* Assets.xcassets */,
+				1B811755831632B0FFEC1253 /* File.txt */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		DDBF632358F2CC7E07B11FAD /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				9BE3B82CB36E61B327CB0E4C /* AVFoundation.framework */,
+				61D705F724F2B32DCC7076F1 /* CoreNFC.framework */,
+				35F3DDA6424C84D7E3F9CD8D /* opencv2.xcframework */,
+				DF97A983110B0AA056DA0C94 /* Photos.framework */,
+				88D21391D35BA6C2B77A873E /* PhotosUI.framework */,
+				EA04302575712E0C5921E338 /* Vision.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E924E8656F5030BE792689BC /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				BF14ADB739D2F41D3C807C92 /* ViewModelPlaceholder.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		F7548DA34DB5228246C00715 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				A72716174B78827335290B4D /* ImageReviewView.swift */,
+				20B7CD00DC2D52B14CAC2B4A /* Components */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AA29779DD6F3CA189084A3F6 /* POC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07044ED8281BABE4F1EF6EC5 /* Build configuration list for PBXNativeTarget "POC" */;
+			buildPhases = (
+				7C71FA1ECC6629C08CE596F2 /* Sources */,
+				0324DC6E1074CAC04B219163 /* Resources */,
+				E61C224BB7D9A5C61360F16A /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = POC;
+			packageProductDependencies = (
+			);
+			productName = POC;
+			productReference = 3103200C8A835A39D1C5A8BF /* POC.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		47A6A2D54F0F696847DDC75A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					AA29779DD6F3CA189084A3F6 = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 10E4ECEDA4C1383F60B65FE2 /* Build configuration list for PBXProject "Glauma" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 65E7E8F3D16DA619E0D0AD2F;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 01DFE82F0AFE90731E50D2E5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				AA29779DD6F3CA189084A3F6 /* POC */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0324DC6E1074CAC04B219163 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5266A524E5A5F4A6A61F1E2D /* Assets.xcassets in Resources */,
+				362C6F395211965851BD7E76 /* File.txt in Resources */,
+				D5CADEF0B1A93D2F60242AA5 /* glauma_error_messages_id.json in Resources */,
+				4181E40BA2AB05BDE0F26007 /* glauma_preprocessing_config.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		7C71FA1ECC6629C08CE596F2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B756391E7B5EADDECC4BDBB8 /* AIDisclaimerView.swift in Sources */,
+				281505476EB5CAE047085614 /* AppButton.swift in Sources */,
+				B92CE3B7DC1BE7DD82FA95A0 /* AppColors.swift in Sources */,
+				7843019C6EA6C67F7885FAE3 /* CDRAssessment.swift in Sources */,
+				702D82E0ECC99FFCB0C04EE5 /* CameraPreview.swift in Sources */,
+				4D343125228B3DC2B08D7C93 /* CameraService.swift in Sources */,
+				7B97AA9604DF8EE2C51BAE44 /* CameraStatusView.swift in Sources */,
+				2C3AA0645A04D07E2A57B314 /* ContentView.swift in Sources */,
+				D8F5FA1CAA42F1DAECC7E6DB /* EyeDetailContent.swift in Sources */,
+				9172D483B017C47F12907A90 /* EyeDetailExpandedImageView.swift in Sources */,
+				2FADE9CD30A8A73F008D1CA3 /* GlaucomaSegV2_EffNetB4 2.mlpackage in Sources */,
+				BB06373356162DE99DB2E66F /* EyeDetailImagePreview.swift in Sources */,
+				FC633258DBA55D195E424EA0 /* EyeDetailStatusCards.swift in Sources */,
+				3F6E3335B7AFDA3683E6D2A6 /* EyeDetailView.swift in Sources */,
+				42537458EB46B6ACA103BD8F /* EyeExaminationRecord.swift in Sources */,
+				E78D95A5AE3A4AED8D5929A3 /* EyeSide.swift in Sources */,
+				8C80AF99A4236B7574C5C40D /* EyeSideOverlay.swift in Sources */,
+				154791C9551DB36FC9D0808F /* EyeSummaryCard.swift in Sources */,
+				A48BD0838727FE5DEFE45523 /* FocusSquareView.swift in Sources */,
+				FBD135398839981820362851 /* GatekeeperService.swift in Sources */,
+				47EA634B8C847E975DB275C7 /* GlaucomaSegV2.mlpackage in Sources */,
+				5F34D8ABD620340FB33B8BF6 /* GlaucomaSegmentation.mlpackage in Sources */,
+				F1C5508B241BCFC12285B3D8 /* GlaumaDebugGridView.swift in Sources */,
+				8DFCB43E655969B6F4C2D324 /* GlaumaInferenceService.swift in Sources */,
+				EB7F5091392D736AECF91596 /* GlaumaOpenCVBridge.mm in Sources */,
+				0E17A325EFD66A8C38C9D050 /* ImageInferenceService.swift in Sources */,
+				575F222E765838398B0BACE4 /* ImageReviewPreviewData.swift in Sources */,
+				F37A745BCEE25F91B4FE2382 /* ImageReviewView.swift in Sources */,
+				7D98B36CE9230FD05D4C4CD3 /* Layout.swift in Sources */,
+				93867A4544DF2EA8A79DDA77 /* MobileNetV3Gatekeeper.mlpackage in Sources */,
+				1C974AC4ECA425F28C56D580 /* ModelPlaceholder.swift in Sources */,
+				10DC5FABA387618F44A30244 /* NFCFrameDetector.swift in Sources */,
+				599B5A7D9DB858BF37B3A532 /* OnboardingHeader.swift in Sources */,
+				D6A77D0E91B7143F0625FEE2 /* OnboardingIllustration.swift in Sources */,
+				AFAFFD14EF9537380C9AE289 /* OnboardingPermission.swift in Sources */,
+				B401CE5488AD0049DD10BC22 /* OnboardingPermissionPage.swift in Sources */,
+				97609ACB29578EA6BFCF347A /* OnboardingView.swift in Sources */,
+				7B944FBD1840416676FB2099 /* POCApp.swift in Sources */,
+				3EB98F040397B9E907021E3B /* PreprocessingDetailsSection.swift in Sources */,
+				4AD6CC3D7447D512F6C02180 /* RecommendationCard.swift in Sources */,
+				52E6DAC3D26BFE21005796FF /* ReportData.swift in Sources */,
+				30096D4FD6D9D5F7BB15DD89 /* ReportExportService.swift in Sources */,
+				7F62AF63A785BFA0E92F56A6 /* ReportExportSuccessView.swift in Sources */,
+				CDD9AC1DEE64FC7715BE2B24 /* ReportEyeScansSection.swift in Sources */,
+				4B78001D1C9BCFA2A4451431 /* ReportOverviewView.swift in Sources */,
+				E10624E7552EB0B5CA322BA7 /* ReportViewModel.swift in Sources */,
+				35ABB3A30BEB06D5E2436B87 /* ReviewEditingActions.swift in Sources */,
+				95B990F7F23B540A58E704B9 /* ReviewHeader.swift in Sources */,
+				2A6B74ED295EB9ED96FBAA94 /* ReviewImageCanvas.swift in Sources */,
+				9CA5E99C1516C5F7904DA576 /* ReviewStatusCard.swift in Sources */,
+				A85C4E98D9CA6F0169D3A011 /* ScanCameraContent.swift in Sources */,
+				2FA4DC5F2111AF99536FFC6B /* ScanCropMask.swift in Sources */,
+				E35FC29D335F7E81AF6D73AA /* ScanShutterButton.swift in Sources */,
+				4D0F19975EA541B367039212 /* ScanView.swift in Sources */,
+				9D0524EC0A27918F1A8EC482 /* ScanViewModel.swift in Sources */,
+				09707C84F63D1D16C75F999A /* ScanZoomControl.swift in Sources */,
+				0C06388CA26A5900E5EA146B /* ScreeningSession.swift in Sources */,
+				4D1EDB5D9BF7445D53BA7FD1 /* ScreeningStatus.swift in Sources */,
+				43DE04A6EFB1DF6ACC531750 /* SegmentationImageView.swift in Sources */,
+				B904D83DE89AA2D95BA0E7C4 /* SegmentationOverlay.swift in Sources */,
+				290B32E4D965917B11FB752B /* SingleReportExportPage.swift in Sources */,
+				C45DA2959115DBB8ADED5C0E /* ViewModelPlaceholder.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3D821F46C0819D8B38210E99 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CODE_SIGN_ENTITLEMENTS = POC/POC.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3R47563279;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/opencv2.xcframework/ios-arm64",
+					"\".\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Glauma;
+				INFOPLIST_KEY_CFBundleShortVersionString = 1.0;
+				INFOPLIST_KEY_CFBundleVersion = 1;
+				INFOPLIST_KEY_NFCReaderUsageDescription = "POC uses NFC to detect the attached frame.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is needed to capture eye images for glaucoma screening research.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow POC to save captured or processed eye images to your Photos library.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.p7kada.poc;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "POC/Core/Services/Inference/POC-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		59E9E09EA2A813F7FD690D4F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		5EE714A02CDD39CC1E5DE554 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO;
+				CODE_SIGN_ENTITLEMENTS = POC/POC.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 3R47563279;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/opencv2.xcframework/ios-arm64",
+					"\".\"",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Glauma;
+				INFOPLIST_KEY_CFBundleShortVersionString = 1.0;
+				INFOPLIST_KEY_CFBundleVersion = 1;
+				INFOPLIST_KEY_NFCReaderUsageDescription = "POC uses NFC to detect the attached frame.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Camera access is needed to capture eye images for glaucoma screening research.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow POC to save captured or processed eye images to your Photos library.";
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.p7kada.poc;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "POC/Core/Services/Inference/POC-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EF44E68EAF89752493146DAA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07044ED8281BABE4F1EF6EC5 /* Build configuration list for PBXNativeTarget "POC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5EE714A02CDD39CC1E5DE554 /* Debug */,
+				3D821F46C0819D8B38210E99 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		10E4ECEDA4C1383F60B65FE2 /* Build configuration list for PBXProject "Glauma" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				59E9E09EA2A813F7FD690D4F /* Debug */,
+				EF44E68EAF89752493146DAA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 47A6A2D54F0F696847DDC75A /* Project object */;
+}

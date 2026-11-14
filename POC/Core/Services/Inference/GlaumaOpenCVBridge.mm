@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <vector>
 #include <cmath>
+#include <cfloat>
 #include <exception>
 
 using namespace cv;
@@ -132,7 +133,6 @@ static NSDictionary *AssessQuality(const Mat &rgb) {
     if (highFraction >= 0.18 || brightness >= 235) reason = @"OVEREXPOSED";
     else if (lowFraction >= 0.45 || brightness <= 30) reason = @"UNDEREXPOSED";
     else if (glareFraction >= 0.15) reason = @"GLARE";
-    else if (sharpness < 8) reason = @"BLUR";
     else if (contrast < 15) reason = @"LOW_CONTRAST";
 
     if (reason) return @{@"ok": @NO, @"reason": reason, @"metrics": metrics};
@@ -142,9 +142,13 @@ static NSDictionary *AssessQuality(const Mat &rgb) {
     else if (brightness <= 55 && lowFraction < 0.25) [actions addObject:@"gamma_brighten"];
     if (sharpness < 22) [actions addObject:@"mild_sharpen"];
 
+    NSMutableArray *warnings = [NSMutableArray array];
+    if (sharpness < 8) [warnings addObject:@"Foto tampak kurang tajam; hasil segmentasi perlu diperiksa."];
+
     return @{@"ok": @YES,
              @"status": actions.count ? @"recoverable" : @"pass",
              @"actions": actions,
+             @"warnings": warnings,
              @"metrics": metrics,
              @"mean_brightness": @(brightness),
              @"sharpness": @(sharpness)};
@@ -161,7 +165,7 @@ static void ApplyGamma(Mat &im, double gamma) {
 static bool CropFOV(Mat &im, NSDictionary **metadata) {
     Mat gray, blurred, binary;
     cvtColor(im, gray, COLOR_RGB2GRAY);
-    GaussianBlur(gray, blurred, cv::Size(9, 9), 0);
+    cv::GaussianBlur(gray, blurred, cv::Size(9, 9), 0);
     threshold(blurred, binary, 18, 255, THRESH_BINARY);
     std::vector<std::vector<cv::Point>> contours;
     findContours(binary, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
@@ -191,53 +195,156 @@ static bool CropFOV(Mat &im, NSDictionary **metadata) {
 }
 
 static bool CropDiscCHT(Mat &im, NSDictionary **metadata) {
+    // Match notebook crop_disc_roi_joiv_cht():
+    // red channel -> median blur 5x5 -> HoughCircles -> highest median red.
     Mat red, detect;
-    extractChannel(im, red, 0); // RGB channel 0 = red
+    extractChannel(im, red, 0); // Input is RGB: channel 0 is red.
     medianBlur(red, detect, 5);
-    int minDim = std::min(im.rows, im.cols);
+
+    const int minDim = std::min(im.rows, im.cols);
     std::vector<Vec3f> circles;
-    HoughCircles(detect, circles, HOUGH_GRADIENT, 1.2,
+    HoughCircles(detect, circles, HOUGH_GRADIENT,
+                 1.2,
                  std::max(1, (int)(minDim * 0.25)),
                  100, 30,
                  std::max(1, (int)(minDim * 0.07)),
                  std::max(2, (int)(minDim * 0.45)));
+
     if (circles.empty()) {
-        *metadata = @{@"success": @NO, @"reason": @"DISC_NOT_FOUND"};
+        *metadata = @{@"success": @NO, @"reason": @"CHT_NO_CIRCLE"};
         return false;
     }
 
-    double bestMedian = -1.0;
-    Vec3f bestCircle;
-    bool found = false;
+    double bestMedian = -DBL_MAX;
+    int bestCX = -1, bestCY = -1, bestRadius = -1;
+
     for (const auto &circleValue : circles) {
-        int cx = cvRound(circleValue[0]), cy = cvRound(circleValue[1]);
-        int radius = cvRound(circleValue[2]);
-        if (radius <= 0 || cx < 0 || cy < 0 || cx >= im.cols || cy >= im.rows) continue;
-        double med = MedianInsideCircle(red, cx, cy, radius);
-        if (med > bestMedian) {
-            bestMedian = med;
-            bestCircle = circleValue;
-            found = true;
+        const int cx = cvRound(circleValue[0]);
+        const int cy = cvRound(circleValue[1]);
+        const int radius = cvRound(circleValue[2]);
+
+        if (radius <= 0 || cx < 0 || cy < 0 ||
+            cx >= im.cols || cy >= im.rows) {
+            continue;
+        }
+
+        const double median = MedianInsideCircle(red, cx, cy, radius);
+        if (median > bestMedian) {
+            bestMedian = median;
+            bestCX = cx;
+            bestCY = cy;
+            bestRadius = radius;
         }
     }
-    if (!found) {
-        *metadata = @{@"success": @NO, @"reason": @"DISC_NOT_FOUND"};
+
+    if (bestRadius <= 0) {
+        *metadata = @{@"success": @NO, @"reason": @"CHT_INVALID_CANDIDATE"};
         return false;
     }
 
-    int cx = cvRound(bestCircle[0]), cy = cvRound(bestCircle[1]);
-    int side = std::max(16, (int)std::round(minDim * 0.45)); // same crop ratio as GT training
-    side = std::min(side, std::min(im.rows, im.cols));
-    int x0 = std::max(0, std::min(cx - side/2, im.cols-side));
-    int y0 = std::max(0, std::min(cy - side/2, im.rows-side));
+    // Match notebook's crop geometry: radius * 2.4 diameter.
+    const int half = std::max(2, (int)(bestRadius * 2.4 / 2.0));
+    int x0 = std::max(0, bestCX - half);
+    int x1 = std::min(im.cols, bestCX + half);
+    int y0 = std::max(0, bestCY - half);
+    int y1 = std::min(im.rows, bestCY + half);
+
+    const int side = std::min(x1 - x0, y1 - y0);
+    if (side < 8) {
+        *metadata = @{@"success": @NO, @"reason": @"CHT_CROP_TOO_SMALL"};
+        return false;
+    }
+
+    x1 = x0 + side;
+    y1 = y0 + side;
+    if (x1 > im.cols) { x1 = im.cols; x0 = im.cols - side; }
+    if (y1 > im.rows) { y1 = im.rows; y0 = im.rows - side; }
+
     im = im(cv::Rect(x0, y0, side, side)).clone();
 
-    *metadata = @{@"success": @YES,
-                  @"center": @[@(cx), @(cy)],
-                  @"radius": @(cvRound(bestCircle[2])),
-                  @"median_red": @(bestMedian),
-                  @"crop_ratio": @0.45,
-                  @"bbox": @[@(x0), @(y0), @(x0+side), @(y0+side)]};
+    *metadata = @{
+        @"success": @YES,
+        @"center": @[@(bestCX), @(bestCY)],
+        @"radius": @(bestRadius),
+        @"median_red": @(bestMedian),
+        @"bbox": @[@(x0), @(y0), @(x0 + side), @(y0 + side)]
+    };
+    return true;
+}
+
+static bool CropDiscBrightest(Mat &im, NSDictionary **metadata) {
+    // Exact fallback strategy from notebook crop_disc_roi():
+    // disc_map = 0.7 * green + 0.3 * red; suppress pure-white glare;
+    // Gaussian blur 51x51; ignore outer 12%; crop 45% of min dimension.
+    if (im.empty() || im.channels() != 3) {
+        *metadata = @{@"success": @NO, @"reason": @"FALLBACK_INVALID_IMAGE"};
+        return false;
+    }
+
+    Mat discMap(im.rows, im.cols, CV_32F);
+    for (int y = 0; y < im.rows; ++y) {
+        const Vec3b *row = im.ptr<Vec3b>(y);
+        float *out = discMap.ptr<float>(y);
+        for (int x = 0; x < im.cols; ++x) {
+            const float r = row[x][0]; // RGB
+            const float g = row[x][1];
+            const float b = row[x][2];
+
+            const bool glare = (r > 245.0f && g > 245.0f && b > 245.0f);
+            out[x] = glare ? 0.0f : (0.7f * g + 0.3f * r);
+        }
+    }
+
+    Mat blurred;
+    cv::GaussianBlur(discMap, blurred, cv::Size(51, 51), 0);
+
+    const int marginY = (int)(im.rows * 0.12);
+    const int marginX = (int)(im.cols * 0.12);
+    const int innerW = im.cols - 2 * marginX;
+    const int innerH = im.rows - 2 * marginY;
+
+    if (innerW <= 0 || innerH <= 0) {
+        *metadata = @{@"success": @NO, @"reason": @"FALLBACK_SEARCH_REGION_TOO_SMALL"};
+        return false;
+    }
+
+    Mat inner = blurred(cv::Rect(marginX, marginY, innerW, innerH));
+    cv::Point maxLoc;
+    double maxValue = 0.0;
+    cv::minMaxLoc(inner, nullptr, &maxValue, nullptr, &maxLoc);
+
+    const int cx = maxLoc.x + marginX;
+    const int cy = maxLoc.y + marginY;
+
+    const int boxSize = (int)(std::min(im.rows, im.cols) * 0.45);
+    if (boxSize < 8) {
+        *metadata = @{@"success": @NO, @"reason": @"FALLBACK_CROP_TOO_SMALL"};
+        return false;
+    }
+
+    const int half = boxSize / 2;
+    int x0 = std::max(0, cx - half);
+    int y0 = std::max(0, cy - half);
+    int x1 = std::min(im.cols, x0 + boxSize);
+    int y1 = std::min(im.rows, y0 + boxSize);
+
+    if ((x1 - x0) < boxSize) x0 = std::max(0, x1 - boxSize);
+    if ((y1 - y0) < boxSize) y0 = std::max(0, y1 - boxSize);
+
+    if (x1 - x0 != boxSize || y1 - y0 != boxSize) {
+        *metadata = @{@"success": @NO, @"reason": @"FALLBACK_CROP_OUT_OF_BOUNDS"};
+        return false;
+    }
+
+    im = im(cv::Rect(x0, y0, boxSize, boxSize)).clone();
+
+    *metadata = @{
+        @"success": @YES,
+        @"center": @[@(cx), @(cy)],
+        @"score": @(maxValue),
+        @"crop_box_ratio": @0.45,
+        @"bbox": @[@(x0), @(y0), @(x0 + boxSize), @(y0 + boxSize)]
+    };
     return true;
 }
 
@@ -259,7 +366,10 @@ static void Enhance(Mat &im, Mat *denoisedOut, Mat *claheOut) {
 
 @implementation GlaumaOpenCVBridge
 
-+ (NSDictionary *)prepareRGB:(NSData *)rgbData width:(NSInteger)width height:(NSInteger)height {
++ (NSDictionary *)prepareRGB:(NSData *)rgbData
+                       width:(NSInteger)width
+                      height:(NSInteger)height
+         captureDebugStages:(BOOL)captureDebugStages {
     @try {
       try {
         if (width < 2 || height < 2 || rgbData.length != (NSUInteger)(width * height * 3)) {
@@ -269,10 +379,18 @@ static void Enhance(Mat &im, Mat *denoisedOut, Mat *claheOut) {
 
         Mat original((int)height, (int)width, CV_8UC3, (void *)rgbData.bytes);
         original = original.clone();
+        const int maxInputDimension = 1024;
+        const int largestDimension = std::max(original.cols, original.rows);
+        if (largestDimension > maxInputDimension) {
+            const double scale = (double)maxInputDimension / (double)largestDimension;
+            resize(original, original, cv::Size(), scale, scale, INTER_AREA);
+        }
         NSMutableDictionary *stages = [NSMutableDictionary dictionary];
         NSMutableDictionary *stageSizes = [NSMutableDictionary dictionary];
-        stages[@"stage1"] = MatRGBData(original);
-        stageSizes[@"stage1"] = @[@(original.cols), @(original.rows)];
+        if (captureDebugStages) {
+            stages[@"stage1"] = MatRGBData(original);
+            stageSizes[@"stage1"] = @[@(original.cols), @(original.rows)];
+        }
 
         NSDictionary *qc = AssessQuality(original);
         NSDictionary *metrics = qc[@"metrics"] ?: @{};
@@ -290,22 +408,71 @@ static void Enhance(Mat &im, Mat *denoisedOut, Mat *claheOut) {
             else if ([action isEqualToString:@"gamma_brighten"]) ApplyGamma(corrected, 0.82);
             else if ([action isEqualToString:@"mild_sharpen"]) {
                 Mat blurred;
-                GaussianBlur(corrected, blurred, cv::Size(0,0), 1.0);
+                cv::GaussianBlur(corrected, blurred, cv::Size(0,0), 1.0);
                 addWeighted(corrected, 1.35, blurred, -0.35, 0, corrected);
             }
         }
-        stages[@"stage2"] = MatRGBData(corrected);
-        stageSizes[@"stage2"] = @[@(corrected.cols), @(corrected.rows)];
+        if (captureDebugStages) {
+            stages[@"stage2"] = MatRGBData(corrected);
+            stageSizes[@"stage2"] = @[@(corrected.cols), @(corrected.rows)];
+        }
 
         Mat fov = corrected.clone();
         NSDictionary *fovMeta = @{};
         bool fovApplied = CropFOV(fov, &fovMeta);
-        stages[@"stage3"] = MatRGBData(fov);
-        stageSizes[@"stage3"] = @[@(fov.cols), @(fov.rows)];
+        if (captureDebugStages) {
+            stages[@"stage3"] = MatRGBData(fov);
+            stageSizes[@"stage3"] = @[@(fov.cols), @(fov.rows)];
+        }
 
         Mat roi = fov.clone();
-        NSDictionary *roiMeta = @{};
-        if (!CropDiscCHT(roi, &roiMeta)) {
+        NSDictionary *chtMeta = @{};
+        NSDictionary *fallbackMeta = @{};
+
+        bool chtSuccess = CropDiscCHT(roi, &chtMeta);
+        bool fallbackUsed = false;
+
+        // Notebook setting: ROI_METHOD = "joiv_cht_fallback".
+        // If CHT cannot locate a plausible circle, use crop_disc_roi().
+        if (!chtSuccess) {
+            roi = fov.clone();
+            fallbackUsed = CropDiscBrightest(roi, &fallbackMeta);
+        }
+
+        NSDictionary *roiMeta = @{
+            @"configured_method": @"joiv_cht_fallback",
+            @"method_used": chtSuccess ? @"JOIV-inspired CHT" :
+                            (fallbackUsed ? @"glauma_brightest fallback" : @"none"),
+            @"cht_success": @(chtSuccess),
+            @"fallback_used": @(fallbackUsed),
+            @"cht_metadata": chtMeta,
+            @"fallback_metadata": fallbackMeta
+        };
+
+        // Compose the ROI crop rectangle with the optional FOV crop rectangle.
+        // Coordinates are normalized against the resized original input, whose
+        // aspect ratio is identical to the upright source image.
+        NSArray<NSNumber *> *roiBox = (chtSuccess ? chtMeta[@"bbox"] : fallbackMeta[@"bbox"]);
+        NSArray<NSNumber *> *fovBox = fovMeta[@"bbox"];
+        int fovX = fovApplied && fovBox.count == 4 ? fovBox[0].intValue : 0;
+        int fovY = fovApplied && fovBox.count == 4 ? fovBox[1].intValue : 0;
+        int fovW = fovApplied && fovBox.count == 4 ? (fovBox[2].intValue - fovBox[0].intValue) : corrected.cols;
+        int fovH = fovApplied && fovBox.count == 4 ? (fovBox[3].intValue - fovBox[1].intValue) : corrected.rows;
+
+        int roiX = roiBox.count == 4 ? roiBox[0].intValue : 0;
+        int roiY = roiBox.count == 4 ? roiBox[1].intValue : 0;
+        int roiW = roiBox.count == 4 ? (roiBox[2].intValue - roiBox[0].intValue) : 0;
+        int roiH = roiBox.count == 4 ? (roiBox[3].intValue - roiBox[1].intValue) : 0;
+
+        const double roiXNorm = (double)(fovX + roiX) / (double)corrected.cols;
+        const double roiYNorm = (double)(fovY + roiY) / (double)corrected.rows;
+        const double roiWNorm = (double)roiW / (double)corrected.cols;
+        const double roiHNorm = (double)roiH / (double)corrected.rows;
+        NSArray<NSNumber *> *roiRectNormalized = @[
+            @(roiXNorm), @(roiYNorm), @(roiWNorm), @(roiHNorm)
+        ];
+
+        if (!chtSuccess && !fallbackUsed) {
             NSString *code = @"DISC_NOT_FOUND";
             return @{@"ok": @NO, @"status": @"reject", @"reason": code,
                      @"message": GMessage(code), @"metrics": metrics,
@@ -313,27 +480,36 @@ static void Enhance(Mat &im, Mat *denoisedOut, Mat *claheOut) {
                      @"warnings": fovApplied ? @[] : @[@"FOV_CROP_SKIPPED"],
                      @"stages": stages, @"stageSizes": stageSizes};
         }
-        stages[@"stage4"] = MatRGBData(roi);
-        stageSizes[@"stage4"] = @[@(roi.cols), @(roi.rows)];
+        if (captureDebugStages) {
+            stages[@"stage4"] = MatRGBData(roi);
+            stageSizes[@"stage4"] = @[@(roi.cols), @(roi.rows)];
+        }
 
         Mat denoised, enhanced;
         Enhance(roi, &denoised, &enhanced);
-        stages[@"stage5"] = MatRGBData(denoised);
-        stageSizes[@"stage5"] = @[@(denoised.cols), @(denoised.rows)];
-        stages[@"stage6"] = MatRGBData(enhanced);
-        stageSizes[@"stage6"] = @[@(enhanced.cols), @(enhanced.rows)];
+        if (captureDebugStages) {
+            stages[@"stage5"] = MatRGBData(denoised);
+            stageSizes[@"stage5"] = @[@(denoised.cols), @(denoised.rows)];
+            stages[@"stage6"] = MatRGBData(enhanced);
+            stageSizes[@"stage6"] = @[@(enhanced.cols), @(enhanced.rows)];
+        }
 
         Mat finalImage;
         resize(enhanced, finalImage, cv::Size(512,512), 0, 0, INTER_AREA);
-        stages[@"stage7"] = MatRGBData(finalImage);
-        stageSizes[@"stage7"] = @[@(finalImage.cols), @(finalImage.rows)];
+        if (captureDebugStages) {
+            stages[@"stage7"] = MatRGBData(finalImage);
+            stageSizes[@"stage7"] = @[@(finalImage.cols), @(finalImage.rows)];
+        }
 
         NSData *finalData = MatRGBData(finalImage);
-        NSArray *warnings = fovApplied ? @[] : @[@"FOV_CROP_SKIPPED"];
+        NSMutableArray *warnings = [NSMutableArray array];
+        if (!fovApplied) [warnings addObject:@"FOV_CROP_SKIPPED"];
+        [warnings addObjectsFromArray:qc[@"warnings"] ?: @[]];
           return @{@"ok": @YES, @"status": qc[@"status"] ?: @"pass",
                  @"metrics": metrics, @"actions": actions,
                  @"rgbData": finalData, @"width": @512, @"height": @512,
                  @"fovMetadata": fovMeta, @"roiMetadata": roiMeta,
+                 @"roiRectNormalized": roiRectNormalized,
                  @"warnings": warnings, @"stages": stages, @"stageSizes": stageSizes};
       } catch (const cv::Exception &e) {
         NSString *code = @"PREPROCESS_FAIL";

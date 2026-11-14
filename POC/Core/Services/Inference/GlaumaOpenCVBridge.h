@@ -8,7 +8,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// stage1...stage7, fovMetadata, roiMetadata, warnings.
 + (NSDictionary *)prepareRGB:(NSData *)rgbData
                        width:(NSInteger)width
-                      height:(NSInteger)height;
+                      height:(NSInteger)height
+         captureDebugStages:(BOOL)captureDebugStages;
 @end
 
 NS_ASSUME_NONNULL_END

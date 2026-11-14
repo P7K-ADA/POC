@@ -18,7 +18,10 @@ struct ScanCameraContent: View {
                 AppColors.labelPrimary
                     .ignoresSafeArea()
 
-                CameraPreview(session: camera.session)
+                CameraPreview(
+                    session: camera.session,
+                    onPreviewSizeChanged: camera.setPreviewSize
+                )
                     .ignoresSafeArea()
 
                 ScanCropMask()
@@ -29,6 +32,35 @@ struct ScanCameraContent: View {
                         .position(focusPoint)
                         .id(focusID)
                 }
+
+                VStack {
+                    HStack {
+                        Spacer()
+
+                        Button(action: camera.toggleFlash) {
+                            Image(
+                                systemName: camera.isFlashEnabled
+                                    ? "bolt.fill"
+                                    : "bolt.slash.fill"
+                            )
+                            .font(.headline.weight(.semibold))
+                            .foregroundStyle(
+                                camera.isFlashEnabled ? Color.yellow : tint
+                            )
+                            .frame(width: 44, height: 44)
+                            .background(Color.black.opacity(0.45), in: Circle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(
+                            camera.isFlashEnabled ? "Matikan flash" : "Nyalakan flash"
+                        )
+                        .accessibilityValue(camera.isFlashEnabled ? "Aktif" : "Nonaktif")
+                    }
+
+                    Spacer()
+                }
+                .padding(.top, geometry.safeAreaInsets.top + 20)
+                .padding(.trailing, Layout.horizontalPadding)
 
                 VStack(spacing: 0) {
                     if camera.errorMessage != nil {

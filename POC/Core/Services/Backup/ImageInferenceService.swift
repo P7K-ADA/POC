@@ -18,6 +18,7 @@ struct SegmentationResult {
     let verticalCDR: Double?
     let discPixelCount: Int
     let cupPixelCount: Int
+    var roiRectNormalized: CGRect? = nil
 }
 
 enum InferenceError: LocalizedError {

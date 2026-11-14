@@ -14,7 +14,8 @@ struct OnboardingView: View {
             OnboardingPermissionPage(
                 permission: viewModel.currentPage,
                 isAllowEnabled: viewModel.canAllowCurrentPermission,
-                onAllow: { Task { await viewModel.allow() } }
+                onAllow: { Task { await viewModel.allow() } },
+                onSkipNFCAttachment: { viewModel.skipNFCAttachment() }
             )
             .id(viewModel.currentIndex)
             .transition(.opacity)

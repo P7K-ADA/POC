@@ -9,6 +9,7 @@ struct OnboardingPermissionPage: View {
     let permission: OnboardingPermission
     let isAllowEnabled: Bool
     let onAllow: () -> Void
+    let onSkipNFCAttachment: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,16 +23,25 @@ struct OnboardingPermissionPage: View {
             Color.clear
                 .frame(height: Layout.paginationAreaHeight)
 
-            AppButton(
-                title: permission == .camera ? "Next" : "Allow",
-                tint: buttonTint,
-                width: Layout.buttonWidth,
-                height: Layout.buttonHeight,
-                accessibilityLabel: permission == .camera
-                    ? "Continue after attaching the optical lens."
-                    : "Allow permission.",
-                action: onAllow
-            )
+            VStack(spacing: 12) {
+                AppButton(
+                    title: permission == .camera ? "Next" : "Allow",
+                    tint: buttonTint,
+                    width: Layout.buttonWidth,
+                    height: Layout.buttonHeight,
+                    accessibilityLabel: permission == .camera
+                        ? "Continue after attaching the optical lens."
+                        : "Allow permission.",
+                    action: onAllow
+                )
+
+                if permission == .camera {
+                    Button("Lewati pemasangan lensa untuk sekarang", action: onSkipNFCAttachment)
+                        .font(.subheadline)
+                        .foregroundStyle(AppColors.labelSecondary)
+                        .accessibilityHint("Melanjutkan onboarding tanpa memeriksa lampiran NFC.")
+                }
+            }
             .padding(.bottom, Layout.onboardingBottomPadding)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -47,7 +57,8 @@ struct OnboardingPermissionPage: View {
     OnboardingPermissionPage(
         permission: .camera,
         isAllowEnabled: false,
-        onAllow: {}
+        onAllow: {},
+        onSkipNFCAttachment: {}
     )
 }
 
@@ -55,6 +66,7 @@ struct OnboardingPermissionPage: View {
     OnboardingPermissionPage(
         permission: .camera,
         isAllowEnabled: true,
-        onAllow: {}
+        onAllow: {},
+        onSkipNFCAttachment: {}
     )
 }

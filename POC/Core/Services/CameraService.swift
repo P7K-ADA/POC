@@ -18,11 +18,14 @@ final class CameraService: NSObject, ObservableObject,
     @Published var errorMessage: String?
     @Published var capturedImage: UIImage?
     @Published var currentZoomFactor: CGFloat = 1.0
+    @Published var isFlashEnabled = false
     
     let minZoom: CGFloat = 1.0
     let maxZoom: CGFloat = 4.0
     private var currentDevice: AVCaptureDevice?
     private var captureZoomFactor: CGFloat = 1.0
+    private var previewAspectRatio: CGFloat = 3.0 / 4.0
+    private var capturePreviewAspectRatio: CGFloat = 3.0 / 4.0
     
     private let photoOutput = AVCapturePhotoOutput()
 
@@ -119,9 +122,13 @@ final class CameraService: NSObject, ObservableObject,
 
             self.capturing = true
             self.captureZoomFactor = self.currentZoomFactor
+            self.capturePreviewAspectRatio = self.previewAspectRatio
             let settings = AVCapturePhotoSettings()
-            if self.photoOutput.supportedFlashModes.contains(.on) {
+            if self.isFlashEnabled,
+               self.photoOutput.supportedFlashModes.contains(.on) {
                 settings.flashMode = .on
+            } else if self.photoOutput.supportedFlashModes.contains(.off) {
+                settings.flashMode = .off
             }
             self.photoOutput.capturePhoto(
                 with: settings,
@@ -148,9 +155,13 @@ final class CameraService: NSObject, ObservableObject,
         }
 
         queue.async {
-            let processedImage = self.imageApplyingZoom(
+            let zoomedImage = self.imageApplyingZoom(
                 image,
                 factor: self.captureZoomFactor
+            )
+            let processedImage = self.imageMatchingPreview(
+                zoomedImage,
+                previewAspectRatio: self.capturePreviewAspectRatio
             )
             self.capturing = false
 
@@ -188,6 +199,65 @@ final class CameraService: NSObject, ObservableObject,
             scale: image.scale,
             orientation: image.imageOrientation
         )
+    }
+
+    /// Crops the 3:4 photo so its visible width matches the aspect-fill camera preview.
+    private func imageMatchingPreview(
+        _ image: UIImage,
+        previewAspectRatio: CGFloat
+    ) -> UIImage {
+        let normalized = normalizedUpright(image)
+        guard let source = normalized.cgImage else {
+            return normalized
+        }
+
+        let sourceSize = CGSize(width: source.width, height: source.height)
+        let targetAspectRatio: CGFloat = 3.0 / 4.0
+        let sourceAspectRatio = sourceSize.width / sourceSize.height
+
+        var cropSize: CGSize
+        if sourceAspectRatio > targetAspectRatio {
+            cropSize = CGSize(
+                width: sourceSize.height * targetAspectRatio,
+                height: sourceSize.height
+            )
+        } else {
+            cropSize = CGSize(
+                width: sourceSize.width,
+                height: sourceSize.width / targetAspectRatio
+            )
+        }
+
+        // Aspect-fill crops the live preview horizontally on tall phone screens.
+        // Applying the same scale keeps the saved 3:4 photo framed like the preview.
+        let previewScale = min(
+            1,
+            max(0.01, previewAspectRatio / targetAspectRatio)
+        )
+        cropSize.width *= previewScale
+        cropSize.height *= previewScale
+
+        let cropRect = CGRect(
+            x: (sourceSize.width - cropSize.width) / 2,
+            y: (sourceSize.height - cropSize.height) / 2,
+            width: cropSize.width,
+            height: cropSize.height
+        ).integral
+
+        guard let croppedSource = source.cropping(to: cropRect) else {
+            return normalized
+        }
+
+        return UIImage(cgImage: croppedSource, scale: normalized.scale, orientation: .up)
+    }
+
+    private func normalizedUpright(_ image: UIImage) -> UIImage {
+        guard image.imageOrientation != .up else { return image }
+
+        let renderer = UIGraphicsImageRenderer(size: image.size)
+        return renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: image.size))
+        }
     }
 
     func setTorch(enabled: Bool) {
@@ -257,6 +327,18 @@ final class CameraService: NSObject, ObservableObject,
             }
         }
     }
+
+    func setPreviewSize(_ size: CGSize) {
+        guard size.width > 0, size.height > 0 else { return }
+
+        queue.async {
+            self.previewAspectRatio = size.width / size.height
+        }
+    }
+
+    func toggleFlash() {
+        isFlashEnabled.toggle()
+    }
     
     func focus(at devicePoint: CGPoint) {
         guard let device = currentDevice else {return}
@@ -278,4 +360,3 @@ final class CameraService: NSObject, ObservableObject,
         }
     }
 }
-

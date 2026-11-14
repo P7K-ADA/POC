@@ -16,6 +16,7 @@ struct EyeReport: Identifiable {
     let segmentationMask: [UInt8]?
     let maskWidth: Int
     let maskHeight: Int
+    let roiRectNormalized: CGRect?
 
     let debugStages: [String: UIImage]
     let confidence: Double?
@@ -28,6 +29,7 @@ struct EyeReport: Identifiable {
         segmentationMask: [UInt8]? = nil,
         maskWidth: Int = 512,
         maskHeight: Int = 512,
+        roiRectNormalized: CGRect? = nil,
         debugStages: [String: UIImage] = [:],
         confidence: Double? = nil
     ) {
@@ -38,6 +40,7 @@ struct EyeReport: Identifiable {
         self.segmentationMask = segmentationMask
         self.maskWidth = maskWidth
         self.maskHeight = maskHeight
+        self.roiRectNormalized = roiRectNormalized
         self.debugStages = debugStages
         self.confidence = confidence
     }
@@ -45,6 +48,12 @@ struct EyeReport: Identifiable {
     var id: EyeSide { side }
     var cdrText: String {
         cdr.map { String(format: "%.2f", $0) } ?? "—"
+    }
+
+    /// The segmentation mask is generated from this square model input, not
+    /// from the original 3:4 camera photo.
+    var segmentationReferenceImage: UIImage? {
+        debugStages["7. Final input 512x512"]
     }
 }
 
@@ -80,6 +89,7 @@ struct ReportData {
                 segmentationMask: result?.mask,
                 maskWidth: result?.width ?? 512,
                 maskHeight: result?.height ?? 512,
+                roiRectNormalized: result?.roiRectNormalized,
                 debugStages: record.debugStages,
                 confidence: record.confidence
             )

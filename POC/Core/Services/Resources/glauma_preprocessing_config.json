@@ -10,11 +10,11 @@
   "roi": {
     "disc_crop_ratio": 0.45,
     "cht_dp": 1.2,
-    "cht_min_dist_ratio": 0.25,
+    "cht_min_dist_ratio": 0.15,
     "cht_param1": 100,
-    "cht_param2": 30,
-    "cht_min_radius_ratio": 0.07,
-    "cht_max_radius_ratio": 0.45,
+    "cht_param2": 22,
+    "cht_min_radius_ratio": 0.05,
+    "cht_max_radius_ratio": 0.24,
     "red_median_kernel": 5,
     "fov_threshold": 18,
     "fov_blur_kernel": 9

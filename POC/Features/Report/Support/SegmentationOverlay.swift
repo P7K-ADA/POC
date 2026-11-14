@@ -6,17 +6,25 @@
 //
 
 import UIKit
+import CoreGraphics
 
 enum SegmentationOverlay {
     static let discLabel: UInt8 = 1
     static let cupLabel: UInt8 = 2
 
-    static func makeImage(from result: SegmentationResult) -> UIImage? {
-        makeImage(from: result.mask, width: result.width, height: result.height)
-    }
-
-    static func makeImage(from mask: [UInt8], width: Int, height: Int) -> UIImage? {
-        guard width > 0, height > 0, mask.count == width * height else {
+    /// Creates an overlay in the original photo's coordinate space.
+    /// roiRectNormalized describes where the square 512x512 model input came
+    /// from inside the upright original photo (x, y, width, height; 0...1).
+    static func makeImage(
+        from mask: [UInt8],
+        width: Int,
+        height: Int,
+        canvasSize: CGSize,
+        roiRectNormalized: CGRect
+    ) -> UIImage? {
+        guard width > 0, height > 0, mask.count == width * height,
+              canvasSize.width > 0, canvasSize.height > 0,
+              roiRectNormalized.width > 0, roiRectNormalized.height > 0 else {
             return nil
         }
 
@@ -55,8 +63,7 @@ enum SegmentationOverlay {
 
         let colorSpace = CGColorSpaceCreateDeviceRGB()
         let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
-
-        guard let context = CGContext(
+        guard let maskContext = CGContext(
             data: &pixels,
             width: width,
             height: height,
@@ -64,11 +71,24 @@ enum SegmentationOverlay {
             bytesPerRow: width * 4,
             space: colorSpace,
             bitmapInfo: bitmapInfo.rawValue
-        ),
-        let cgImage = context.makeImage() else {
+        ), let maskCG = maskContext.makeImage() else {
             return nil
         }
 
-        return UIImage(cgImage: cgImage)
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        format.opaque = false
+        let renderer = UIGraphicsImageRenderer(size: canvasSize, format: format)
+
+        let rect = CGRect(
+            x: roiRectNormalized.minX * canvasSize.width,
+            y: roiRectNormalized.minY * canvasSize.height,
+            width: roiRectNormalized.width * canvasSize.width,
+            height: roiRectNormalized.height * canvasSize.height
+        )
+
+        return renderer.image { _ in
+            UIImage(cgImage: maskCG, scale: 1, orientation: .up).draw(in: rect)
+        }
     }
 }

@@ -11,6 +11,8 @@ struct GlaumaInferenceResult {
     let qualityMetrics: [String: Double]
     let warnings: [String]
     let debugStages: [String: UIImage]
+    /// ROI rectangle in normalized coordinates of the upright original photo.
+    let roiRectNormalized: CGRect
 }
 
 struct GlaumaAnalysisFailure: LocalizedError {
@@ -21,19 +23,25 @@ struct GlaumaAnalysisFailure: LocalizedError {
     var errorDescription: String? { message }
 }
 
-final class GlaumaInferenceService {
+final class GlaumaInferenceService: @unchecked Sendable {
     private let model: MLModel
     private let side = 512
     private let inputName = "image"
     private let outputName = "logits"
     private let useHorizontalFlipTTA: Bool
+    private let capturesDebugStages: Bool
 
     /// Add the .mlpackage to the Xcode target and load the compiled .mlmodelc URL.
-    init(modelURL: URL, useHorizontalFlipTTA: Bool = true) throws {
+    init(
+        modelURL: URL,
+        useHorizontalFlipTTA: Bool = false,
+        capturesDebugStages: Bool = true
+    ) throws {
         let config = MLModelConfiguration()
         config.computeUnits = .all
         self.model = try MLModel(contentsOf: modelURL, configuration: config)
         self.useHorizontalFlipTTA = useHorizontalFlipTTA
+        self.capturesDebugStages = capturesDebugStages
     }
 
     func predict(_ source: UIImage) throws -> GlaumaInferenceResult {
@@ -44,11 +52,17 @@ final class GlaumaInferenceService {
                 metrics: [:], debugStages: [:])
         }
 
-        let prep = GlaumaOpenCVBridge.prepareRGB(rgb, width: width, height: height)
+        let prep = GlaumaOpenCVBridge.prepareRGB(
+            rgb,
+            width: width,
+            height: height,
+            captureDebugStages: capturesDebugStages
+        )
         let metrics = Self.doubleMetrics(prep["metrics"])
         let stageData = prep["stages"] as? [String: Data] ?? [:]
         let stageSizes = prep["stageSizes"] as? [String: [NSNumber]] ?? [:]
         let debugStages = Self.decodeStages(stageData, sizes: stageSizes)
+
 
         guard (prep["ok"] as? Bool) == true,
               let processed = prep["rgbData"] as? Data else {
@@ -57,6 +71,33 @@ final class GlaumaInferenceService {
             throw GlaumaAnalysisFailure(code: code, message: message,
                                         metrics: metrics, debugStages: debugStages)
         }
+
+        let roiValues = prep["roiRectNormalized"] as? [NSNumber] ?? []
+        guard roiValues.count == 4 else {
+            throw GlaumaAnalysisFailure(
+                code: "ROI_METADATA_MISSING",
+                message: "Koordinat optic disc ROI tidak tersedia. Silakan proses ulang foto.",
+                metrics: metrics,
+                debugStages: debugStages
+            )
+        }
+        let roiRectNormalized = CGRect(
+            x: roiValues[0].doubleValue,
+            y: roiValues[1].doubleValue,
+            width: roiValues[2].doubleValue,
+            height: roiValues[3].doubleValue
+        )
+        guard roiRectNormalized.minX >= 0, roiRectNormalized.minY >= 0,
+              roiRectNormalized.width > 0, roiRectNormalized.height > 0,
+              roiRectNormalized.maxX <= 1.0001, roiRectNormalized.maxY <= 1.0001 else {
+            throw GlaumaAnalysisFailure(
+                code: "ROI_METADATA_INVALID",
+                message: "Koordinat optic disc ROI tidak valid. Silakan proses ulang foto.",
+                metrics: metrics,
+                debugStages: debugStages
+            )
+        }
+
 
         guard let logits0 = runModel(rgb: processed) else {
             throw GlaumaAnalysisFailure(code: "MODEL_OUTPUT",
@@ -114,7 +155,8 @@ final class GlaumaInferenceService {
             qualityStatus: prep["status"] as? String ?? "pass",
             qualityMetrics: metrics,
             warnings: prepWarnings + postWarnings,
-            debugStages: stages
+            debugStages: stages,
+            roiRectNormalized: roiRectNormalized
         )
     }
 

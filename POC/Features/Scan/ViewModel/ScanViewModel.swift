@@ -53,6 +53,7 @@ final class ScanViewModel: ObservableObject {
 
     private var analysisTask: Task<Void, Never>?
     private var analysisID = UUID()
+    private var inferenceService: GlaumaInferenceService?
 
     var isLastEye: Bool {
         selectedEye == .right ? leftImage != nil : rightImage != nil
@@ -231,6 +232,16 @@ final class ScanViewModel: ObservableObject {
         }
     }
 
+    private func cachedInferenceService(modelURL: URL) throws -> GlaumaInferenceService {
+        if let inferenceService {
+            return inferenceService
+        }
+
+        let inferenceService = try GlaumaInferenceService(modelURL: modelURL)
+        self.inferenceService = inferenceService
+        return inferenceService
+    }
+
     // MARK: - Glauma Inference
 
     private func analyzeCapturedImage(
@@ -261,11 +272,10 @@ final class ScanViewModel: ObservableObject {
                 )
             }
 
-            let inferenceService = try GlaumaInferenceService(
-                modelURL: modelURL
-            )
-
-            let result = try inferenceService.predict(image)
+            let inferenceService = try cachedInferenceService(modelURL: modelURL)
+            let result = try await Task.detached(priority: .userInitiated) {
+                try inferenceService.predict(image)
+            }.value
 
             guard !Task.isCancelled,
                   self.analysisID == analysisID else {
@@ -286,7 +296,8 @@ final class ScanViewModel: ObservableObject {
                 height: 512,
                 verticalCDR: result.vCDR,
                 discPixelCount: result.mask.filter { $0 >= 1 }.count,
-                cupPixelCount: result.mask.filter { $0 == 2 }.count
+                cupPixelCount: result.mask.filter { $0 == 2 }.count,
+                roiRectNormalized: result.roiRectNormalized
             )
 
             // Save result and debug data for the corresponding eye.

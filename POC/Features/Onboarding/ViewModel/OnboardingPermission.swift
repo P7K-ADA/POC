@@ -70,6 +70,16 @@ final class OnboardingViewModel: ObservableObject {
         nfcDetector.stopScanning()
     }
 
+    /// Bypasses the optional NFC attachment step without requesting camera access.
+    func skipNFCAttachment() {
+        guard currentPage == .camera else {
+            return
+        }
+
+        stopNFCScanning()
+        advance()
+    }
+
     /// Shows the system permission prompt only after the frame has been detected.
     func allow() async {
         if currentPage == .camera, !isNFCDetected {
